@@ -35,7 +35,7 @@ Status: complete
 
 ### Phase 3: Detection rules and reporting
 
-Status: in_progress
+Status: complete
 
 - Implement feature extraction for packer, obfuscation, environment, native signals.
 - Implement rule engine and JSON/text report model.
@@ -44,7 +44,7 @@ Status: in_progress
 
 ### Phase 4: Demo and documentation
 
-Status: pending
+Status: complete
 
 - Add Chinese README, usage guide, sample output, and final-exhibit demo steps.
 - Include the midterm PDF as reference material if practical.
@@ -52,7 +52,7 @@ Status: pending
 
 ### Phase 5: Completion audit
 
-Status: pending
+Status: in_progress
 
 - Run unit tests and CLI smoke tests.
 - Verify git remote, commit history, and pushed branch.

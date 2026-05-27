@@ -10,6 +10,30 @@
 - 使用本地可复现测试样本验证规则，不依赖 VirusTotal、AndroZoo 或商业样本库。
 - 提供命令行工具和 JSON 报告，便于课程现场展示。
 
+## 已实现功能清单
+
+### APK 与基础二进制解析
+
+- 读取 APK ZIP 文件清单、文件大小、压缩大小、SHA-256 和 Shannon 熵。
+- 识别 `AndroidManifest.xml`、`classes*.dex`、`lib/**/*.so` 和资源文件。
+- 从 Android binary XML string pool 中提取 Manifest 字符串。
+- 从 Native `.so` 或任意二进制数据中提取 ASCII 可打印字符串。
+
+### DEX 静态证据提取
+
+- 解析 DEX header、string IDs、type IDs、method IDs、class data 和 code item。
+- 提取 DEX 字符串、类型描述符、方法名、`const-string` 引用、`invoke-*` 方法引用。
+- 统计 code item 中的 opcode，用于后续轻量混淆信号。
+
+### 规则与报告
+
+- 加壳规则：已知壳库名、Manifest StubApp、高熵 assets、动态加载 API。
+- 混淆规则：短类名比例、反射 API/`invoke` 证据。
+- 环境检测规则：模拟器 system properties、debugger probe、Frida/Xposed/Substrate/process maps。
+- Native 规则：`JNI_OnLoad` 入口证据。
+- CLI 支持终端摘要、JSON 输出和 `-o/--output` 文件输出。
+- `examples/make_demo_apk.py` 可生成不含真实恶意逻辑的合成展示 APK。
+
 ## 调整的目标
 
 ### 1. 不把 Androguard 作为必需运行时依赖
@@ -61,4 +85,3 @@
 - 对测试 APK 可输出包含三类检测结果的 JSON；
 - README 和 demo 文档能指导课程展示；
 - GitHub 远端仓库 `syssec_final` 包含所有源码、测试、文档和提交历史。
-

@@ -36,6 +36,7 @@ def main(argv: list[str] | None = None) -> int:
         else report.to_text()
     )
     if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(output + "\n", encoding="utf-8")
     else:
         print(output)
@@ -44,4 +45,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

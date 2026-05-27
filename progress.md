@@ -13,4 +13,8 @@
 - Implemented and tested APK inventory, entropy, printable strings, and binary XML string-pool extraction; committed as `264ff5d`.
 - Implemented and tested a lightweight DEX parser for strings, types, methods, const-string evidence, invoke evidence, and opcode counts; committed as `08aabf9`.
 - Created local `.venv` and installed `pytest` after base environment lacked pytest.
-
+- Implemented feature extraction, static rules, report model, and CLI; committed as `b1c1640`.
+- Added README, demo guide, implementation scope/change document, and reproducible demo APK generator.
+- Verified demo scan: summary reported `packer=4`, `obfuscation=2`, `environment=3`, `native=1`.
+- Added CLI output-directory creation after a failing test exposed the documented `-o reports/demo_report.json` path issue.
+- Latest full test run: `.venv/bin/pytest -q` passed with 10 tests.

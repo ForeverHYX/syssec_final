@@ -38,3 +38,18 @@ def test_cli_human_summary_mentions_categories(tmp_path):
     assert "obfuscation" in result.stdout
     assert "environment" in result.stdout
 
+
+def test_cli_creates_output_parent_directory(tmp_path):
+    apk_path = build_hardened_apk(tmp_path / "hardened.apk")
+    output = tmp_path / "reports" / "demo_report.json"
+
+    result = subprocess.run(
+        [sys.executable, "-m", "hardeninspector", str(apk_path), "--json", "-o", str(output)],
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+    assert json.loads(output.read_text(encoding="utf-8"))["schema_version"] == 1

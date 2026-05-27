@@ -4,8 +4,8 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .coverage
+.venv/
 dist/
 build/
 reports/
 samples/private/
-

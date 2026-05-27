@@ -84,6 +84,8 @@ python3 -m venv .venv
 - [课程展示 Demo](docs/demo.md)
 - [实现范围与目标调整说明](docs/implementation_scope.md)
 - [期末交付说明](docs/final_deliverable.md)
+- [期末总结报告](reports/final_summary.md)
+- [LaTeX Beamer 汇报稿](slides/final_presentation.tex)
 
 ## 局限
 

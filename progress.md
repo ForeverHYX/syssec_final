@@ -38,3 +38,5 @@
 - Added `docs/benchmark.md` explaining comparator scope, metrics, and why open-source tools are validation baselines rather than the implementation route.
 - Added out-of-the-box environment files: `Makefile`, `scripts/setup_env.sh`, `requirements*.txt`, `Dockerfile`, and `docs/environment.md`.
 - Verified fresh setup path with `/tmp/hardeninspector-venv-check`: setup script installed `[all]` dependencies, `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 17 tests, and `/tmp/hardeninspector-venv-check/bin/python -m hardeninspector --help` exited 0.
+- Added `reports/final_summary.md` Chinese final report and `slides/final_presentation.tex` LaTeX Beamer deck.
+- Verified Beamer compilation with `xelatex -interaction=nonstopmode -halt-on-error -output-directory=/tmp slides/final_presentation.tex`; output was `/tmp/final_presentation.pdf` with 12 pages.

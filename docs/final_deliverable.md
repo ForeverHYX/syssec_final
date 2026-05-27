@@ -12,6 +12,8 @@
 - 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
 - 开箱即用环境：`Makefile`、`scripts/setup_env.sh`、`requirements*.txt`、`Dockerfile`、`docs/environment.md`；
 - 中文使用手册、规则说明、架构说明、数据集说明、Demo 流程和目标调整说明；
+- 期末总结报告：`reports/final_summary.md`；
+- LaTeX Beamer 汇报稿：`slides/final_presentation.tex`；
 - 中期报告 PDF 归档：`docs/references/mid_term.pdf`；
 - GitHub 远端仓库与阶段性提交记录。
 
@@ -26,6 +28,7 @@
 | 构造小规模测试集 | `datasets/hardeninspector_eval_v1/` 包含 6 个 APK、labels 和报告 |
 | 与开源实现对比并给出统计数据 | `reports/benchmark/benchmark_results.json`、`benchmark_metrics.csv`、`benchmark_summary.md` |
 | 开箱即用环境 | `make setup`、`./scripts/setup_env.sh`、Dockerfile；fresh venv 验证通过 |
+| 总结报告和汇报材料 | `reports/final_summary.md`、`slides/final_presentation.tex`；`xelatex` 编译通过 |
 | 记录现实调整 | `docs/implementation_scope.md` |
 | 课程展示可复现 | `docs/demo.md` 和 `examples/make_demo_apk.py` |
 

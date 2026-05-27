@@ -13,7 +13,7 @@ def test_out_of_box_environment_files_exist_and_expose_expected_targets():
     assert (ROOT / "Dockerfile").exists()
 
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    for target in ["setup:", "test:", "dataset:", "benchmark:", "demo:", "all:"]:
+    for target in ["setup:", "test:", "dataset:", "benchmark:", "demo:", "slides:", "all:"]:
         assert target in makefile
 
 
@@ -23,4 +23,3 @@ def test_pyproject_exposes_benchmark_extra():
     assert "benchmark = [" in pyproject
     assert '"apkid==3.1.0"' in pyproject
     assert '"droidlysis==3.4.7"' in pyproject
-

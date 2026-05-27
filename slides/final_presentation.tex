@@ -1,0 +1,142 @@
+\documentclass[aspectratio=169]{ctexbeamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\title{HardenInspector: Android 应用加固技术检测器}
+\subtitle{系统安全课程期末项目}
+\author{syssec\_final}
+\date{2026 年春夏学期}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{项目目标}
+  \begin{itemize}
+    \item 课程方向：Android 应用抗加固分析，选择“检测器”路线。
+    \item 输入 APK，输出加固技术画像与证据链。
+    \item 不判断恶意/良性，只识别混淆、加壳、环境检测等技术信号。
+    \item 遵照中期报告 HardenInspector 架构：解析层、特征层、规则层、报告层。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{技术路线}
+  \begin{block}{静态证据链}
+    APK ZIP / Manifest string pool / DEX / Native `.so` / 资源文件
+  \end{block}
+  \begin{itemize}
+    \item APK：文件清单、哈希、大小、压缩大小、熵值。
+    \item Manifest：壳入口类、权限、硬编码字符串。
+    \item DEX：字符串、类型描述符、方法名、\texttt{const-string}、\texttt{invoke-*}。
+    \item Native：JNI 和反分析相关字符串。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{检测规则}
+  \begin{table}
+    \centering
+    \begin{tabular}{ll}
+      \hline
+      类别 & 规则示例 \\
+      \hline
+      加壳 & 壳库名、StubApp、高熵 payload、动态加载 API \\
+      混淆 & 短类名比例、反射 API、invoke 证据 \\
+      环境检测 & emulator properties、debugger、Frida/Xposed \\
+      Native & JNI\_OnLoad 入口证据 \\
+      \hline
+    \end{tabular}
+  \end{table}
+  \vspace{0.5em}
+  每条 finding 都包含 category、confidence、description 和 evidence。
+\end{frame}
+
+\begin{frame}{数据集构造}
+  \begin{itemize}
+    \item 路径：\texttt{datasets/hardeninspector\_eval\_v1/}
+    \item 6 个可复现合成 APK。
+    \item 覆盖 F-Droid 风格基线、自写环境检测、R8 风格混淆、Obfuscapk 风格反射/动态加载、加壳 stub/payload、综合展示样本。
+    \item 每个样本包含 label 和检测报告。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{开源实现对比}
+  \begin{itemize}
+    \item APKiD：主要可运行基线，识别 packer/protector/obfuscator/oddity。
+    \item DroidLysis：预分析工具，本地完整能力依赖 apktool/baksmali/dex2jar。
+    \item MobSF：完整移动安全框架，作为定性对比，不作为离线 benchmark 硬依赖。
+    \item 开源工具只用于验证，不复制其规则实现。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Benchmark 统计}
+  \begin{table}
+    \centering
+    \begin{tabular}{lrrrr}
+      \hline
+      Tool & Precision & Recall & Micro F1 & Macro F1 \\
+      \hline
+      HardenInspector & 1.000 & 1.000 & 1.000 & 1.000 \\
+      APKiD & 1.000 & 0.400 & 0.571 & 0.450 \\
+      DroidLysis & 0.000 & 0.000 & 0.000 & 0.000 \\
+      \hline
+    \end{tabular}
+  \end{table}
+  \vspace{0.5em}
+  DroidLysis 当前为有限环境运行结果，不代表完整工具能力。
+\end{frame}
+
+\begin{frame}{结果分析}
+  \begin{itemize}
+    \item APKiD 对 Jiagu 和 \texttt{ro.kernel.qemu} 信号表现良好。
+    \item HardenInspector 覆盖中期报告要求的三类加固画像。
+    \item 对可比类别，HardenInspector 已接近或超过 APKiD 的覆盖。
+    \item 额外覆盖短标识符比例、反射/动态加载组合和 JNI 入口证据。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{开箱即用环境}
+  \begin{itemize}
+    \item \texttt{make setup}
+    \item \texttt{make test}
+    \item \texttt{make dataset}
+    \item \texttt{make benchmark}
+    \item \texttt{make demo}
+  \end{itemize}
+  Fresh venv 验证：17 个测试通过，CLI help 正常。
+\end{frame}
+
+\begin{frame}{项目交付}
+  \begin{itemize}
+    \item 检测器源码：\texttt{src/hardeninspector/}
+    \item 数据集：\texttt{datasets/hardeninspector\_eval\_v1/}
+    \item Benchmark：\texttt{reports/benchmark/}
+    \item 中文文档：\texttt{docs/}
+    \item 总结报告：\texttt{reports/final\_summary.md}
+    \item Beamer：\texttt{slides/final\_presentation.tex}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{局限与未来工作}
+  \begin{itemize}
+    \item 当前数据集是合成可复现数据集，不等价于真实大规模生态。
+    \item 尚未实现完整 CFG、深度 Native 反汇编和动态 Frida 验证。
+    \item 后续可增加真实 F-Droid/Obfuscapk/R8 样本和商业壳样本。
+    \item 可扩展更多壳库名、StubApp 模式和 opcode/控制流轻量统计。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{结论}
+  \begin{itemize}
+    \item HardenInspector 实现了中期报告提出的静态证据链检测器。
+    \item 构造了可复现数据集并给出统计验证。
+    \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
+    \item 工具、数据集、文档、环境和汇报材料均维护在 GitHub 仓库中。
+  \end{itemize}
+\end{frame}
+
+\end{document}
+

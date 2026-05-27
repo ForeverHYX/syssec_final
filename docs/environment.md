@@ -10,6 +10,7 @@ make test
 make dataset
 make benchmark
 make demo
+make slides
 ```
 
 一键执行：
@@ -61,4 +62,3 @@ docker run --rm hardeninspector \
 - `all` extra：包含测试和 benchmark 所需依赖。
 
 项目技术路线不依赖 APKiD/DroidLysis。它们只用于 benchmark 对比。
-

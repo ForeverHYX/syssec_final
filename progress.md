@@ -49,3 +49,4 @@
 - Rendered and visually inspected representative pages: title page, architecture diagram, benchmark table, and Micro F1 chart.
 - Made benchmark JSON reproducible by serializing `runtime_ms` as `null`, added a regression test, and regenerated `reports/benchmark/benchmark_results.json`.
 - Latest local and fresh-venv test runs passed with 19 tests.
+- Committed and pushed the ZJU Beamer/report/artifact-ignore milestone as `62f7b53`.

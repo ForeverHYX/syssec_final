@@ -37,7 +37,7 @@
 ### 数据集
 
 - `src/hardeninspector/dataset.py` 可一键构造 `hardeninspector_eval_v1` 数据集。
-- 数据集包含 6 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、加壳 stub/payload、综合展示样本。
+- 数据集包含 10 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、综合展示样本。
 - 每个样本都有 `labels.json` 标签项和对应 JSON 检测报告。
 
 ## 调整的目标

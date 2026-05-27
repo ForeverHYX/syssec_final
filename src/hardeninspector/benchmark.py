@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 import argparse
 import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -13,10 +12,39 @@ import sys
 from time import perf_counter
 from typing import Any
 
+from .apk import ApkArchive
 from .report import scan_apk
+from .util import extract_printable_strings
 
 
 DEFAULT_CATEGORIES = ["packer", "obfuscation", "environment", "native"]
+DEFAULT_TOOLS = ["hardeninspector", "apkid", "androguard_dex", "zip_string_baseline"]
+
+ZIP_BASELINE_KEYWORDS = {
+    "packer": [
+        "libjiagu.so",
+        "libsecexe.so",
+        "libsecmain.so",
+        "libDexHelper.so",
+        "StubApp",
+        "bangcle",
+        "DexClassLoader",
+        "PathClassLoader",
+        "BaseDexClassLoader",
+    ],
+    "obfuscation": ["java.lang.reflect.Method", "java/lang/reflect/Method", "Method.invoke"],
+    "environment": [
+        "ro.kernel.qemu",
+        "ro.build.fingerprint",
+        "isDebuggerConnected",
+        "/proc/self/status",
+        "frida",
+        "xposed",
+        "substrate",
+        "/proc/self/maps",
+    ],
+    "native": ["JNI_OnLoad"],
+}
 
 
 @dataclass(frozen=True)
@@ -142,7 +170,7 @@ def run_benchmark(
     tools: list[str] | None = None,
 ) -> dict[str, Any]:
     dataset = load_dataset(dataset_dir)
-    tools = tools or ["hardeninspector", "apkid", "droidlysis"]
+    tools = tools or DEFAULT_TOOLS
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     results = {
@@ -173,8 +201,10 @@ def _run_tool(dataset: BenchmarkDataset, tool: str) -> dict[str, ToolPrediction]
         return _run_hardeninspector(dataset)
     if tool == "apkid":
         return _run_apkid(dataset)
-    if tool == "droidlysis":
-        return _run_droidlysis(dataset)
+    if tool == "androguard_dex":
+        return _run_androguard_dex(dataset)
+    if tool == "zip_string_baseline":
+        return _run_zip_string_baseline(dataset)
     raise ValueError(f"unknown benchmark tool: {tool}")
 
 
@@ -258,52 +288,113 @@ def _map_apkid_category(category: str) -> str | None:
     return None
 
 
-def _run_droidlysis(dataset: BenchmarkDataset) -> dict[str, ToolPrediction]:
-    droidlysis = shutil.which("droidlysis")
-    if droidlysis is None:
-        local = Path(sys.prefix) / "bin" / "droidlysis"
-        droidlysis = str(local) if local.exists() else None
-    config = Path(sys.prefix) / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages" / "conf" / "general.conf"
-    if droidlysis is None or not config.exists():
-        return _unavailable(dataset, "droidlysis executable or config not found")
+def _run_androguard_dex(dataset: BenchmarkDataset) -> dict[str, ToolPrediction]:
+    try:
+        from androguard.core.dex import DEX
+        from loguru import logger
+    except Exception as exc:  # pragma: no cover - depends on optional benchmark extra
+        return _unavailable(dataset, f"androguard import failed: {exc}")
 
+    logger.disable("androguard")
     predictions: dict[str, ToolPrediction] = {}
     for sample in dataset.samples:
-        output_dir = Path("/tmp") / "hardeninspector_droidlysis_benchmark"
-        env = {**os.environ, "XDG_CACHE_HOME": "/tmp/droidlysis_cache"}
         start = perf_counter()
-        result = subprocess.run(
-            [
-                droidlysis,
-                "-i",
-                sample["absolute_apk_path"],
-                "-o",
-                str(output_dir),
-                "-c",
-                "--disable-report",
-                "--config",
-                str(config),
-            ],
-            check=False,
-            text=True,
-            capture_output=True,
-            env=env,
-        )
+        categories: set[str] = set()
+        finding_ids: set[str] = set()
+        notes: list[str] = []
+        status = "ok"
+        try:
+            archive = ApkArchive.open(sample["absolute_apk_path"])
+            strings: set[str] = set()
+            class_names: list[str] = []
+            method_names: set[str] = set()
+            for dex_entry in archive.dex_files:
+                dex = DEX(archive.read(dex_entry.name))
+                strings.update(str(value) for value in dex.get_strings())
+                for class_def in dex.get_classes():
+                    descriptor = class_def.get_name()
+                    strings.add(descriptor)
+                    class_names.append(_simple_class_name(descriptor))
+                for method in dex.get_methods():
+                    method_names.add(method.get_name())
+            categories, finding_ids = _categories_from_static_strings(
+                strings,
+                class_names=class_names,
+                method_names=method_names,
+                prefix="androguard",
+            )
+        except Exception as exc:
+            status = "error"
+            notes.append(_shorten(str(exc)))
         runtime_ms = (perf_counter() - start) * 1000
-        status = "ok" if result.returncode == 0 else "error"
-        note = _shorten(" ".join((result.stderr + "\n" + result.stdout).split()))
         predictions[sample["id"]] = ToolPrediction(
             sample_id=sample["id"],
-            categories=[],
-            finding_ids=[],
+            categories=sorted(categories),
+            finding_ids=sorted(finding_ids),
             status=status,
             runtime_ms=runtime_ms,
-            notes=(
-                "DroidLysis ran as an availability comparator; this benchmark does not map its "
-                "full output because apktool/baksmali/dex2jar are not configured. " + note
-            ),
+            notes="; ".join(notes) if notes else "Androguard DEX parser baseline: DEX strings/classes/methods only.",
         )
     return predictions
+
+
+def _run_zip_string_baseline(dataset: BenchmarkDataset) -> dict[str, ToolPrediction]:
+    predictions: dict[str, ToolPrediction] = {}
+    for sample in dataset.samples:
+        start = perf_counter()
+        archive = ApkArchive.open(sample["absolute_apk_path"])
+        strings: set[str] = {entry.name for entry in archive.entries}
+        for data in archive.files.values():
+            strings.update(extract_printable_strings(data, min_length=4))
+        categories, finding_ids = _categories_from_static_strings(
+            strings,
+            class_names=[],
+            method_names=set(),
+            prefix="zip_string",
+        )
+        runtime_ms = (perf_counter() - start) * 1000
+        predictions[sample["id"]] = ToolPrediction(
+            sample_id=sample["id"],
+            categories=sorted(categories),
+            finding_ids=sorted(finding_ids),
+            runtime_ms=runtime_ms,
+            notes="Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+        )
+    return predictions
+
+
+def _categories_from_static_strings(
+    values: set[str],
+    class_names: list[str],
+    method_names: set[str],
+    prefix: str,
+) -> tuple[set[str], set[str]]:
+    categories: set[str] = set()
+    finding_ids: set[str] = set()
+    lowered = {value.lower(): value for value in values}
+    for category, keywords in ZIP_BASELINE_KEYWORDS.items():
+        for keyword in keywords:
+            if any(keyword.lower() in value for value in lowered):
+                categories.add(category)
+                finding_ids.add(f"{prefix}.{category}.{keyword}")
+                break
+
+    if method_names.intersection({"invoke", "getMethod", "getDeclaredMethod"}):
+        categories.add("obfuscation")
+        finding_ids.add(f"{prefix}.obfuscation.reflective_method")
+
+    if len(class_names) >= 3:
+        short = [name for name in class_names if 0 < len(name) <= 2]
+        if len(short) / len(class_names) >= 0.6:
+            categories.add("obfuscation")
+            finding_ids.add(f"{prefix}.obfuscation.short_identifiers")
+
+    return categories, finding_ids
+
+
+def _simple_class_name(descriptor: str) -> str:
+    value = descriptor.strip("L;")
+    return value.rsplit("/", 1)[-1]
 
 
 def _unavailable(dataset: BenchmarkDataset, note: str) -> dict[str, ToolPrediction]:
@@ -331,7 +422,9 @@ def _comparator_notes() -> dict[str, str]:
     return {
         "hardeninspector": "Project detector following the midterm route: APK/AXML/DEX/native static parsing, feature extraction, explainable evidence-chain rules.",
         "apkid": "Open-source Android packer/protector/obfuscator identifier used as the main runnable baseline. Categories are mapped from APKiD's JSON match groups.",
-        "droidlysis": "Open-source suspicious-sample pre-analysis tool. Included as an availability comparator; full output requires configured apktool/baksmali/dex2jar.",
+        "androguard_dex": "Open-source Androguard DEX parser baseline. It uses Androguard to extract DEX strings/classes/methods, then applies a shallow category mapping for comparison; APK manifest/native/resource evidence is intentionally out of scope.",
+        "zip_string_baseline": "Dependency-free raw ZIP filename/string baseline. It shows what a shallow strings-only scanner can recover without structured Android parsing.",
+        "droidlysis": "Removed from the scored benchmark because the local environment lacks its required apktool/baksmali/dex2jar pipeline; it remains a qualitative reference only.",
         "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow.",
     }
 
@@ -427,6 +520,8 @@ def _display_tool_name(tool: str) -> str:
     return {
         "hardeninspector": "HardenInspector",
         "apkid": "APKiD",
+        "androguard_dex": "Androguard DEX",
+        "zip_string_baseline": "ZIP Strings",
         "droidlysis": "DroidLysis",
         "mobsf": "MobSF",
     }.get(tool, tool)
@@ -451,8 +546,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--tools",
         nargs="+",
-        default=["hardeninspector", "apkid", "droidlysis"],
-        choices=["hardeninspector", "apkid", "droidlysis"],
+        default=DEFAULT_TOOLS,
+        choices=["hardeninspector", "apkid", "androguard_dex", "zip_string_baseline"],
         help="tools to run",
     )
     args = parser.parse_args(argv)

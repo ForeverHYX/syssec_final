@@ -1,0 +1,51 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/reflection_only_dispatch.apk",
+    "sha256": "36f6412507661ac8b95ffe70c00b81b5ef315d2173c07a78833b03f064c07e6c"
+  },
+  "findings": [
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "APK references reflection APIs or invoke methods that can hide direct call targets.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "java.lang.reflect.Method"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Method.invoke"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Lcom/example/reflectonly/MainActivity;-><clinit>"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Lcom/example/reflectonly/MainActivity;->invoke"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Lcom/example/reflectonly/MainActivity;->dispatch"
+        }
+      ],
+      "id": "obfuscation.reflection",
+      "severity": "medium",
+      "title": "Reflection usage indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 1,
+    "packer": 0
+  }
+}

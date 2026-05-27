@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 2,
     "path": "datasets/hardeninspector_eval_v1/apks/self_written_environment_checks.apk",
-    "sha256": "20d05032d4a73d0a5a56893fe48f9241dc48d240ac97127dafc7fb1a5b00413f"
+    "sha256": "77f4bce59ad7b448689ba405a118d3ee509941ca3e3e2a191fc680b57e5afc16"
   },
   "findings": [
     {

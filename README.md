@@ -31,6 +31,8 @@ make benchmark
 make slides
 ```
 
+默认 benchmark 只包含当前环境可安装、可运行且 10/10 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
+
 ## 使用
 
 生成可复现演示 APK：

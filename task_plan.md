@@ -18,7 +18,7 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Preserve the midterm technical route and avoid copying open-source implementations | User clarification | Benchmark adapters only invoke/reference external tools; detector remains evidence-chain static rules |
 | Produce final summary report and LaTeX Beamer | User clarification | `reports/final_summary.md` and `slides/final_presentation.tex` |
 | Use ZJU Beamer template and include tables/illustrations | User clarification | ZJU template assets in `slides/`; deck title is `HardenInspector`, authors match the midterm report, and compiled output has tables plus TikZ figures |
-| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 14-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
+| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 16-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote created/pushed, staged commits made |
 | Commit and push at milestones | User objective | Git history shows staged commits and remote branch is up to date |
@@ -115,6 +115,17 @@ Status: complete
 - Add optional container environment.
 - Verify the setup path from a clean checkout or clean virtualenv.
 
+### Phase 12: Benchmark fairness expansion and slide visual redesign
+
+Status: complete
+
+- Expand the committed synthetic dataset beyond the original six samples.
+- Keep only runnable 10/10-coverage tools in the scored benchmark table.
+- Remove DroidLysis from default scoring and document it as qualitative only.
+- Use LaTeX/TikZ/tables for framework, dataset, and benchmark content so text stays readable.
+- Use generated imagery only for the complex APK decomposition schematic.
+- Recompile and inspect the slides after the redesign.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -122,3 +133,5 @@ Status: complete
 | Workspace root was not a git repo | `git status` in `/home/yxhong/syssec` | Created project repo under `/home/yxhong/syssec/syssec_final` |
 | `pytest` missing from base environment | `pytest` and `python3 -m pytest` | Created `.venv` and installed local dev dependencies |
 | DroidLysis default config writes cache under read-only home | `droidlysis --config ...` | Use `XDG_CACHE_HOME=/tmp/droidlysis_cache` in benchmark adapter |
+| DroidLysis cannot provide a fair default benchmark without external tools | default scored comparison | Removed from scored tools; APKiD, Androguard DEX, and ZIP Strings now provide runnable 10/10-coverage comparisons |
+| Androguard initially rejected synthetic DEX files | first Androguard DEX benchmark attempt | Added DEX SHA-1 signature, Adler-32 checksum, and map list to the synthetic DEX builder |

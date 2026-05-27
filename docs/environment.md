@@ -58,8 +58,8 @@ docker run --rm hardeninspector \
 
 - 默认 runtime：Python 标准库。
 - `dev` extra：测试依赖 `pytest`。
-- `benchmark` extra：开源对比工具 `apkid` 和 `droidlysis`。
+- `benchmark` extra：评分 benchmark 使用的可运行对比依赖 `apkid` 和 `androguard`。
 - `all` extra：包含测试和 benchmark 所需依赖。
 - `make slides` 需要系统已安装 XeLaTeX/TeX Live 中文支持；ZJU Beamer 模板源码和图片资源已包含在 `slides/` 中，生成 PDF 与辅助文件已加入 `.gitignore`。
 
-项目技术路线不依赖 APKiD/DroidLysis。它们只用于 benchmark 对比。
+项目技术路线不依赖 APKiD/Androguard。它们只用于 benchmark 对比；DroidLysis/MobSF 这类需要更重外部环境的工具只在文档中作为定性参照，不进入默认评分表。

@@ -6,10 +6,12 @@
     "native"
   ],
   "comparator_notes": {
+    "androguard_dex": "Open-source Androguard DEX parser baseline. It uses Androguard to extract DEX strings/classes/methods, then applies a shallow category mapping for comparison; APK manifest/native/resource evidence is intentionally out of scope.",
     "apkid": "Open-source Android packer/protector/obfuscator identifier used as the main runnable baseline. Categories are mapped from APKiD's JSON match groups.",
-    "droidlysis": "Open-source suspicious-sample pre-analysis tool. Included as an availability comparator; full output requires configured apktool/baksmali/dex2jar.",
+    "droidlysis": "Removed from the scored benchmark because the local environment lacks its required apktool/baksmali/dex2jar pipeline; it remains a qualitative reference only.",
     "hardeninspector": "Project detector following the midterm route: APK/AXML/DEX/native static parsing, feature extraction, explainable evidence-chain rules.",
-    "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow."
+    "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow.",
+    "zip_string_baseline": "Dependency-free raw ZIP filename/string baseline. It shows what a shallow strings-only scanner can recover without structured Android parsing."
   },
   "dataset_version": "hardeninspector_eval_v1",
   "schema_version": 1,
@@ -25,31 +27,31 @@
         "environment": {
           "fn": 0,
           "fp": 0,
-          "tn": 4,
-          "tp": 2
+          "tn": 7,
+          "tp": 3
         },
         "native": {
           "fn": 0,
           "fp": 0,
-          "tn": 4,
-          "tp": 2
+          "tn": 6,
+          "tp": 4
         },
         "obfuscation": {
           "fn": 0,
           "fp": 0,
-          "tn": 3,
-          "tp": 3
+          "tn": 6,
+          "tp": 4
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 3,
-          "tp": 3
+          "tn": 6,
+          "tp": 4
         }
       },
       "coverage": {
-        "samples_total": 6,
-        "samples_with_results": 6
+        "samples_total": 10,
+        "samples_with_results": 10
       },
       "metrics": {
         "by_category": {
@@ -167,6 +169,72 @@
         },
         {
           "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.known_library",
+            "packer.stub_application",
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "native.jni_entrypoint"
+          ],
+          "id": "bangcle_stub_payload",
+          "notes": null,
+          "predicted_categories": [
+            "native",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "native.jni_entrypoint"
+          ],
+          "id": "native_jni_bridge_only",
+          "notes": null,
+          "predicted_categories": [
+            "native"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.instrumentation_probe"
+          ],
+          "id": "frida_xposed_probe",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "reflection_only_dispatch",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -207,40 +275,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 0,
+          "fn": 1,
           "fp": 0,
-          "tn": 4,
+          "tn": 7,
           "tp": 2
         },
         "native": {
-          "fn": 2,
+          "fn": 4,
           "fp": 0,
-          "tn": 4,
+          "tn": 6,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 3,
+          "fn": 4,
           "fp": 0,
-          "tn": 3,
+          "tn": 6,
           "tp": 0
         },
         "packer": {
           "fn": 1,
           "fp": 0,
-          "tn": 3,
-          "tp": 2
+          "tn": 6,
+          "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 6,
-        "samples_with_results": 6
+        "samples_total": 10,
+        "samples_with_results": 10
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 1.0,
+            "f1": 0.8,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.6666666666666666
           },
           "native": {
             "f1": 0.0,
@@ -253,20 +321,20 @@
             "recall": 0.0
           },
           "packer": {
-            "f1": 0.8,
+            "f1": 0.8571428571428571,
             "precision": 1.0,
-            "recall": 0.6666666666666666
+            "recall": 0.75
           }
         },
         "macro": {
-          "f1": 0.45,
+          "f1": 0.41428571428571426,
           "precision": 0.5,
-          "recall": 0.41666666666666663
+          "recall": 0.35416666666666663
         },
         "micro": {
-          "f1": 0.5714285714285715,
+          "f1": 0.5,
           "precision": 1.0,
-          "recall": 0.4
+          "recall": 0.3333333333333333
         }
       },
       "samples": [
@@ -335,6 +403,55 @@
         },
         {
           "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "apkid.packer.Bangcle"
+          ],
+          "id": "bangcle_stub_payload",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "native_jni_bridge_only",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "frida_xposed_probe",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "reflection_only_dispatch",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -365,40 +482,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 2,
+          "fn": 0,
           "fp": 0,
-          "tn": 4,
-          "tp": 0
+          "tn": 7,
+          "tp": 3
         },
         "native": {
-          "fn": 2,
+          "fn": 4,
           "fp": 0,
-          "tn": 4,
+          "tn": 6,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 3,
+          "fn": 1,
           "fp": 0,
-          "tn": 3,
-          "tp": 0
+          "tn": 6,
+          "tp": 3
         },
         "packer": {
-          "fn": 3,
+          "fn": 0,
           "fp": 0,
-          "tn": 3,
-          "tp": 0
+          "tn": 6,
+          "tp": 4
         }
       },
       "coverage": {
-        "samples_total": 6,
-        "samples_with_results": 6
+        "samples_total": 10,
+        "samples_with_results": 10
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.0,
-            "precision": 0.0,
-            "recall": 0.0
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
           },
           "native": {
             "f1": 0.0,
@@ -406,25 +523,25 @@
             "recall": 0.0
           },
           "obfuscation": {
-            "f1": 0.0,
-            "precision": 0.0,
-            "recall": 0.0
+            "f1": 0.8571428571428571,
+            "precision": 1.0,
+            "recall": 0.75
           },
           "packer": {
-            "f1": 0.0,
-            "precision": 0.0,
-            "recall": 0.0
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
           }
         },
         "macro": {
-          "f1": 0.0,
-          "precision": 0.0,
-          "recall": 0.0
+          "f1": 0.7142857142857143,
+          "precision": 0.75,
+          "recall": 0.6875
         },
         "micro": {
-          "f1": 0.0,
-          "precision": 0.0,
-          "recall": 0.0
+          "f1": 0.8,
+          "precision": 1.0,
+          "recall": 0.6666666666666666
         }
       },
       "samples": [
@@ -432,7 +549,7 @@
           "expected_categories": [],
           "finding_ids": [],
           "id": "fdroid_clean_baseline",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
@@ -441,10 +558,14 @@
           "expected_categories": [
             "environment"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "androguard.environment.ro.kernel.qemu"
+          ],
           "id": "self_written_environment_checks",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
-          "predicted_categories": [],
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -454,7 +575,7 @@
           ],
           "finding_ids": [],
           "id": "r8_identifier_obfuscation",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
@@ -464,10 +585,17 @@
             "obfuscation",
             "packer"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "androguard.obfuscation.java.lang.reflect.Method",
+            "androguard.obfuscation.reflective_method",
+            "androguard.packer.DexClassLoader"
+          ],
           "id": "obfuscapk_reflection_dynamic",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
-          "predicted_categories": [],
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation",
+            "packer"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -476,10 +604,72 @@
             "native",
             "packer"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "androguard.packer.DexClassLoader"
+          ],
           "id": "packer_stub_payload",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "androguard.packer.bangcle"
+          ],
+          "id": "bangcle_stub_payload",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "native_jni_bridge_only",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "androguard.environment.frida"
+          ],
+          "id": "frida_xposed_probe",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java.lang.reflect.Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "reflection_only_dispatch",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -490,15 +680,257 @@
             "obfuscation",
             "packer"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "androguard.environment.ro.kernel.qemu",
+            "androguard.obfuscation.java.lang.reflect.Method",
+            "androguard.obfuscation.reflective_method",
+            "androguard.packer.DexClassLoader"
+          ],
           "id": "combined_hardened_showcase",
-          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
-          "predicted_categories": [],
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
           "runtime_ms": null,
           "status": "ok"
         }
       ],
-      "tool": "droidlysis"
+      "tool": "androguard_dex"
+    },
+    {
+      "categories": [
+        "packer",
+        "obfuscation",
+        "environment",
+        "native"
+      ],
+      "confusion_matrix": {
+        "environment": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 7,
+          "tp": 3
+        },
+        "native": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 6,
+          "tp": 4
+        },
+        "obfuscation": {
+          "fn": 1,
+          "fp": 0,
+          "tn": 6,
+          "tp": 3
+        },
+        "packer": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 6,
+          "tp": 4
+        }
+      },
+      "coverage": {
+        "samples_total": 10,
+        "samples_with_results": 10
+      },
+      "metrics": {
+        "by_category": {
+          "environment": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "native": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "obfuscation": {
+            "f1": 0.8571428571428571,
+            "precision": 1.0,
+            "recall": 0.75
+          },
+          "packer": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          }
+        },
+        "macro": {
+          "f1": 0.9642857142857143,
+          "precision": 1.0,
+          "recall": 0.9375
+        },
+        "micro": {
+          "f1": 0.9655172413793104,
+          "precision": 1.0,
+          "recall": 0.9333333333333333
+        }
+      },
+      "samples": [
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_clean_baseline",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.environment.ro.kernel.qemu"
+          ],
+          "id": "self_written_environment_checks",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "r8_identifier_obfuscation",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java.lang.reflect.Method",
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "obfuscapk_reflection_dynamic",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.native.JNI_OnLoad",
+            "zip_string.packer.libjiagu.so"
+          ],
+          "id": "packer_stub_payload",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "native",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.native.JNI_OnLoad",
+            "zip_string.packer.libsecexe.so"
+          ],
+          "id": "bangcle_stub_payload",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "native",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "zip_string.native.JNI_OnLoad"
+          ],
+          "id": "native_jni_bridge_only",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "native"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.environment.frida"
+          ],
+          "id": "frida_xposed_probe",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java.lang.reflect.Method"
+          ],
+          "id": "reflection_only_dispatch",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.environment.ro.kernel.qemu",
+            "zip_string.native.JNI_OnLoad",
+            "zip_string.obfuscation.java.lang.reflect.Method",
+            "zip_string.packer.libjiagu.so"
+          ],
+          "id": "combined_hardened_showcase",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        }
+      ],
+      "tool": "zip_string_baseline"
     }
   ]
 }

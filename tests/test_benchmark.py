@@ -2,6 +2,7 @@ import json
 
 from hardeninspector.benchmark import (
     BenchmarkDataset,
+    DEFAULT_TOOLS,
     ToolPrediction,
     build_confusion_matrix,
     compute_metrics,
@@ -55,9 +56,14 @@ def test_hardeninspector_benchmark_reaches_dataset_oracle(tmp_path):
     assert result["metrics"]["micro"]["precision"] == 1.0
     assert result["metrics"]["micro"]["recall"] == 1.0
     assert result["metrics"]["micro"]["f1"] == 1.0
-    assert result["coverage"]["samples_total"] == 6
-    assert result["coverage"]["samples_with_results"] == 6
+    assert result["coverage"]["samples_total"] == 10
+    assert result["coverage"]["samples_with_results"] == 10
     assert all(sample["runtime_ms"] is None for sample in result["samples"])
+
+
+def test_default_benchmark_tools_are_runnable_and_do_not_include_droidlysis():
+    assert DEFAULT_TOOLS == ["hardeninspector", "apkid", "androguard_dex", "zip_string_baseline"]
+    assert "droidlysis" not in DEFAULT_TOOLS
 
 
 def test_run_benchmark_writes_machine_and_markdown_reports(tmp_path):
@@ -77,3 +83,16 @@ def test_run_benchmark_writes_machine_and_markdown_reports(tmp_path):
     assert "tool,category,tp,fp,fn,tn,precision,recall,f1" in (
         output_dir / "benchmark_metrics.csv"
     ).read_text(encoding="utf-8")
+
+
+def test_zip_string_baseline_runs_without_external_dependencies(tmp_path):
+    dataset_dir = tmp_path / "dataset"
+    build_dataset(dataset_dir)
+    dataset = load_dataset(dataset_dir)
+
+    result = evaluate_predictions(dataset, "zip_string_baseline", None)
+
+    assert result["tool"] == "zip_string_baseline"
+    assert result["coverage"]["samples_total"] == 10
+    assert result["coverage"]["samples_with_results"] == 10
+    assert result["metrics"]["micro"]["recall"] > 0

@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 2,
     "path": "datasets/hardeninspector_eval_v1/apks/r8_identifier_obfuscation.apk",
-    "sha256": "8585a9f5aecc48266bfe2df7291b4d19cbd9edcb3d39fae989ae518c3c426cdb"
+    "sha256": "de84a80e0601822c5b18ccc019de0908d7e87c32e436676caf3dc058589a148c"
   },
   "findings": [
     {

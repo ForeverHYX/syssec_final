@@ -17,7 +17,7 @@ dataset:
 	$(PY) -m hardeninspector.dataset datasets/hardeninspector_eval_v1
 
 benchmark:
-	$(PY) -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --output reports/benchmark --tools hardeninspector apkid droidlysis
+	$(PY) -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --output reports/benchmark --tools hardeninspector apkid androguard_dex zip_string_baseline
 
 demo:
 	$(PY) examples/make_demo_apk.py samples/demo_hardened.apk

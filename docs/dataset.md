@@ -15,12 +15,16 @@ datasets/hardeninspector_eval_v1/
   README.md
   labels.json
   apks/
-    fdroid_clean_baseline.apk
-    self_written_environment_checks.apk
-    r8_identifier_obfuscation.apk
-    obfuscapk_reflection_dynamic.apk
-    packer_stub_payload.apk
+    bangcle_stub_payload.apk
     combined_hardened_showcase.apk
+    fdroid_clean_baseline.apk
+    frida_xposed_probe.apk
+    native_jni_bridge_only.apk
+    obfuscapk_reflection_dynamic.apk
+    r8_identifier_obfuscation.apk
+    packer_stub_payload.apk
+    reflection_only_dispatch.apk
+    self_written_environment_checks.apk
   reports/
     *.json
 ```
@@ -34,6 +38,10 @@ datasets/hardeninspector_eval_v1/
 | `r8_identifier_obfuscation` | ProGuard/R8 controlled obfuscation | 使用短类名 `La/a;` 等 | 验证标识符混淆规则 |
 | `obfuscapk_reflection_dynamic` | Obfuscapk-style controlled obfuscation | 写入反射和动态加载字符串 | 验证反射/动态加载规则 |
 | `packer_stub_payload` | packer-protected sample | 壳库名、StubApp、高熵 payload、动态加载 | 验证加壳规则 |
+| `bangcle_stub_payload` | Bangcle-style packer sample | Bangcle 风格壳命名、`libsecexe.so`/`libsecmain.so`、高熵 payload | 增加第二类 packer 家族 |
+| `native_jni_bridge_only` | native bridge control sample | 普通 Java 层和自有 native 库 `JNI_OnLoad` | 单独验证 Native 类别 |
+| `frida_xposed_probe` | instrumentation-detection sample | Frida/Xposed/Substrate/process maps 字符串 | 单独验证 instrumentation 检测 |
+| `reflection_only_dispatch` | reflection-only obfuscation sample | 只包含反射 dispatch，不含动态加载 | 单独验证反射混淆 |
 | `combined_hardened_showcase` | 综合加固样本 | 合并三类加固证据 | 课程展示主样本 |
 
 ## 标签格式
@@ -63,8 +71,8 @@ datasets/hardeninspector_eval_v1/
 
 单元测试会在临时目录重新构造数据集，验证：
 
-- 6 个样本全部生成；
+- 10 个样本全部生成；
 - `labels.json` 和每个报告存在；
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。
-
+- 合成 DEX 带有标准 checksum、signature 和 map list，可被 Androguard DEX parser 解析，用于公平 benchmark。

@@ -15,14 +15,18 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
     sample_ids = {sample["id"] for sample in labels["samples"]}
     assert labels["dataset_version"] == DATASET_VERSION
     assert sample_ids == {
+        "bangcle_stub_payload",
+        "combined_hardened_showcase",
         "fdroid_clean_baseline",
-        "self_written_environment_checks",
-        "r8_identifier_obfuscation",
+        "frida_xposed_probe",
+        "native_jni_bridge_only",
         "obfuscapk_reflection_dynamic",
         "packer_stub_payload",
-        "combined_hardened_showcase",
+        "reflection_only_dispatch",
+        "r8_identifier_obfuscation",
+        "self_written_environment_checks",
     }
-    assert manifest["sample_count"] == 6
+    assert manifest["sample_count"] == 10
     assert (dataset_dir / "README.md").exists()
 
     for sample in labels["samples"]:
@@ -47,4 +51,3 @@ def test_dataset_documents_practical_source_substitutions(tmp_path):
     assert by_id["r8_identifier_obfuscation"]["source_plan"] == "ProGuard/R8 controlled obfuscation"
     assert by_id["obfuscapk_reflection_dynamic"]["source_plan"] == "Obfuscapk-style controlled obfuscation"
     assert by_id["packer_stub_payload"]["source_plan"] == "packer-protected sample"
-

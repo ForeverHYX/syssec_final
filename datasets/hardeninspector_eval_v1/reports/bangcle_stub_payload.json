@@ -1,8 +1,8 @@
 {
   "apk": {
-    "entry_count": 4,
-    "path": "datasets/hardeninspector_eval_v1/apks/packer_stub_payload.apk",
-    "sha256": "0c3b6c77f0ff8281c2acc8a88414711d397409eae7c4e392b5f592aa35b4e2ef"
+    "entry_count": 5,
+    "path": "datasets/hardeninspector_eval_v1/apks/bangcle_stub_payload.apk",
+    "sha256": "74f66f6eced0e41cd1eb86970fc70163a3239c2bbdbe357116b97fc6a5ab904a"
   },
   "findings": [
     {
@@ -12,8 +12,13 @@
       "evidence": [
         {
           "kind": "file",
-          "location": "lib/arm64-v8a/libjiagu.so",
-          "value": "libjiagu.so"
+          "location": "lib/armeabi-v7a/libsecexe.so",
+          "value": "libsecexe.so"
+        },
+        {
+          "kind": "file",
+          "location": "lib/arm64-v8a/libsecmain.so",
+          "value": "libsecmain.so"
         }
       ],
       "id": "packer.known_library",
@@ -28,7 +33,7 @@
         {
           "kind": "manifest-string",
           "location": "AndroidManifest.xml",
-          "value": "StubApp"
+          "value": "bangcle"
         }
       ],
       "id": "packer.stub_application",
@@ -42,7 +47,7 @@
       "evidence": [
         {
           "kind": "file-stat",
-          "location": "assets/encrypted_payload.bin",
+          "location": "assets/bangcle_payload.dat",
           "value": "entropy=8.00, size=512"
         }
       ],
@@ -72,7 +77,12 @@
       "evidence": [
         {
           "kind": "native-string",
-          "location": "lib/arm64-v8a/libjiagu.so",
+          "location": "lib/armeabi-v7a/libsecexe.so",
+          "value": "JNI_OnLoad"
+        },
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libsecmain.so",
           "value": "JNI_OnLoad"
         }
       ],

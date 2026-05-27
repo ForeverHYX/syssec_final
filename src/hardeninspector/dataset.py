@@ -151,6 +151,100 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="bangcle_stub_payload",
+        apk_name="bangcle_stub_payload.apk",
+        source_plan="Bangcle-style packer sample",
+        construction=(
+            "synthetic substitute for a second commercial packer family: Bangcle-like "
+            "manifest namespace, known shell library, high-entropy asset, and dynamic loading"
+        ),
+        expected_findings=[
+            "packer.known_library",
+            "packer.stub_application",
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "native.jni_entrypoint",
+        ],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.bangcle", "com.secapk.wrapper.ApplicationWrapper", "bangcle"],
+            class_descriptors=[
+                "Lcom/example/bangcle/MainActivity;",
+                "Lcom/example/bangcle/ShellLoader;",
+                "Lcom/example/bangcle/NativeBridge;",
+            ],
+            method_names=["<clinit>", "load"],
+            dex_strings=["DexClassLoader", "BaseDexClassLoader"],
+            native_libraries={
+                "lib/armeabi-v7a/libsecexe.so": b"JNI_OnLoad\x00bangcle shell\x00",
+                "lib/arm64-v8a/libsecmain.so": b"JNI_OnLoad\x00sec main\x00",
+            },
+            assets={"assets/bangcle_payload.dat": HIGH_ENTROPY_PAYLOAD},
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="native_jni_bridge_only",
+        apk_name="native_jni_bridge_only.apk",
+        source_plan="native bridge control sample",
+        construction=(
+            "synthetic APK with a normal Java layer and one app-owned native library that "
+            "exports JNI entrypoint strings, without packer library names or anti-analysis strings"
+        ),
+        expected_findings=["native.jni_entrypoint"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.nativebridge", "com.example.nativebridge.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/nativebridge/MainActivity;",
+                "Lcom/example/nativebridge/NativeBridge;",
+                "Lcom/example/nativebridge/CryptoHelper;",
+            ],
+            method_names=["<clinit>", "callNative"],
+            dex_strings=["native bridge demo"],
+            native_libraries={
+                "lib/arm64-v8a/libnativebridge.so": b"JNI_OnLoad\x00Java_com_example_nativebridge_call\x00",
+            },
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="frida_xposed_probe",
+        apk_name="frida_xposed_probe.apk",
+        source_plan="instrumentation-detection sample",
+        construction=(
+            "synthetic self-written sample focused on runtime instrumentation probes such as "
+            "Frida, Xposed, Substrate, and process-map checks"
+        ),
+        expected_findings=["environment.instrumentation_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.instrumentation", "edu.syssec.instrumentation.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/instrumentation/MainActivity;",
+                "Ledu/syssec/instrumentation/HookProbe;",
+                "Ledu/syssec/instrumentation/ProcessMapReader;",
+            ],
+            method_names=["<clinit>", "checkHooks"],
+            dex_strings=["frida", "xposed", "substrate", "/proc/self/maps", "libfrida"],
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="reflection_only_dispatch",
+        apk_name="reflection_only_dispatch.apk",
+        source_plan="reflection-only obfuscation sample",
+        construction=(
+            "synthetic sample isolating reflection dispatch without dynamic loading or packer "
+            "library signals, so obfuscation recall can be evaluated separately"
+        ),
+        expected_findings=["obfuscation.reflection"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.reflectonly", "com.example.reflectonly.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/reflectonly/MainActivity;",
+                "Lcom/example/reflectonly/ReflectiveDispatcher;",
+                "Lcom/example/reflectonly/TargetApi;",
+            ],
+            method_names=["<clinit>", "invoke", "dispatch"],
+            dex_strings=["java.lang.reflect.Method", "Method.invoke"],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="combined_hardened_showcase",
         apk_name="combined_hardened_showcase.apk",
         source_plan="combined hardened showcase",
@@ -261,6 +355,10 @@ The samples correspond to the dataset categories described in the midterm report
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK
+- second packer-family stub/payload APK
+- native JNI bridge control sample
+- instrumentation-probe sample
+- reflection-only dispatch sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.
@@ -285,4 +383,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

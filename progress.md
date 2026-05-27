@@ -48,5 +48,23 @@
 - Compiled the ZJU Beamer deck with `make slides`; `pdfinfo` reported 14 pages.
 - Rendered and visually inspected representative pages: title page, architecture diagram, benchmark table, and Micro F1 chart.
 - Made benchmark JSON reproducible by serializing `runtime_ms` as `null`, added a regression test, and regenerated `reports/benchmark/benchmark_results.json`.
-- Latest local and fresh-venv test runs passed with 19 tests.
+- Latest local and fresh-venv test runs passed with 22 tests.
 - Committed and pushed the ZJU Beamer/report/artifact-ignore milestone as `62f7b53`.
+
+## 2026-05-28 Benchmark Fairness Expansion
+
+- User requested a more complete benchmark, larger dataset, and removal/fix of unusable DroidLysis-style comparisons.
+- Added tests requiring the default benchmark tools to exclude DroidLysis and include only runnable scored comparators.
+- Expanded the evaluation dataset from 6 to 10 synthetic APKs with additional Bangcle-style packer, native-only JNI bridge, Frida/Xposed probe, and reflection-only samples.
+- Updated synthetic DEX generation with standard SHA-1 signature, Adler-32 checksum, and map list so Androguard can parse the DEX files.
+- Replaced the scored DroidLysis comparator with two usable baselines: Androguard DEX parser baseline and ZIP Strings shallow baseline.
+- Removed DroidLysis from benchmark dependencies; `benchmark`/`all` extras now install APKiD and Androguard.
+- Regenerated `datasets/hardeninspector_eval_v1/` and `reports/benchmark/`; all scored comparators have 10/10 sample coverage.
+- User clarified that generated images should be reserved for complex explanatory schematics, not for all framework/benchmark content.
+- Reworked the ZJU Beamer deck so framework, dataset matrix, benchmark fairness, and Micro F1 are rendered as readable LaTeX/TikZ/table content.
+- Generated one text-free APK static-analysis cutaway image with the built-in image generation tool and copied it into `slides/figures/apk_static_analysis_cutaway.png`; it is used only as a visual aid for understanding APK decomposition.
+- Recompiled the redesigned ZJU Beamer deck with `make slides`; `pdfinfo` reports 16 pages, and rendered checks of pages 3, 5, 6, 9, 10, and 12 show readable text and the expected image/table/TikZ balance.
+- Reran local verification after the benchmark expansion: `.venv/bin/python -m pytest -q` passed with 22 tests; `make dataset` regenerated 10 samples; `make benchmark` reported 10/10 coverage for HardenInspector, APKiD, Androguard DEX, and ZIP Strings.
+- Updated `/tmp/hardeninspector-venv-check` with `pip install -e ".[all]"`; the first sandboxed install failed due proxy network restrictions, then the escalated install succeeded.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 22 tests, and the fresh benchmark run under `/tmp/hardeninspector-benchmark-check` kept all four default tools at 10/10 coverage.
+- `git diff --check` produced no whitespace errors; `git status --short --ignored slides` confirms the compiled PDF and LaTeX auxiliary files are ignored while the source `.tex` and generated APK cutaway PNG asset remain trackable.

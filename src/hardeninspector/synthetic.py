@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import hashlib
 import struct
+import zlib
 import zipfile
 from pathlib import Path
 
@@ -129,6 +131,26 @@ def build_dex(
     class_data.extend(uleb128(code_off))
     data.extend(class_data)
 
+    if len(data) % 4:
+        data.extend(b"\x00" * (4 - len(data) % 4))
+
+    map_off = data_off + len(data)
+    map_items = [
+        (0x0000, 1, 0),
+        (0x0001, len(strings), string_ids_off),
+        (0x0002, len(types), type_ids_off),
+        (0x0003, 1, proto_ids_off),
+        (0x0005, len(method_names), method_ids_off),
+        (0x0006, 1, class_defs_off),
+        (0x1000, 1, map_off),
+        (0x2000, 1, class_data_off),
+        (0x2001, 1, code_off),
+        (0x2002, len(strings), string_offsets[0]),
+    ]
+    data.extend(struct.pack("<I", len(map_items)))
+    for item_type, item_size, item_off in map_items:
+        data.extend(struct.pack("<HHII", item_type, 0, item_size, item_off))
+
     file_size = data_off + len(data)
 
     header = bytearray(0x70)
@@ -136,6 +158,7 @@ def build_dex(
     struct.pack_into("<I", header, 0x20, file_size)
     struct.pack_into("<I", header, 0x24, header_size)
     struct.pack_into("<I", header, 0x28, 0x12345678)
+    struct.pack_into("<I", header, 0x34, map_off)
     struct.pack_into("<I", header, 0x38, len(strings))
     struct.pack_into("<I", header, 0x3C, string_ids_off)
     struct.pack_into("<I", header, 0x40, len(types))
@@ -167,7 +190,10 @@ def build_dex(
         class_data_off,
         0,
     )
-    return bytes(header) + string_ids + type_ids + proto_ids + method_ids + class_defs + bytes(data)
+    dex = bytearray(bytes(header) + string_ids + type_ids + proto_ids + method_ids + class_defs + bytes(data))
+    dex[12:32] = hashlib.sha1(dex[32:]).digest()
+    struct.pack_into("<I", dex, 8, zlib.adler32(dex[12:]) & 0xFFFFFFFF)
+    return bytes(dex)
 
 
 def uleb128(value: int) -> bytes:
@@ -199,4 +225,3 @@ def _dedupe(values: list[str]) -> list[str]:
             seen.add(value)
             result.append(value)
     return result
-

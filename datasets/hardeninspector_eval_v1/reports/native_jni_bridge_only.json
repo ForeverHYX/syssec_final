@@ -1,0 +1,31 @@
+{
+  "apk": {
+    "entry_count": 3,
+    "path": "datasets/hardeninspector_eval_v1/apks/native_jni_bridge_only.apk",
+    "sha256": "9bf6fd88715a00d451fb48569d1b6d75a7502ac8970b364ecd8fb4e0b1991d87"
+  },
+  "findings": [
+    {
+      "category": "native",
+      "confidence": "medium",
+      "description": "Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
+      "evidence": [
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libnativebridge.so",
+          "value": "JNI_OnLoad"
+        }
+      ],
+      "id": "native.jni_entrypoint",
+      "severity": "low",
+      "title": "Native JNI entrypoint present"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 1,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

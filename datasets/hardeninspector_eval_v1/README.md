@@ -14,6 +14,10 @@ The samples correspond to the dataset categories described in the midterm report
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK
+- second packer-family stub/payload APK
+- native JNI bridge control sample
+- instrumentation-probe sample
+- reflection-only dispatch sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

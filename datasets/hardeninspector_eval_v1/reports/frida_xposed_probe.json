@@ -1,0 +1,46 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/frida_xposed_probe.apk",
+    "sha256": "35cf518c26f2cc65bacd93a1f9f1788da8df55eb45d0c0c2115122f9d4bafcb2"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references Frida/Xposed/Substrate or process-map strings often used to detect instrumentation.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "frida"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "xposed"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "substrate"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/proc/self/maps"
+        }
+      ],
+      "id": "environment.instrumentation_probe",
+      "severity": "medium",
+      "title": "Dynamic instrumentation detection indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

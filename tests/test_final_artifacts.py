@@ -30,11 +30,13 @@ def test_beamer_uses_zju_template_and_ignores_build_outputs():
     assert (slides_dir / "zju_beamer.sty").exists()
     assert (slides_dir / "figures" / "background.png").exists()
     assert (slides_dir / "figures" / "logo.pdf").exists()
+    assert (slides_dir / "figures" / "apk_static_analysis_cutaway.png").exists()
     assert "\\usepackage{zju_beamer}" in slides_text
     assert "\\title[HardenInspector]{HardenInspector}" in slides_text
     assert "洪奕迅、蒋城昊、项康" in slides_text
     assert "\\begin{table}" in slides_text
     assert "\\begin{tikzpicture}" in slides_text
+    assert "apk_static_analysis_cutaway.png" in slides_text
     assert "slides/final_presentation.pdf" in gitignore
     assert "slides/*.aux" in gitignore
     assert "slides/*.log" in gitignore

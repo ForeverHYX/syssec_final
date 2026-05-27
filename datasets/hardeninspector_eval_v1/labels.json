@@ -111,6 +111,90 @@
         "packer.stub_application",
         "packer.high_entropy_payload",
         "packer.dynamic_code_loading",
+        "native.jni_entrypoint"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 1,
+        "obfuscation": 0,
+        "packer": 4
+      },
+      "apk_path": "apks/bangcle_stub_payload.apk",
+      "construction": "synthetic substitute for a second commercial packer family: Bangcle-like manifest namespace, known shell library, high-entropy asset, and dynamic loading",
+      "expected_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
+        "native.jni_entrypoint"
+      ],
+      "id": "bangcle_stub_payload",
+      "report_path": "reports/bangcle_stub_payload.json",
+      "source_plan": "Bangcle-style packer sample"
+    },
+    {
+      "actual_findings": [
+        "native.jni_entrypoint"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 1,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/native_jni_bridge_only.apk",
+      "construction": "synthetic APK with a normal Java layer and one app-owned native library that exports JNI entrypoint strings, without packer library names or anti-analysis strings",
+      "expected_findings": [
+        "native.jni_entrypoint"
+      ],
+      "id": "native_jni_bridge_only",
+      "report_path": "reports/native_jni_bridge_only.json",
+      "source_plan": "native bridge control sample"
+    },
+    {
+      "actual_findings": [
+        "environment.instrumentation_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/frida_xposed_probe.apk",
+      "construction": "synthetic self-written sample focused on runtime instrumentation probes such as Frida, Xposed, Substrate, and process-map checks",
+      "expected_findings": [
+        "environment.instrumentation_probe"
+      ],
+      "id": "frida_xposed_probe",
+      "report_path": "reports/frida_xposed_probe.json",
+      "source_plan": "instrumentation-detection sample"
+    },
+    {
+      "actual_findings": [
+        "obfuscation.reflection"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 1,
+        "packer": 0
+      },
+      "apk_path": "apks/reflection_only_dispatch.apk",
+      "construction": "synthetic sample isolating reflection dispatch without dynamic loading or packer library signals, so obfuscation recall can be evaluated separately",
+      "expected_findings": [
+        "obfuscation.reflection"
+      ],
+      "id": "reflection_only_dispatch",
+      "report_path": "reports/reflection_only_dispatch.json",
+      "source_plan": "reflection-only obfuscation sample"
+    },
+    {
+      "actual_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
         "obfuscation.short_identifiers",
         "obfuscation.reflection",
         "environment.system_properties",

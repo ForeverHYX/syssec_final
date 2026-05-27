@@ -1,3 +1,6 @@
+import hashlib
+import zlib
+
 from hardeninspector.dex import DexFile
 
 from .fixtures import build_dex_fixture, const_string_instruction, invoke_static_instruction
@@ -34,3 +37,12 @@ def test_dex_parser_returns_empty_evidence_for_invalid_dex():
     assert parsed.methods == []
     assert parsed.parse_errors
 
+
+def test_synthetic_dex_has_standard_signature_and_checksum():
+    dex = build_dex_fixture(
+        extra_strings=["DexClassLoader"],
+        class_descriptors=["Lcom/example/App;"],
+    )
+
+    assert dex[12:32] == hashlib.sha1(dex[32:]).digest()
+    assert int.from_bytes(dex[8:12], "little") == zlib.adler32(dex[12:]) & 0xFFFFFFFF

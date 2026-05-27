@@ -14,5 +14,6 @@ reports/
 !reports/benchmark/benchmark_summary.md
 !reports/benchmark/benchmark_metrics.csv
 !reports/final_summary.md
+reports/demo_report.json
 samples/*.apk
 samples/private/

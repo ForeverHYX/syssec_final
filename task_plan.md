@@ -106,7 +106,7 @@ Status: pending
 
 ### Phase 11: Out-of-the-box environment
 
-Status: pending
+Status: complete
 
 - Add dependency files and one-command setup/test/benchmark targets.
 - Add optional container environment.

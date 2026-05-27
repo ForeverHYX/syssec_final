@@ -36,3 +36,5 @@
 - Added `src/hardeninspector/benchmark.py` and tests for category-level multilabel precision/recall/F1.
 - Generated benchmark artifacts under `reports/benchmark/`: JSON, CSV, and Markdown summary. Current category-level micro F1: HardenInspector 1.000, APKiD 0.571, DroidLysis 0.000 in limited local mode.
 - Added `docs/benchmark.md` explaining comparator scope, metrics, and why open-source tools are validation baselines rather than the implementation route.
+- Added out-of-the-box environment files: `Makefile`, `scripts/setup_env.sh`, `requirements*.txt`, `Dockerfile`, and `docs/environment.md`.
+- Verified fresh setup path with `/tmp/hardeninspector-venv-check`: setup script installed `[all]` dependencies, `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 17 tests, and `/tmp/hardeninspector-venv-check/bin/python -m hardeninspector --help` exited 0.

@@ -18,9 +18,20 @@ dependencies = []
 dev = [
   "pytest>=8.0"
 ]
+benchmark = [
+  "apkid==3.1.0",
+  "droidlysis==3.4.7"
+]
+all = [
+  "pytest>=8.0",
+  "apkid==3.1.0",
+  "droidlysis==3.4.7"
+]
 
 [project.scripts]
 hardeninspector = "hardeninspector.cli:main"
+hardeninspector-benchmark = "hardeninspector.benchmark:main"
+hardeninspector-dataset = "hardeninspector.dataset:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -28,4 +39,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-

@@ -80,6 +80,7 @@ python3 -m venv .venv
 - [检测规则说明](docs/rules.md)
 - [数据集构造说明](docs/dataset.md)
 - [开源实现对比与可靠性验证](docs/benchmark.md)
+- [开箱即用环境](docs/environment.md)
 - [课程展示 Demo](docs/demo.md)
 - [实现范围与目标调整说明](docs/implementation_scope.md)
 - [期末交付说明](docs/final_deliverable.md)

@@ -22,3 +22,5 @@
 - Generated `datasets/hardeninspector_eval_v1/` with 6 synthetic APKs, labels, and per-sample reports.
 - Added complete Chinese docs for usage, architecture, rules, dataset construction, demo, implementation scope changes, and final deliverable mapping.
 - Copied the midterm report PDF into `docs/references/mid_term.pdf` so the repository is self-contained.
+- Ran final verification before final push: `.venv/bin/pytest -q` passed with 12 tests; CLI help exited 0; clean baseline sample produced zero findings; combined showcase sample produced `packer=4`, `obfuscation=2`, `environment=3`, `native=1`.
+- Added `docs/completion_audit.md` with requirement-by-requirement evidence.

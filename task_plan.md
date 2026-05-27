@@ -21,7 +21,7 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 
 ### Phase 1: Repo and planning scaffold
 
-Status: in_progress
+Status: complete
 
 - Create `syssec_final` repository.
 - Add persistent planning files, report-derived spec, and implementation plan.
@@ -54,7 +54,7 @@ Status: complete
 
 ### Phase 5: Completion audit
 
-Status: in_progress
+Status: complete
 
 - Run unit tests and CLI smoke tests.
 - Verify git remote, commit history, and pushed branch.

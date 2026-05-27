@@ -37,7 +37,7 @@
 ### 数据集
 
 - `src/hardeninspector/dataset.py` 可一键构造 `hardeninspector_eval_v1` 数据集。
-- 数据集包含 10 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、综合展示样本。
+- 数据集包含 11 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、综合展示样本。
 - 每个样本都有 `labels.json` 标签项和对应 JSON 检测报告。
 
 ## 调整的目标
@@ -74,7 +74,7 @@
 
 ### 4. 控制流混淆只做轻量静态信号
 
-中期报告提到控制流平坦化、垃圾代码、指令重排序等。MVP 只实现 opcode 统计、异常跳转/分支密度等轻量信号，不构建完整 CFG。
+中期报告提到控制流平坦化、垃圾代码、指令重排序等。期末实现已将 opcode 统计落成轻量 profile，并通过 `obfuscation.control_flow_density` 输出分支/跳转密度证据；仍然不构建完整 CFG。
 
 原因：
 

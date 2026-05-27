@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 4,
     "path": "datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk",
-    "sha256": "c8d2da9980fb9d4fa492cca0d330c174e1cb69730d26b99dddab56140a013fc9"
+    "sha256": "47e69ac4f41d4d4aa47bf9a19f26dce73ab77a75a6d867f9cc400d5a57847ba2"
   },
   "findings": [
     {

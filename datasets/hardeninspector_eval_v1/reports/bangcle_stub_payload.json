@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 5,
     "path": "datasets/hardeninspector_eval_v1/apks/bangcle_stub_payload.apk",
-    "sha256": "74f66f6eced0e41cd1eb86970fc70163a3239c2bbdbe357116b97fc6a5ab904a"
+    "sha256": "bd31b814fffff9357f3167df9debee8a0bea0fa580fa3c5cfdc51360686f0596"
   },
   "findings": [
     {

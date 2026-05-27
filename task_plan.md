@@ -120,11 +120,23 @@ Status: complete
 Status: complete
 
 - Expand the committed synthetic dataset beyond the original six samples.
-- Keep only runnable 10/10-coverage tools in the scored benchmark table.
+- Keep only runnable full-coverage tools in the scored benchmark table.
 - Remove DroidLysis from default scoring and document it as qualitative only.
 - Use LaTeX/TikZ/tables for framework, dataset, and benchmark content so text stays readable.
 - Use generated imagery only for the complex APK decomposition schematic.
 - Recompile and inspect the slides after the redesign.
+
+### Phase 13: Control-flow limitation optimization and slide narrative polish
+
+Status: complete
+
+- Promote opcode statistics into a lightweight DEX opcode profile.
+- Add `obfuscation.control_flow_density` as a reproducible control-flow-density rule.
+- Add `control_flow_flattening` to the committed dataset and benchmark.
+- Fix synthetic APK ZIP metadata so regenerated dataset APK bytes are stable.
+- Refresh benchmark/docs/slides from 10 to 11 samples.
+- Add slides that explain the final deliverable and the opcode profile without relying on generated framework images.
+- Recompile and visually inspect the updated 18-page ZJU Beamer deck.
 
 ## Errors Encountered
 
@@ -133,5 +145,5 @@ Status: complete
 | Workspace root was not a git repo | `git status` in `/home/yxhong/syssec` | Created project repo under `/home/yxhong/syssec/syssec_final` |
 | `pytest` missing from base environment | `pytest` and `python3 -m pytest` | Created `.venv` and installed local dev dependencies |
 | DroidLysis default config writes cache under read-only home | `droidlysis --config ...` | Use `XDG_CACHE_HOME=/tmp/droidlysis_cache` in benchmark adapter |
-| DroidLysis cannot provide a fair default benchmark without external tools | default scored comparison | Removed from scored tools; APKiD, Androguard DEX, and ZIP Strings now provide runnable 10/10-coverage comparisons |
+| DroidLysis cannot provide a fair default benchmark without external tools | default scored comparison | Removed from scored tools; APKiD, Androguard DEX, and ZIP Strings now provide full-coverage comparisons |
 | Androguard initially rejected synthetic DEX files | first Androguard DEX benchmark attempt | Added DEX SHA-1 signature, Adler-32 checksum, and map list to the synthetic DEX builder |

@@ -8,7 +8,7 @@ HardenInspector 是 `syssec_final` 期末展品的核心工具，面向课程项
 
 - APK ZIP 清单、文件哈希、文件熵值统计。
 - Android binary XML 字符串池提取，用于读取 Manifest 中的壳入口类、权限和常量。
-- 轻量 DEX 解析：字符串、类型描述符、方法表、`const-string`、`invoke-*` 和 opcode 统计。
+- 轻量 DEX 解析：字符串、类型描述符、方法表、`const-string`、`invoke-*`、opcode profile 和控制流密度统计。
 - Native `.so` 字符串扫描，用于识别 `JNI_OnLoad`、Frida/Xposed 探测、`/proc/self/maps` 等证据。
 - 规则覆盖三类课程目标：加壳、代码混淆、环境感知检测。
 - 输出终端摘要或 JSON 报告，每条 finding 都包含 evidence。
@@ -31,7 +31,7 @@ make benchmark
 make slides
 ```
 
-默认 benchmark 只包含当前环境可安装、可运行且 10/10 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
+默认 benchmark 只包含当前环境可安装、可运行且 11/11 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
 
 ## 使用
 
@@ -75,7 +75,7 @@ make slides
 | 类别 | 已实现信号 |
 | --- | --- |
 | 加壳 | 已知壳库名、Manifest StubApp、高熵 assets、动态加载 API |
-| 代码混淆 | 短类名比例、反射 API/`invoke` 证据 |
+| 代码混淆 | 短类名比例、反射 API/`invoke` 证据、分支/跳转 opcode 密度 |
 | 环境检测 | emulator system properties、debugger probe、Frida/Xposed/Substrate/process maps |
 | Native | `JNI_OnLoad` 等 Native 入口证据 |
 

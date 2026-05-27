@@ -7,7 +7,7 @@
 默认 benchmark 只纳入同时满足以下条件的比较对象：
 
 - 能通过 `make setup` 安装；
-- 能通过 `make benchmark` 在本仓库数据集上完成 10/10 个样本；
+- 能通过 `make benchmark` 在本仓库数据集上完成 11/11 个样本；
 - 能产生可映射到 `packer`、`obfuscation`、`environment`、`native` 的类别输出；
 - 失败时不把“缺环境/缺外部工具”记为 0 分。
 
@@ -56,8 +56,8 @@ ZIP Strings 是仓库内的最小浅层基线：只读取 APK ZIP 文件名和 p
 
 Benchmark 使用 `datasets/hardeninspector_eval_v1/`：
 
-- 10 个合成 APK；
-- 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、综合加固样本；
+- 11 个合成 APK；
+- 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、综合加固样本；
 - 每个样本包含 expected findings 和当前检测器报告；
 - 合成 DEX 包含标准 checksum、signature 和 map list，保证 Androguard DEX baseline 可解析。
 
@@ -88,15 +88,15 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 10/10 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 10/10 | 1.000 | 0.333 | 0.500 | 0.414 |
-| Androguard DEX | 10/10 | 1.000 | 0.667 | 0.800 | 0.714 |
-| ZIP Strings | 10/10 | 1.000 | 0.933 | 0.966 | 0.964 |
+| HardenInspector | 11/11 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 11/11 | 1.000 | 0.312 | 0.476 | 0.414 |
+| Androguard DEX | 11/11 | 1.000 | 0.625 | 0.769 | 0.688 |
+| ZIP Strings | 11/11 | 1.000 | 0.875 | 0.933 | 0.938 |
 
 分类细节：
 
 - `packer`：HardenInspector 4/4，APKiD 3/4，Androguard DEX 4/4，ZIP Strings 4/4。
-- `obfuscation`：HardenInspector 4/4，APKiD 0/4，Androguard DEX 3/4，ZIP Strings 3/4。
+- `obfuscation`：HardenInspector 5/5，APKiD 0/5，Androguard DEX 3/5，ZIP Strings 3/5。
 - `environment`：HardenInspector 3/3，APKiD 2/3，Androguard DEX 3/3，ZIP Strings 3/3。
 - `native`：HardenInspector 4/4，APKiD 0/4，Androguard DEX 0/4，ZIP Strings 4/4。
 
@@ -104,9 +104,9 @@ make benchmark
 
 APKiD 对 packer 指纹和部分 anti-vm 信号表现稳定，但它的目标是识别 packer/protector/obfuscator/oddity 指纹，不覆盖本项目的 Native 入口证据和大部分课程构造的 reflection/short-identifier 标签。
 
-Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX，不看 Manifest/Native/resource，所以 Native 类别为 0/4。
+Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX strings/classes/methods，不看 Manifest/Native/resource，也不复刻 HardenInspector 的 opcode-density 规则，所以 Native 类别为 0/4，控制流样本不命中。
 
-ZIP Strings baseline 说明浅层字符串扫描在本合成数据集上也能捕获很多显式字符串，但它没有结构化 evidence chain，无法区分 Manifest、DEX、Native、资源上下文，也不提供 HardenInspector 的规则解释。
+ZIP Strings baseline 说明浅层字符串扫描在本合成数据集上也能捕获很多显式字符串，但它没有结构化 evidence chain，无法区分 Manifest、DEX、Native、资源上下文，也不能从 bytecode opcode 分布中识别控制流密度。
 
 HardenInspector 的优势来自中期报告路线中的多源结构化证据：Manifest + DEX + Native + 资源文件 + 规则证据链，而不是复制 APKiD/Androguard 的实现。
 

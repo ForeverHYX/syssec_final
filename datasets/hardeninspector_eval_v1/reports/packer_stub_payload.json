@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 4,
     "path": "datasets/hardeninspector_eval_v1/apks/packer_stub_payload.apk",
-    "sha256": "0c3b6c77f0ff8281c2acc8a88414711d397409eae7c4e392b5f592aa35b4e2ef"
+    "sha256": "96a3a52717f7a3a5a2cb719abac4b9530f3785ebf58ef7299a6770f1308b27d6"
   },
   "findings": [
     {

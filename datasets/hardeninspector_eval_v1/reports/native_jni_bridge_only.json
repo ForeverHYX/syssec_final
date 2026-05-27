@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 3,
     "path": "datasets/hardeninspector_eval_v1/apks/native_jni_bridge_only.apk",
-    "sha256": "9bf6fd88715a00d451fb48569d1b6d75a7502ac8970b364ecd8fb4e0b1991d87"
+    "sha256": "3ebc1824f9b601727d327c3ba866c6eebe64b0e7e4546d9a40ff5db82e301f3e"
   },
   "findings": [
     {

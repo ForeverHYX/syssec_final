@@ -191,6 +191,25 @@
     },
     {
       "actual_findings": [
+        "obfuscation.control_flow_density"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 1,
+        "packer": 0
+      },
+      "apk_path": "apks/control_flow_flattening.apk",
+      "construction": "synthetic sample with a dense if/goto bytecode pattern that models lightweight control-flow flattening signals without requiring full CFG recovery",
+      "expected_findings": [
+        "obfuscation.control_flow_density"
+      ],
+      "id": "control_flow_flattening",
+      "report_path": "reports/control_flow_flattening.json",
+      "source_plan": "control-flow obfuscation sample"
+    },
+    {
+      "actual_findings": [
         "packer.known_library",
         "packer.stub_application",
         "packer.high_entropy_payload",

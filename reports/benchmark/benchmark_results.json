@@ -27,31 +27,31 @@
         "environment": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
+          "tn": 8,
           "tp": 3
         },
         "native": {
           "fn": 0,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 4
         },
         "obfuscation": {
           "fn": 0,
           "fp": 0,
           "tn": 6,
-          "tp": 4
+          "tp": 5
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 4
         }
       },
       "coverage": {
-        "samples_total": 10,
-        "samples_with_results": 10
+        "samples_total": 11,
+        "samples_with_results": 11
       },
       "metrics": {
         "by_category": {
@@ -235,6 +235,21 @@
         },
         {
           "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "obfuscation.control_flow_density"
+          ],
+          "id": "control_flow_flattening",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -277,17 +292,17 @@
         "environment": {
           "fn": 1,
           "fp": 0,
-          "tn": 7,
+          "tn": 8,
           "tp": 2
         },
         "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 4,
+          "fn": 5,
           "fp": 0,
           "tn": 6,
           "tp": 0
@@ -295,13 +310,13 @@
         "packer": {
           "fn": 1,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 10,
-        "samples_with_results": 10
+        "samples_total": 11,
+        "samples_with_results": 11
       },
       "metrics": {
         "by_category": {
@@ -332,9 +347,9 @@
           "recall": 0.35416666666666663
         },
         "micro": {
-          "f1": 0.5,
+          "f1": 0.47619047619047616,
           "precision": 1.0,
-          "recall": 0.3333333333333333
+          "recall": 0.3125
         }
       },
       "samples": [
@@ -452,6 +467,17 @@
         },
         {
           "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "control_flow_flattening",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -484,17 +510,17 @@
         "environment": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
+          "tn": 8,
           "tp": 3
         },
         "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 1,
+          "fn": 2,
           "fp": 0,
           "tn": 6,
           "tp": 3
@@ -502,13 +528,13 @@
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 4
         }
       },
       "coverage": {
-        "samples_total": 10,
-        "samples_with_results": 10
+        "samples_total": 11,
+        "samples_with_results": 11
       },
       "metrics": {
         "by_category": {
@@ -523,9 +549,9 @@
             "recall": 0.0
           },
           "obfuscation": {
-            "f1": 0.8571428571428571,
+            "f1": 0.7499999999999999,
             "precision": 1.0,
-            "recall": 0.75
+            "recall": 0.6
           },
           "packer": {
             "f1": 1.0,
@@ -534,14 +560,14 @@
           }
         },
         "macro": {
-          "f1": 0.7142857142857143,
+          "f1": 0.6875,
           "precision": 0.75,
-          "recall": 0.6875
+          "recall": 0.65
         },
         "micro": {
-          "f1": 0.8,
+          "f1": 0.7692307692307693,
           "precision": 1.0,
-          "recall": 0.6666666666666666
+          "recall": 0.625
         }
       },
       "samples": [
@@ -675,6 +701,17 @@
         },
         {
           "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "control_flow_flattening",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -710,17 +747,17 @@
         "environment": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
+          "tn": 8,
           "tp": 3
         },
         "native": {
           "fn": 0,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 4
         },
         "obfuscation": {
-          "fn": 1,
+          "fn": 2,
           "fp": 0,
           "tn": 6,
           "tp": 3
@@ -728,13 +765,13 @@
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 6,
+          "tn": 7,
           "tp": 4
         }
       },
       "coverage": {
-        "samples_total": 10,
-        "samples_with_results": 10
+        "samples_total": 11,
+        "samples_with_results": 11
       },
       "metrics": {
         "by_category": {
@@ -749,9 +786,9 @@
             "recall": 1.0
           },
           "obfuscation": {
-            "f1": 0.8571428571428571,
+            "f1": 0.7499999999999999,
             "precision": 1.0,
-            "recall": 0.75
+            "recall": 0.6
           },
           "packer": {
             "f1": 1.0,
@@ -760,14 +797,14 @@
           }
         },
         "macro": {
-          "f1": 0.9642857142857143,
+          "f1": 0.9375,
           "precision": 1.0,
-          "recall": 0.9375
+          "recall": 0.9
         },
         "micro": {
-          "f1": 0.9655172413793104,
+          "f1": 0.9333333333333333,
           "precision": 1.0,
-          "recall": 0.9333333333333333
+          "recall": 0.875
         }
       },
       "samples": [
@@ -902,6 +939,17 @@
           "predicted_categories": [
             "obfuscation"
           ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "control_flow_flattening",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
         },

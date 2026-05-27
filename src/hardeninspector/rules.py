@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import PurePosixPath
 
+from .dex import OpcodeProfile
 from .features import ApkFeatures, StringEvidence
 
 
@@ -108,6 +109,7 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _dynamic_code_loading,
         _short_identifiers,
         _reflection_usage,
+        _control_flow_density,
         _system_properties,
         _debugger_probe,
         _instrumentation_probe,
@@ -227,6 +229,40 @@ def _reflection_usage(features: ApkFeatures) -> Finding | None:
     )
 
 
+def _control_flow_density(features: ApkFeatures) -> Finding | None:
+    evidence: list[Evidence] = []
+    for dex in features.dex_files:
+        profile = dex.opcode_profile
+        if _is_control_flow_heavy(profile):
+            evidence.append(
+                Evidence(
+                    "dex-opcode-stat",
+                    (
+                        f"control_flow_density={profile.control_flow_density:.2f} "
+                        f"({profile.control_flow_count}/{profile.instruction_count}), "
+                        f"if={profile.conditional_branch_count}, goto={profile.goto_count}, "
+                        f"switch={profile.switch_count}, throw={profile.throw_count}"
+                    ),
+                    profile.dex_name,
+                )
+            )
+    if not evidence:
+        return None
+    return Finding(
+        id="obfuscation.control_flow_density",
+        category="obfuscation",
+        severity="medium",
+        confidence="medium",
+        title="Dense branch or jump opcode pattern",
+        description=(
+            "DEX bytecode contains an unusually dense mix of branch, goto, switch, or throw "
+            "instructions, a lightweight signal for control-flow obfuscation that should be "
+            "reviewed with surrounding code evidence."
+        ),
+        evidence=evidence[:5],
+    )
+
+
 def _system_properties(features: ApkFeatures) -> Finding | None:
     evidence = _string_matches(features.string_evidence, SYSTEM_PROPERTY_PATTERNS)
     if not evidence:
@@ -319,6 +355,14 @@ def _simple_class_name(descriptor: str) -> str:
     return descriptor.removeprefix("L").removesuffix(";").split("/")[-1]
 
 
+def _is_control_flow_heavy(profile: OpcodeProfile) -> bool:
+    return (
+        profile.instruction_count >= 8
+        and profile.control_flow_count >= 5
+        and profile.control_flow_density >= 0.42
+    ) or (profile.switch_count >= 2 and profile.control_flow_count >= 4)
+
+
 def _dedupe_evidence(items: list[Evidence]) -> list[Evidence]:
     result: list[Evidence] = []
     seen: set[tuple[str, str, str]] = set()
@@ -328,4 +372,3 @@ def _dedupe_evidence(items: list[Evidence]) -> list[Evidence]:
             seen.add(key)
             result.append(item)
     return result
-

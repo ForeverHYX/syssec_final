@@ -98,6 +98,31 @@
   现实调整：真实商业壳样本获取和分发不稳定，最终交付可复现合成 APK 数据集，并在文档中记录替代关系。
 \end{frame}
 
+\begin{frame}{成果一页看懂}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{我们实现了什么}
+        \begin{itemize}
+          \item 一个可运行 CLI：输入 APK，输出 JSON/text report。
+          \item 一个可复现数据集：11 个 APK、labels 和逐样本报告。
+          \item 一个公平 benchmark：只统计本仓库可运行的对比工具。
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{听众应该带走什么}
+        \begin{itemize}
+          \item 加固检测不是判恶意，而是定位证据。
+          \item 证据来自 Manifest、DEX、Native 和资源四类结构。
+          \item 输出可以复核：每条 finding 都有 location/value。
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.45em}
+  所有源码、数据、报告、slides 和开箱环境都维护在同一个仓库中。
+\end{frame}
+
 \section{检测方法}
 
 \begin{frame}{APK 里面看什么}{复杂对象先拆成四类证据源}
@@ -214,9 +239,41 @@
   每条 finding 都包含 category、confidence、description 和 evidence，便于人工复核。
 \end{frame}
 
+\begin{frame}{控制流轻量统计}{解决“只统计 opcode 但未成规则”的局限}
+  \centering
+  \begin{tikzpicture}[node distance=0.42cm]
+    \node[hiBoxOrange, minimum width=3.0cm, minimum height=2.8cm] (opcode) {
+      \textbf{DEX code item}\\[0.35em]
+      \scriptsize \texttt{if-*} 条件分支\\
+      \scriptsize \texttt{goto} 跳转\\
+      \scriptsize \texttt{packed/sparse-switch}\\
+      \scriptsize \texttt{throw}
+    };
+    \node[hiBoxGreen, right=of opcode, minimum width=3.25cm, minimum height=2.8cm] (profile) {
+      \textbf{Opcode profile}\\[0.35em]
+      \scriptsize instruction count\\
+      \scriptsize control-flow count\\
+      \scriptsize branch density\\
+      \scriptsize if/goto/switch 分项
+    };
+    \node[hiBox, right=of profile, minimum width=3.35cm, minimum height=2.8cm] (finding) {
+      \textbf{Finding}\\[0.35em]
+      \scriptsize \texttt{obfuscation.}\\
+      \scriptsize \texttt{control\_flow\_density}\\
+      \scriptsize evidence: \texttt{classes.dex}\\
+      \scriptsize density 与计数明细
+    };
+    \draw[hiArrow] (opcode) -- (profile);
+    \draw[hiArrow] (profile) -- (finding);
+  \end{tikzpicture}
+
+  \vspace{0.5em}
+  这不是完整 CFG；它是可复现、低依赖、可解释的预筛信号，用于提示“这里可能存在控制流平坦化或跳转扰动”。
+\end{frame}
+
 \section{数据集与对比}
 
-\begin{frame}{数据集构造}{10 个样本如何覆盖课程概念}
+\begin{frame}{数据集构造}{11 个样本如何覆盖课程概念}
   \scriptsize
   \begin{table}
     \centering
@@ -233,6 +290,7 @@
       native\_bridge & & & & \hitick & JNI 控制样本 \\
       frida\_xposed & & & \hitick & & Hook 探测 \\
       reflection\_only & & \hitick & & & 单独反射混淆 \\
+      control\_flow & & \hitick & & & 分支/跳转密度 \\
       combined & \hitick & \hitick & \hitick & \hitick & 综合展示 \\
       \bottomrule
     \end{tabular}
@@ -252,13 +310,13 @@
       HardenInspector & 是 & 本项目检测器，四类 evidence-chain 输出 \\
       APKiD & 是 & 可安装可运行，输出 packer/oddity 相关签名 \\
       Androguard DEX & 是 & 可运行 DEX parser baseline，验证样本可被外部 parser 解析 \\
-      ZIP Strings & 是 & 无结构字符串扫描下限，10/10 样本有输出 \\
+      ZIP Strings & 是 & 无结构字符串扫描下限，11/11 样本有输出 \\
       DroidLysis & 否 & 缺 apktool/baksmali/dex2jar 时不是完整能力 \\
       MobSF & 否 & 需要服务/Docker 工作流，不纳入离线评分 \\
       \bottomrule
     \end{tabular}
   \end{table}
-  评分只比较当前仓库环境中 10/10 样本可运行的工具，避免把“环境不可用”统计成工具能力差。
+  评分只比较当前仓库环境中 11/11 样本可运行的工具，避免把“环境不可用”统计成工具能力差。
 \end{frame}
 
 \begin{frame}{Benchmark 统计结果}
@@ -267,17 +325,17 @@
     \centering
     \begin{tabular}{lrrrr}
       \toprule
-      Tool & Precision & Recall & Micro F1 & Macro F1 \\
+      Tool & Samples & Precision & Recall & Micro F1 \\
       \midrule
-      HardenInspector & 1.000 & 1.000 & 1.000 & 1.000 \\
-      APKiD & 1.000 & 0.333 & 0.500 & 0.414 \\
-      Androguard DEX & 1.000 & 0.667 & 0.800 & 0.714 \\
-      ZIP Strings & 1.000 & 0.933 & 0.966 & 0.964 \\
+      HardenInspector & 11/11 & 1.000 & 1.000 & 1.000 \\
+      APKiD & 11/11 & 1.000 & 0.312 & 0.476 \\
+      Androguard DEX & 11/11 & 1.000 & 0.625 & 0.769 \\
+      ZIP Strings & 11/11 & 1.000 & 0.875 & 0.933 \\
       \bottomrule
     \end{tabular}
   \end{table}
   \vspace{0.35em}
-  默认评分工具均完成 10/10 个样本；不可用环境工具不计入指标表。
+  默认评分工具均完成 11/11 个样本；不可用环境工具不计入指标表。
 \end{frame}
 
 \begin{frame}{Micro F1 可视化}
@@ -293,13 +351,13 @@
     \node[anchor=east,font=\scriptsize] at (0,2) {Androguard DEX};
     \node[anchor=east,font=\scriptsize] at (0,1) {APKiD};
     \fill[structure.fg!85] (0,3.72) rectangle (1.00,4.28);
-    \fill[gray!65] (0,2.72) rectangle (0.966,3.28);
-    \fill[PineGreen!75] (0,1.72) rectangle (0.800,2.28);
-    \fill[Orange!80] (0,0.72) rectangle (0.500,1.28);
+    \fill[gray!65] (0,2.72) rectangle (0.933,3.28);
+    \fill[PineGreen!75] (0,1.72) rectangle (0.769,2.28);
+    \fill[Orange!80] (0,0.72) rectangle (0.476,1.28);
     \node[anchor=west,font=\scriptsize] at (1.02,4) {1.000};
-    \node[anchor=west,font=\scriptsize] at (0.99,3) {0.966};
-    \node[anchor=west,font=\scriptsize] at (0.83,2) {0.800};
-    \node[anchor=west,font=\scriptsize] at (0.53,1) {0.500};
+    \node[anchor=west,font=\scriptsize] at (0.96,3) {0.933};
+    \node[anchor=west,font=\scriptsize] at (0.80,2) {0.769};
+    \node[anchor=west,font=\scriptsize] at (0.51,1) {0.476};
   \end{tikzpicture}
 
   \vspace{0.5em}
@@ -341,19 +399,33 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{局限与未来工作}
-  \begin{itemize}
-    \item 当前数据集是合成可复现数据集，不等价于真实大规模 Android 生态。
-    \item 尚未实现完整 CFG、深度 Native 反汇编和动态 Frida 验证。
-    \item 后续可增加真实 F-Droid、Obfuscapk、R8 和商业壳样本。
-    \item 可扩展更多壳库名、StubApp 模式和 opcode/控制流轻量统计。
-  \end{itemize}
+\begin{frame}{局限与已优化项}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{这轮已补齐}
+        \begin{itemize}
+          \item opcode 统计升级为 branch/goto/switch/throw profile。
+          \item 增加 \texttt{obfuscation.control\_flow\_density} 规则。
+          \item 数据集加入 \texttt{control\_flow\_flattening} 样本。
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{仍然保留边界}
+        \begin{itemize}
+          \item 不宣称完整 CFG 或深度 Native 反汇编。
+          \item 不把动态 Frida 验证作为必需交付。
+          \item 合成数据集不等价于真实大规模 APK 生态。
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{结论}
   \begin{itemize}
     \item HardenInspector 完成了中期报告提出的轻量静态证据链检测器。
-    \item 构造了可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
+    \item 构造了 11 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
     \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
     \item 工具、数据集、文档、环境和汇报材料均已维护在 GitHub 仓库中。
   \end{itemize}

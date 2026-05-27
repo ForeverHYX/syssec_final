@@ -1,0 +1,31 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/control_flow_flattening.apk",
+    "sha256": "d357d7b175bd8b5c8b1fb7b54e4697e4ebb6a09cffc6df3635dbc6168c8bc912"
+  },
+  "findings": [
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "DEX bytecode contains an unusually dense mix of branch, goto, switch, or throw instructions, a lightweight signal for control-flow obfuscation that should be reviewed with surrounding code evidence.",
+      "evidence": [
+        {
+          "kind": "dex-opcode-stat",
+          "location": "classes.dex",
+          "value": "control_flow_density=0.75 (6/8), if=3, goto=3, switch=0, throw=0"
+        }
+      ],
+      "id": "obfuscation.control_flow_density",
+      "severity": "medium",
+      "title": "Dense branch or jump opcode pattern"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 1,
+    "packer": 0
+  }
+}

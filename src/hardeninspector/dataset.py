@@ -8,7 +8,12 @@ import json
 from pathlib import Path
 
 from .report import scan_apk
-from .synthetic import SyntheticApkSpec, build_synthetic_apk
+from .synthetic import (
+    SyntheticApkSpec,
+    build_synthetic_apk,
+    goto_instruction,
+    if_eq_instruction,
+)
 
 
 DATASET_VERSION = "hardeninspector_eval_v1"
@@ -245,6 +250,36 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="control_flow_flattening",
+        apk_name="control_flow_flattening.apk",
+        source_plan="control-flow obfuscation sample",
+        construction=(
+            "synthetic sample with a dense if/goto bytecode pattern that models "
+            "lightweight control-flow flattening signals without requiring full CFG recovery"
+        ),
+        expected_findings=["obfuscation.control_flow_density"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.flowflat", "com.example.flowflat.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/flowflat/MainActivity;",
+                "Lcom/example/flowflat/Dispatcher;",
+                "Lcom/example/flowflat/StateMachine;",
+            ],
+            method_names=["<clinit>", "dispatch"],
+            dex_strings=["control flow flattening sample"],
+            code_units=[
+                *if_eq_instruction(),
+                *if_eq_instruction(),
+                *if_eq_instruction(),
+                *goto_instruction(),
+                *goto_instruction(),
+                *goto_instruction(),
+                0x000E,
+                0x000E,
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="combined_hardened_showcase",
         apk_name="combined_hardened_showcase.apk",
         source_plan="combined hardened showcase",
@@ -359,6 +394,7 @@ The samples correspond to the dataset categories described in the midterm report
 - native JNI bridge control sample
 - instrumentation-probe sample
 - reflection-only dispatch sample
+- lightweight control-flow flattening sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

@@ -2,7 +2,7 @@
   "apk": {
     "entry_count": 2,
     "path": "datasets/hardeninspector_eval_v1/apks/frida_xposed_probe.apk",
-    "sha256": "35cf518c26f2cc65bacd93a1f9f1788da8df55eb45d0c0c2115122f9d4bafcb2"
+    "sha256": "b52aab3ac788b748a2922e45bbc88d9fda08193e76bfb6328b9017640393d12a"
   },
   "findings": [
     {

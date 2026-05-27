@@ -8,7 +8,10 @@ from hardeninspector.synthetic import (
     build_dex,
     build_synthetic_apk,
     const_string_instruction,
+    goto_instruction,
+    if_eq_instruction,
     invoke_static_instruction,
+    packed_switch_instruction,
     SyntheticApkSpec,
 )
 
@@ -19,7 +22,10 @@ __all__ = [
     "build_dex_fixture",
     "build_hardened_apk",
     "const_string_instruction",
+    "goto_instruction",
+    "if_eq_instruction",
     "invoke_static_instruction",
+    "packed_switch_instruction",
 ]
 
 def build_dex_fixture(

@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-9 passed
+25 passed
 ```
 
 ## 2. 生成演示 APK
@@ -65,7 +65,7 @@ JSON 报告：
 - 使用标准库轻量解析器替代必需 Androguard 依赖；
 - 不把 Frida 动态验证作为核心交付；
 - 不承诺商业加固器签名覆盖率；
-- 控制流混淆只做轻量 opcode 统计信号，不实现完整 CFG。
+- 控制流混淆已实现轻量 opcode profile 和分支/跳转密度规则，但不实现完整 CFG。
 
 ## 6. 数据集展示
 
@@ -82,4 +82,3 @@ sed -n '1,220p' datasets/hardeninspector_eval_v1/labels.json
 ```
 
 数据集构造方法与样本含义见 `docs/dataset.md`。
-

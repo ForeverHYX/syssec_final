@@ -68,3 +68,16 @@
 - Updated `/tmp/hardeninspector-venv-check` with `pip install -e ".[all]"`; the first sandboxed install failed due proxy network restrictions, then the escalated install succeeded.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 22 tests, and the fresh benchmark run under `/tmp/hardeninspector-benchmark-check` kept all four default tools at 10/10 coverage.
 - `git diff --check` produced no whitespace errors; `git status --short --ignored slides` confirms the compiled PDF and LaTeX auxiliary files are ignored while the source `.tex` and generated APK cutaway PNG asset remain trackable.
+
+## 2026-05-28 Control-flow Limitation Optimization
+
+- User clarified that generated images should be reserved for complex explanatory schematics; framework-style diagrams should be written clearly in LaTeX where possible.
+- Implemented a DEX opcode profile in `src/hardeninspector/dex.py` with instruction count, control-flow count, density, and if/goto/switch/throw/invoke/const-string counts.
+- Added `obfuscation.control_flow_density` in `src/hardeninspector/rules.py` so dense branch/jump bytecode becomes an evidence-backed finding instead of only a future-work note.
+- Added a committed `control_flow_flattening.apk` dataset sample and regenerated labels/reports; the dataset now contains 11 APKs.
+- Regenerated benchmark artifacts; default scored tools all have 11/11 coverage. Micro F1: HardenInspector 1.000, APKiD 0.476, Androguard DEX 0.769, ZIP Strings 0.933.
+- Updated README, docs, final summary, benchmark docs, and final deliverable docs for the 11-sample dataset and the new control-flow rule.
+- Reworked the ZJU Beamer deck to 18 pages with a new "成果一页看懂" slide, a LaTeX/TikZ opcode-profile slide, updated 11-sample dataset table, updated benchmark numbers, and a "局限与已优化项" slide.
+- Added deterministic ZIP metadata for generated APKs and a regression test proving the same synthetic spec emits identical APK bytes.
+- Verification passed: `.venv/bin/python -m pytest -q` passed with 25 tests; `make dataset` generated 11 samples; `make benchmark` regenerated reports; `make slides` compiled an 18-page PDF; slide log had no Overfull/Warning/Error matches; key rendered pages were visually readable.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 25 tests, and the fresh benchmark run under `/tmp/hardeninspector-benchmark-check` kept all four default tools at 11/11 coverage.

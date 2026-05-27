@@ -25,7 +25,7 @@ APK
 | --- | --- |
 | `src/hardeninspector/apk.py` | 读取 APK ZIP 条目，识别 Manifest、DEX、Native 库和资源文件 |
 | `src/hardeninspector/axml.py` | 提取 Android binary XML string pool 中的字符串 |
-| `src/hardeninspector/dex.py` | 解析 DEX 字符串、类型、方法、class data、code item、`const-string` 和 `invoke-*` |
+| `src/hardeninspector/dex.py` | 解析 DEX 字符串、类型、方法、class data、code item、`const-string`、`invoke-*` 和 opcode profile |
 | `src/hardeninspector/features.py` | 将 APK/Manifest/DEX/Native 证据归一化为特征对象 |
 | `src/hardeninspector/rules.py` | 执行静态规则，输出 finding 和 evidence |
 | `src/hardeninspector/report.py` | 组织扫描流程并生成 JSON/文本报告 |
@@ -43,6 +43,7 @@ APK
 - DEX 字符串、类描述符、方法名；
 - `const-string` 引用的字符串；
 - `invoke-*` 引用的方法；
+- 分支、跳转、switch、throw 等 opcode 分布；
 - Native 字符串；
 - 资源文件熵值。
 
@@ -60,4 +61,3 @@ APK
 - `evidence`：具体位置和值。
 
 这种设计保证了展示时可以从最终标签回溯到原始 APK 证据。
-

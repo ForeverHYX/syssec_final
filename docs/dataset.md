@@ -21,6 +21,7 @@ datasets/hardeninspector_eval_v1/
     frida_xposed_probe.apk
     native_jni_bridge_only.apk
     obfuscapk_reflection_dynamic.apk
+    control_flow_flattening.apk
     r8_identifier_obfuscation.apk
     packer_stub_payload.apk
     reflection_only_dispatch.apk
@@ -42,6 +43,7 @@ datasets/hardeninspector_eval_v1/
 | `native_jni_bridge_only` | native bridge control sample | 普通 Java 层和自有 native 库 `JNI_OnLoad` | 单独验证 Native 类别 |
 | `frida_xposed_probe` | instrumentation-detection sample | Frida/Xposed/Substrate/process maps 字符串 | 单独验证 instrumentation 检测 |
 | `reflection_only_dispatch` | reflection-only obfuscation sample | 只包含反射 dispatch，不含动态加载 | 单独验证反射混淆 |
+| `control_flow_flattening` | control-flow obfuscation sample | 构造密集 `if-*`/`goto` bytecode 模式 | 验证轻量控制流密度规则 |
 | `combined_hardened_showcase` | 综合加固样本 | 合并三类加固证据 | 课程展示主样本 |
 
 ## 标签格式
@@ -71,7 +73,7 @@ datasets/hardeninspector_eval_v1/
 
 单元测试会在临时目录重新构造数据集，验证：
 
-- 10 个样本全部生成；
+- 11 个样本全部生成；
 - `labels.json` 和每个报告存在；
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。

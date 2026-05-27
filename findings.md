@@ -32,14 +32,22 @@ DroidLysis is a broader pre-analysis tool for suspicious Android samples. Its Py
 
 MobSF is a broad mobile security framework with static and dynamic analysis support for APK and other mobile binaries. It is relevant for qualitative comparison, but running a full MobSF service/docker pipeline is heavier than the committed offline benchmark. The benchmark will document it as a scope comparator and keep APKiD as the primary runnable baseline.
 
-Androguard is used as a runnable open-source DEX parser baseline. It does not replace HardenInspector's implementation; the benchmark adapter only asks Androguard to parse DEX strings/classes/methods and maps those shallow signals to the project categories. This proves the synthetic APKs are valid enough for an external Android parser and gives a fair 10/10-coverage comparator.
+Androguard is used as a runnable open-source DEX parser baseline. It does not replace HardenInspector's implementation; the benchmark adapter only asks Androguard to parse DEX strings/classes/methods and maps those shallow signals to the project categories. This proves the synthetic APKs are valid enough for an external Android parser and gives a fair 11/11-coverage comparator.
 
 ZIP Strings is a dependency-free baseline added to make the benchmark range wider. It scans ZIP entry names and printable strings without Android structure awareness. It is intentionally simple, so the report can distinguish raw string visibility from HardenInspector's structured evidence-chain output.
 
-The expanded default scored benchmark is therefore: HardenInspector, APKiD, Androguard DEX, and ZIP Strings. All four produce results for all 10 committed synthetic APKs. DroidLysis and MobSF remain documented qualitative references outside the metric table.
+The expanded default scored benchmark is therefore: HardenInspector, APKiD, Androguard DEX, and ZIP Strings. All four produce results for all 11 committed synthetic APKs. DroidLysis and MobSF remain documented qualitative references outside the metric table.
 
 Important route constraint from user: open-source implementations are benchmarks only. HardenInspector must continue following the midterm report route: static parsing, feature extraction, explainable rules, and evidence-chain output. Do not copy APKiD/MobSF/DroidLysis rules into the detector.
 
 ## Slide Visual Findings
 
 The ZJU Beamer deck uses generated imagery only for the complex APK cutaway illustration. The architecture, dataset matrix, and benchmark metrics are rendered with LaTeX/TikZ/tables so text remains readable and controlled. The generated image contains no required labels; it is a visual aid for understanding APK decomposition.
+
+## Control-flow Limitation Optimization
+
+The previous limitation around opcode/control-flow statistics has been partially optimized without attempting full CFG recovery. `dex.py` now exposes an opcode profile with instruction count, control-flow count, density, and if/goto/switch/throw counts. `rules.py` turns dense branch/jump patterns into `obfuscation.control_flow_density` findings with DEX-location evidence.
+
+The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. Current scored benchmark coverage remains 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values are 1.000, 0.476, 0.769, and 0.933 respectively. The slide deck now explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
+
+Synthetic APK generation now fixes ZIP entry timestamps and permissions. Running `make dataset` twice keeps APK SHA-256 values stable, so the committed dataset is reproducible instead of changing due only to archive metadata.

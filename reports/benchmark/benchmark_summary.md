@@ -6,10 +6,10 @@ Dataset: `hardeninspector_eval_v1`
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 10/10 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 10/10 | 1.000 | 0.333 | 0.500 | 0.414 |
-| Androguard DEX | 10/10 | 1.000 | 0.667 | 0.800 | 0.714 |
-| ZIP Strings | 10/10 | 1.000 | 0.933 | 0.966 | 0.964 |
+| HardenInspector | 11/11 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 11/11 | 1.000 | 0.312 | 0.476 | 0.414 |
+| Androguard DEX | 11/11 | 1.000 | 0.625 | 0.769 | 0.688 |
+| ZIP Strings | 11/11 | 1.000 | 0.875 | 0.933 | 0.938 |
 
 ## Per-category F1
 
@@ -18,7 +18,7 @@ Dataset: `hardeninspector_eval_v1`
 | Category | TP | FP | FN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| obfuscation | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
+| obfuscation | 5 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | environment | 3 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | native | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 
@@ -27,7 +27,7 @@ Dataset: `hardeninspector_eval_v1`
 | Category | TP | FP | FN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 3 | 0 | 1 | 1.000 | 0.750 | 0.857 |
-| obfuscation | 0 | 0 | 4 | 0.000 | 0.000 | 0.000 |
+| obfuscation | 0 | 0 | 5 | 0.000 | 0.000 | 0.000 |
 | environment | 2 | 0 | 1 | 1.000 | 0.667 | 0.800 |
 | native | 0 | 0 | 4 | 0.000 | 0.000 | 0.000 |
 
@@ -36,7 +36,7 @@ Dataset: `hardeninspector_eval_v1`
 | Category | TP | FP | FN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| obfuscation | 3 | 0 | 1 | 1.000 | 0.750 | 0.857 |
+| obfuscation | 3 | 0 | 2 | 1.000 | 0.600 | 0.750 |
 | environment | 3 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | native | 0 | 0 | 4 | 0.000 | 0.000 | 0.000 |
 
@@ -45,7 +45,7 @@ Dataset: `hardeninspector_eval_v1`
 | Category | TP | FP | FN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| obfuscation | 3 | 0 | 1 | 1.000 | 0.750 | 0.857 |
+| obfuscation | 3 | 0 | 2 | 1.000 | 0.600 | 0.750 |
 | environment | 3 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | native | 4 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 

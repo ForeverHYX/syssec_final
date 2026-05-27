@@ -10,6 +10,9 @@ import zipfile
 from pathlib import Path
 
 
+DETERMINISTIC_ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
+
+
 @dataclass(frozen=True)
 class SyntheticApkSpec:
     manifest_strings: list[str]
@@ -19,6 +22,7 @@ class SyntheticApkSpec:
     native_libraries: dict[str, bytes] = field(default_factory=dict)
     assets: dict[str, bytes] = field(default_factory=dict)
     const_string_values: list[str] = field(default_factory=list)
+    code_units: list[int] | None = None
 
 
 def build_synthetic_apk(path: Path, spec: SyntheticApkSpec) -> Path:
@@ -27,6 +31,7 @@ def build_synthetic_apk(path: Path, spec: SyntheticApkSpec) -> Path:
         extra_strings=spec.dex_strings,
         class_descriptors=spec.class_descriptors,
         method_names=spec.method_names,
+        code_units=spec.code_units,
         const_string_values=spec.const_string_values,
     )
     files: dict[str, bytes] = {
@@ -37,7 +42,10 @@ def build_synthetic_apk(path: Path, spec: SyntheticApkSpec) -> Path:
     files.update(spec.assets)
     with zipfile.ZipFile(path, "w") as apk:
         for name, data in files.items():
-            apk.writestr(name, data)
+            info = zipfile.ZipInfo(name, date_time=DETERMINISTIC_ZIP_TIMESTAMP)
+            info.compress_type = zipfile.ZIP_STORED
+            info.external_attr = 0o644 << 16
+            apk.writestr(info, data)
     return path
 
 
@@ -214,7 +222,19 @@ def const_string_instruction(string_index: int) -> list[int]:
 
 
 def invoke_static_instruction(method_index: int) -> list[int]:
-    return [0x0071, method_index, 0, 0]
+    return [0x0071, method_index, 0]
+
+
+def if_eq_instruction(offset: int = 0) -> list[int]:
+    return [0x0032, offset & 0xFFFF]
+
+
+def goto_instruction(offset: int = 0) -> list[int]:
+    return [0x0028 | ((offset & 0xFF) << 8)]
+
+
+def packed_switch_instruction(payload_offset: int = 0) -> list[int]:
+    return [0x002B, payload_offset & 0xFFFF, (payload_offset >> 16) & 0xFFFF]
 
 
 def _dedupe(values: list[str]) -> list[str]:

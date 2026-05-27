@@ -18,6 +18,7 @@ The samples correspond to the dataset categories described in the midterm report
 - native JNI bridge control sample
 - instrumentation-probe sample
 - reflection-only dispatch sample
+- lightweight control-flow flattening sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

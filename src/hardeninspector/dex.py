@@ -7,11 +7,51 @@ from dataclasses import dataclass, field
 import struct
 
 
+GOTO_OPCODES = frozenset({0x28, 0x29, 0x2A})
+SWITCH_OPCODES = frozenset({0x2B, 0x2C})
+CONDITIONAL_BRANCH_OPCODES = frozenset(range(0x32, 0x3E))
+THROW_OPCODES = frozenset({0x27})
+CONTROL_FLOW_OPCODES = GOTO_OPCODES | SWITCH_OPCODES | CONDITIONAL_BRANCH_OPCODES | THROW_OPCODES
+CONST_STRING_OPCODES = frozenset({0x1A, 0x1B})
+INVOKE_OPCODES = frozenset(range(0x6E, 0x73)) | frozenset(range(0x74, 0x79))
+
+
 @dataclass(frozen=True)
 class MethodReference:
     index: int
     class_descriptor: str
     name: str
+
+
+@dataclass(frozen=True)
+class OpcodeProfile:
+    dex_name: str
+    instruction_count: int
+    control_flow_count: int
+    control_flow_density: float
+    goto_count: int
+    conditional_branch_count: int
+    switch_count: int
+    throw_count: int
+    invoke_count: int
+    const_string_count: int
+
+    @classmethod
+    def from_counts(cls, dex_name: str, counts: Counter[int]) -> "OpcodeProfile":
+        instruction_count = sum(counts.values())
+        control_flow_count = sum(counts[opcode] for opcode in CONTROL_FLOW_OPCODES)
+        return cls(
+            dex_name=dex_name,
+            instruction_count=instruction_count,
+            control_flow_count=control_flow_count,
+            control_flow_density=control_flow_count / instruction_count if instruction_count else 0.0,
+            goto_count=sum(counts[opcode] for opcode in GOTO_OPCODES),
+            conditional_branch_count=sum(counts[opcode] for opcode in CONDITIONAL_BRANCH_OPCODES),
+            switch_count=sum(counts[opcode] for opcode in SWITCH_OPCODES),
+            throw_count=sum(counts[opcode] for opcode in THROW_OPCODES),
+            invoke_count=sum(counts[opcode] for opcode in INVOKE_OPCODES),
+            const_string_count=sum(counts[opcode] for opcode in CONST_STRING_OPCODES),
+        )
 
 
 @dataclass(frozen=True)
@@ -38,6 +78,10 @@ class DexFile:
     const_strings: list[str] = field(default_factory=list)
     invoked_methods: list[MethodReference] = field(default_factory=list)
     parse_errors: list[str] = field(default_factory=list)
+
+    @property
+    def opcode_profile(self) -> OpcodeProfile:
+        return OpcodeProfile.from_counts(self.name, self.opcode_counts)
 
     @classmethod
     def parse(cls, name: str, data: bytes) -> "DexFile":
@@ -156,20 +200,20 @@ class _DexParser:
             opcode_counts[opcode] += 1
             if opcode == 0x1A and cursor + 1 < len(code_units):
                 const_strings.append(self._string_at(code_units[cursor + 1]))
-                cursor += 2
+                cursor += _instruction_width(opcode)
                 continue
             if opcode == 0x1B and cursor + 2 < len(code_units):
                 string_idx = code_units[cursor + 1] | (code_units[cursor + 2] << 16)
                 const_strings.append(self._string_at(string_idx))
-                cursor += 3
+                cursor += _instruction_width(opcode)
                 continue
-            if 0x6E <= opcode <= 0x72 and cursor + 1 < len(code_units):
+            if opcode in INVOKE_OPCODES and cursor + 1 < len(code_units):
                 invoked = self._method_at(code_units[cursor + 1])
                 if invoked is not None:
                     invoked_methods.append(invoked)
-                cursor += 3
+                cursor += _instruction_width(opcode)
                 continue
-            cursor += 1
+            cursor += _instruction_width(opcode)
 
         self.result.code_methods.append(
             CodeMethod(
@@ -219,3 +263,18 @@ class _DexParser:
             shift += 7
         raise ValueError("uleb128 too long")
 
+
+def _instruction_width(opcode: int) -> int:
+    if opcode == 0x1A:
+        return 2
+    if opcode == 0x1B:
+        return 3
+    if opcode == 0x29:
+        return 2
+    if opcode in {0x2A, 0x2B, 0x2C}:
+        return 3
+    if opcode in CONDITIONAL_BRANCH_OPCODES:
+        return 2
+    if opcode in INVOKE_OPCODES:
+        return 3
+    return 1

@@ -1,0 +1,331 @@
+"""Explainable static hardening rules."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import PurePosixPath
+
+from .features import ApkFeatures, StringEvidence
+
+
+@dataclass(frozen=True)
+class Evidence:
+    kind: str
+    value: str
+    location: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {"kind": self.kind, "value": self.value, "location": self.location}
+
+
+@dataclass(frozen=True)
+class Finding:
+    id: str
+    category: str
+    severity: str
+    confidence: str
+    title: str
+    description: str
+    evidence: list[Evidence]
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "id": self.id,
+            "category": self.category,
+            "severity": self.severity,
+            "confidence": self.confidence,
+            "title": self.title,
+            "description": self.description,
+            "evidence": [item.to_dict() for item in self.evidence],
+        }
+
+
+KNOWN_PACKER_LIBS = {
+    "libjiagu.so": "Qihoo 360 Jiagu",
+    "libjiagu_art.so": "Qihoo 360 Jiagu",
+    "libsecexe.so": "Bangcle",
+    "libsecmain.so": "Bangcle",
+    "libDexHelper.so": "DexHelper-style shell",
+    "libshell.so": "generic shell library",
+    "libprotectClass.so": "Baidu-style protection",
+}
+
+STUB_APP_PATTERNS = [
+    "StubApp",
+    "com.qihoo",
+    "secneo",
+    "bangcle",
+    "ijiami",
+    "ali.protect",
+]
+
+DYNAMIC_LOADING_PATTERNS = [
+    "DexClassLoader",
+    "PathClassLoader",
+    "BaseDexClassLoader",
+    "InMemoryDexClassLoader",
+    "loadDex",
+]
+
+REFLECTION_PATTERNS = [
+    "java.lang.reflect.Method",
+    "java/lang/reflect/Method",
+    "Method.invoke",
+]
+
+SYSTEM_PROPERTY_PATTERNS = [
+    "ro.kernel.qemu",
+    "ro.build.fingerprint",
+    "ro.product.model",
+    "ro.hardware",
+    "goldfish",
+    "ranchu",
+    "genymotion",
+]
+
+DEBUGGER_PATTERNS = [
+    "isDebuggerConnected",
+    "/proc/self/status",
+    "TracerPid",
+    "ptrace",
+]
+
+INSTRUMENTATION_PATTERNS = [
+    "frida",
+    "xposed",
+    "substrate",
+    "/proc/self/maps",
+    "libfrida",
+]
+
+
+def evaluate_rules(features: ApkFeatures) -> list[Finding]:
+    findings: list[Finding] = []
+    for rule in (
+        _known_packer_library,
+        _stub_application,
+        _high_entropy_payload,
+        _dynamic_code_loading,
+        _short_identifiers,
+        _reflection_usage,
+        _system_properties,
+        _debugger_probe,
+        _instrumentation_probe,
+        _jni_entrypoint,
+    ):
+        finding = rule(features)
+        if finding is not None:
+            findings.append(finding)
+    return findings
+
+
+def _known_packer_library(features: ApkFeatures) -> Finding | None:
+    evidence: list[Evidence] = []
+    for entry in features.entries:
+        basename = PurePosixPath(entry.name).name
+        if basename in KNOWN_PACKER_LIBS:
+            evidence.append(Evidence("file", basename, entry.name))
+    if not evidence:
+        return None
+    return Finding(
+        id="packer.known_library",
+        category="packer",
+        severity="high",
+        confidence="high",
+        title="Known Android packer native library",
+        description="APK contains native library names associated with common Android packers.",
+        evidence=evidence,
+    )
+
+
+def _stub_application(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, STUB_APP_PATTERNS, kinds={"manifest-string"})
+    if not evidence:
+        return None
+    return Finding(
+        id="packer.stub_application",
+        category="packer",
+        severity="medium",
+        confidence="high",
+        title="Manifest references packer stub application",
+        description="Manifest strings contain application class names or package prefixes commonly used by shell stubs.",
+        evidence=evidence,
+    )
+
+
+def _high_entropy_payload(features: ApkFeatures) -> Finding | None:
+    evidence: list[Evidence] = []
+    for entry in features.resource_entries:
+        if entry.name.startswith("assets/") and entry.size >= 128 and entry.entropy >= 7.5:
+            evidence.append(Evidence("file-stat", f"entropy={entry.entropy:.2f}, size={entry.size}", entry.name))
+    if not evidence:
+        return None
+    return Finding(
+        id="packer.high_entropy_payload",
+        category="packer",
+        severity="medium",
+        confidence="medium",
+        title="High-entropy asset payload",
+        description="APK assets contain high-entropy data that may be encrypted payload material.",
+        evidence=evidence[:5],
+    )
+
+
+def _dynamic_code_loading(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, DYNAMIC_LOADING_PATTERNS)
+    if not evidence:
+        return None
+    return Finding(
+        id="packer.dynamic_code_loading",
+        category="packer",
+        severity="medium",
+        confidence="medium",
+        title="Dynamic code loading indicators",
+        description="Strings or bytecode constants reference Android class-loading APIs used by packers and plugin loaders.",
+        evidence=evidence[:10],
+    )
+
+
+def _short_identifiers(features: ApkFeatures) -> Finding | None:
+    class_names = [_simple_class_name(value) for value in features.type_descriptors if _is_class_descriptor(value)]
+    if len(class_names) < 3:
+        return None
+    short = [name for name in class_names if 0 < len(name) <= 2]
+    ratio = len(short) / len(class_names)
+    if ratio < 0.6:
+        return None
+    evidence = [
+        Evidence("stat", f"short_class_ratio={ratio:.2f} ({len(short)}/{len(class_names)})", "DEX type descriptors"),
+        *[Evidence("class", value, "DEX type descriptors") for value in short[:8]],
+    ]
+    return Finding(
+        id="obfuscation.short_identifiers",
+        category="obfuscation",
+        severity="medium",
+        confidence="medium",
+        title="Short obfuscated class identifiers",
+        description="Most class descriptors use one- or two-character simple names, a common identifier-renaming signal.",
+        evidence=evidence,
+    )
+
+
+def _reflection_usage(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, REFLECTION_PATTERNS)
+    for method in features.methods + features.invoked_methods:
+        if method.name == "invoke" or "reflect" in method.class_descriptor.lower():
+            evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+    if not evidence:
+        return None
+    return Finding(
+        id="obfuscation.reflection",
+        category="obfuscation",
+        severity="medium",
+        confidence="medium",
+        title="Reflection usage indicators",
+        description="APK references reflection APIs or invoke methods that can hide direct call targets.",
+        evidence=_dedupe_evidence(evidence)[:10],
+    )
+
+
+def _system_properties(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, SYSTEM_PROPERTY_PATTERNS)
+    if not evidence:
+        return None
+    return Finding(
+        id="environment.system_properties",
+        category="environment",
+        severity="medium",
+        confidence="high",
+        title="Emulator or device-fingerprint property checks",
+        description="APK references Android system properties commonly used for emulator or sandbox detection.",
+        evidence=evidence[:10],
+    )
+
+
+def _debugger_probe(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, DEBUGGER_PATTERNS)
+    for method in features.methods + features.invoked_methods:
+        if method.name == "isDebuggerConnected":
+            evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+    if not evidence:
+        return None
+    return Finding(
+        id="environment.debugger_probe",
+        category="environment",
+        severity="medium",
+        confidence="high",
+        title="Debugger detection indicators",
+        description="APK references debugger status APIs, ptrace, or TracerPid process-status checks.",
+        evidence=_dedupe_evidence(evidence)[:10],
+    )
+
+
+def _instrumentation_probe(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(features.string_evidence, INSTRUMENTATION_PATTERNS)
+    if not evidence:
+        return None
+    return Finding(
+        id="environment.instrumentation_probe",
+        category="environment",
+        severity="medium",
+        confidence="high",
+        title="Dynamic instrumentation detection indicators",
+        description="APK references Frida/Xposed/Substrate or process-map strings often used to detect instrumentation.",
+        evidence=evidence[:10],
+    )
+
+
+def _jni_entrypoint(features: ApkFeatures) -> Finding | None:
+    evidence: list[Evidence] = []
+    for location, strings in features.native_strings.items():
+        if "JNI_OnLoad" in strings:
+            evidence.append(Evidence("native-string", "JNI_OnLoad", location))
+    if not evidence:
+        return None
+    return Finding(
+        id="native.jni_entrypoint",
+        category="native",
+        severity="low",
+        confidence="medium",
+        title="Native JNI entrypoint present",
+        description="Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
+        evidence=evidence,
+    )
+
+
+def _string_matches(
+    strings: list[StringEvidence],
+    patterns: list[str],
+    kinds: set[str] | None = None,
+) -> list[Evidence]:
+    evidence: list[Evidence] = []
+    lowered_patterns = [(pattern, pattern.lower()) for pattern in patterns]
+    for item in strings:
+        if kinds is not None and item.kind not in kinds:
+            continue
+        lowered = item.value.lower()
+        for original, pattern in lowered_patterns:
+            if pattern in lowered:
+                evidence.append(Evidence(item.kind, original if len(original) < len(item.value) else item.value, item.location))
+                break
+    return _dedupe_evidence(evidence)
+
+
+def _is_class_descriptor(value: str) -> bool:
+    return value.startswith("L") and value.endswith(";") and "/" in value
+
+
+def _simple_class_name(descriptor: str) -> str:
+    return descriptor.removeprefix("L").removesuffix(";").split("/")[-1]
+
+
+def _dedupe_evidence(items: list[Evidence]) -> list[Evidence]:
+    result: list[Evidence] = []
+    seen: set[tuple[str, str, str]] = set()
+    for item in items:
+        key = (item.kind, item.value, item.location)
+        if key not in seen:
+            seen.add(key)
+            result.append(item)
+    return result
+

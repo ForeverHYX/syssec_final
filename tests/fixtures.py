@@ -136,6 +136,59 @@ def build_apk(path: Path, files: dict[str, bytes]) -> Path:
     return path
 
 
+def build_axml_string_pool(strings: list[str]) -> bytes:
+    encoded = []
+    offsets = []
+    cursor = 0
+    for value in strings:
+        raw = value.encode("utf-8")
+        item = bytes([len(value), len(raw)]) + raw + b"\x00"
+        offsets.append(cursor)
+        encoded.append(item)
+        cursor += len(item)
+
+    strings_data = b"".join(encoded)
+    header_size = 28
+    chunk_size = header_size + len(offsets) * 4 + len(strings_data)
+    strings_start = header_size + len(offsets) * 4
+    return (
+        struct.pack("<HHI", 0x0001, header_size, chunk_size)
+        + struct.pack("<IIIII", len(strings), 0, 0x00000100, strings_start, 0)
+        + b"".join(struct.pack("<I", offset) for offset in offsets)
+        + strings_data
+    )
+
+
+def build_hardened_apk(path: Path) -> Path:
+    dex = build_dex_fixture(
+        extra_strings=[
+            "ro.kernel.qemu",
+            "ro.build.fingerprint",
+            "DexClassLoader",
+            "java.lang.reflect.Method",
+            "isDebuggerConnected",
+            "/proc/self/status",
+        ],
+        class_descriptors=["La/a;", "Lb/b;", "Lc/c;"],
+        method_names=["<clinit>", "invoke"],
+        code_units=[
+            *const_string_instruction(6),
+            *invoke_static_instruction(1),
+        ],
+    )
+    return build_apk(
+        path,
+        {
+            "AndroidManifest.xml": build_axml_string_pool(
+                ["com.example.app", "com.qihoo.util.StubApp"]
+            ),
+            "classes.dex": dex,
+            "lib/arm64-v8a/libjiagu.so": b"JNI_OnLoad\x00/proc/self/maps\x00frida-gadget\x00",
+            "assets/payload.bin": bytes(range(256)) * 2,
+        },
+    )
+
+
 def _dedupe(values: list[str]) -> list[str]:
     result: list[str] = []
     seen: set[str] = set()
@@ -144,4 +197,3 @@ def _dedupe(values: list[str]) -> list[str]:
             seen.add(value)
             result.append(value)
     return result
-

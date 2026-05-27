@@ -27,7 +27,7 @@ Status: in_progress
 
 ### Phase 2: Core static parser
 
-Status: pending
+Status: complete
 
 - Implement APK ZIP inventory, Android binary XML string extraction, DEX string/type/method/code parsing, native string extraction, entropy helpers.
 - Add tests using generated APK/DEX fixtures.
@@ -35,7 +35,7 @@ Status: pending
 
 ### Phase 3: Detection rules and reporting
 
-Status: pending
+Status: in_progress
 
 - Implement feature extraction for packer, obfuscation, environment, native signals.
 - Implement rule engine and JSON/text report model.
@@ -63,4 +63,5 @@ Status: pending
 | Error | Attempt | Resolution |
 | --- | --- | --- |
 | Workspace root was not a git repo | `git status` in `/home/yxhong/syssec` | Created project repo under `/home/yxhong/syssec/syssec_final` |
+| `pytest` missing from base environment | `pytest` and `python3 -m pytest` | Created `.venv` and installed local dev dependencies |
 

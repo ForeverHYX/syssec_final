@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hardeninspector"
+version = "0.1.0"
+description = "Static Android APK hardening-technique detector for syssec final project"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "syssec_final team" }
+]
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0"
+]
+
+[project.scripts]
+hardeninspector = "hardeninspector.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+

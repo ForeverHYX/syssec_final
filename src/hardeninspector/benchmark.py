@@ -80,7 +80,7 @@ def evaluate_predictions(
                 "expected_categories": sample["expected_categories"],
                 "predicted_categories": sorted(prediction.categories),
                 "status": prediction.status,
-                "runtime_ms": prediction.runtime_ms,
+                "runtime_ms": None,
                 "notes": prediction.notes,
                 "finding_ids": prediction.finding_ids or [],
             }

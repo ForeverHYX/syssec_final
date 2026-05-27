@@ -21,6 +21,16 @@ python3 -m venv .venv
 .venv/bin/pytest -q
 ```
 
+也可以直接使用仓库维护的 Makefile：
+
+```bash
+make setup
+make test
+make dataset
+make benchmark
+make slides
+```
+
 ## 使用
 
 生成可复现演示 APK：
@@ -85,7 +95,7 @@ python3 -m venv .venv
 - [实现范围与目标调整说明](docs/implementation_scope.md)
 - [期末交付说明](docs/final_deliverable.md)
 - [期末总结报告](reports/final_summary.md)
-- [LaTeX Beamer 汇报稿](slides/final_presentation.tex)
+- [ZJU Beamer 汇报稿](slides/final_presentation.tex)
 
 ## 局限
 

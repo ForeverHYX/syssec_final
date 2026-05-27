@@ -17,6 +17,8 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Compare with open-source implementations and provide statistics | User clarification | Benchmark runner, comparator outputs, metrics JSON/CSV/Markdown |
 | Preserve the midterm technical route and avoid copying open-source implementations | User clarification | Benchmark adapters only invoke/reference external tools; detector remains evidence-chain static rules |
 | Produce final summary report and LaTeX Beamer | User clarification | `reports/final_summary.md` and `slides/final_presentation.tex` |
+| Use ZJU Beamer template and include tables/illustrations | User clarification | ZJU template assets in `slides/`; deck title is `HardenInspector`, authors match the midterm report, and compiled output has tables plus TikZ figures |
+| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 14-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote created/pushed, staged commits made |
 | Commit and push at milestones | User objective | Git history shows staged commits and remote branch is up to date |
@@ -94,12 +96,13 @@ Status: complete
 Status: complete
 
 - Produce Chinese summary report for final deliverable.
-- Produce LaTeX Beamer slides for final presentation.
+- Produce ZJU Beamer slides for final presentation.
+- Include both tables and illustrations in the slides.
 - Add docs links from README.
 
 ### Phase 10: New completion audit
 
-Status: pending
+Status: in progress
 
 - Verify tests, benchmark artifacts, report/slides, docs, git status, and remote push.
 - Audit the new comparison/statistics/report requirements.

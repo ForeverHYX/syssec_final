@@ -1,13 +1,35 @@
-\documentclass[aspectratio=169]{ctexbeamer}
+%# -*- coding:utf-8 -*-
+\PassOptionsToPackage{quiet}{fontspec}
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[10pt,aspectratio=169]{beamer}
 
-\usetheme{Madrid}
-\usecolortheme{default}
+\usepackage{zju_beamer}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+
+\graphicspath{{./figures/}}
+\zjusectioncolor{blue}
 \setbeamertemplate{navigation symbols}{}
 
-\title{HardenInspector: Android 应用加固技术检测器}
-\subtitle{系统安全课程期末项目}
-\author{syssec\_final}
+\title[HardenInspector]{HardenInspector}
+\subtitle{Android 应用加固技术检测器}
+\author[洪奕迅、蒋城昊、项康]{洪奕迅、蒋城昊、项康}
+\institute[系统安全]{系统安全课程期末项目 \\ 浙江大学}
 \date{2026 年春夏学期}
+
+\tikzset{
+  hiBox/.style={
+    rounded corners=2pt,
+    draw=structure.fg,
+    fill=structure.fg!10,
+    align=center,
+    minimum width=2.1cm,
+    minimum height=0.72cm,
+    font=\scriptsize
+  },
+  hiArrow/.style={-Latex, thick, draw=structure.fg}
+}
 
 \begin{document}
 
@@ -15,128 +37,207 @@
   \titlepage
 \end{frame}
 
+\begin{frame}{目录}
+  \tableofcontents
+\end{frame}
+
+\section{项目目标}
+
 \begin{frame}{项目目标}
   \begin{itemize}
-    \item 课程方向：Android 应用抗加固分析，选择“检测器”路线。
-    \item 输入 APK，输出加固技术画像与证据链。
-    \item 不判断恶意/良性，只识别混淆、加壳、环境检测等技术信号。
-    \item 遵照中期报告 HardenInspector 架构：解析层、特征层、规则层、报告层。
+    \item 课程方向：Android 应用抗加固分析，选择中期报告中的“检测器”路线。
+    \item 输入 APK，输出加壳、混淆、环境检测、Native 入口等加固技术画像。
+    \item 不判断恶意/良性，只给出静态证据链、置信度和可复现实验统计。
+    \item 真实商业壳样本获取成本较高，最终采用可复现合成 APK 数据集替代，并在文档中记录目标调整。
   \end{itemize}
 \end{frame}
 
-\begin{frame}{技术路线}
-  \begin{block}{静态证据链}
-    APK ZIP / Manifest string pool / DEX / Native `.so` / 资源文件
+\begin{frame}{总体架构}{解析层、特征层、规则层、报告层}
+  \centering
+  \begin{tikzpicture}[node distance=0.62cm]
+    \node[hiBox] (apk) {APK\\ZIP};
+    \node[hiBox, right=of apk] (parse) {解析层\\Manifest/DEX/Native};
+    \node[hiBox, right=of parse] (feature) {特征层\\字符串/熵/API};
+    \node[hiBox, right=of feature] (rule) {规则层\\证据组合};
+    \node[hiBox, right=of rule] (report) {报告层\\JSON/Markdown};
+    \draw[hiArrow] (apk) -- (parse);
+    \draw[hiArrow] (parse) -- (feature);
+    \draw[hiArrow] (feature) -- (rule);
+    \draw[hiArrow] (rule) -- (report);
+  \end{tikzpicture}
+  \vspace{1em}
+
+  \begin{block}{实现边界}
+    技术路线遵照中期报告：以轻量静态分析为核心，不复制 APKiD、DroidLysis、MobSF 等开源实现的规则代码。
   \end{block}
-  \begin{itemize}
-    \item APK：文件清单、哈希、大小、压缩大小、熵值。
-    \item Manifest：壳入口类、权限、硬编码字符串。
-    \item DEX：字符串、类型描述符、方法名、\texttt{const-string}、\texttt{invoke-*}。
-    \item Native：JNI 和反分析相关字符串。
-  \end{itemize}
 \end{frame}
 
-\begin{frame}{检测规则}
+\section{检测实现}
+
+\begin{frame}{静态证据链}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item APK：文件清单、压缩大小、熵值、资源路径。
+        \item Manifest：壳入口类、权限、硬编码字符串。
+        \item DEX：字符串池、类型描述符、方法名、\texttt{const-string}、\texttt{invoke-*}。
+        \item Native：\texttt{JNI\_OnLoad}、反调试和 Hook 相关字符串。
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \begin{tikzpicture}[node distance=0.42cm]
+        \node[hiBox, minimum width=3.1cm] (m) {Manifest};
+        \node[hiBox, below=of m, minimum width=3.1cm] (d) {classes.dex};
+        \node[hiBox, below=of d, minimum width=3.1cm] (n) {lib/*.so};
+        \node[hiBox, right=1.1cm of d, minimum width=2.45cm, minimum height=2.65cm] (e) {Finding\\Evidence};
+        \draw[hiArrow] (m.east) -- (e.west);
+        \draw[hiArrow] (d.east) -- (e.west);
+        \draw[hiArrow] (n.east) -- (e.west);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{检测规则示例}
+  \small
   \begin{table}
     \centering
-    \begin{tabular}{ll}
-      \hline
-      类别 & 规则示例 \\
-      \hline
-      加壳 & 壳库名、StubApp、高熵 payload、动态加载 API \\
-      混淆 & 短类名比例、反射 API、invoke 证据 \\
-      环境检测 & emulator properties、debugger、Frida/Xposed \\
-      Native & JNI\_OnLoad 入口证据 \\
-      \hline
+    \begin{tabular}{lll}
+      \toprule
+      类别 & 规则信号 & 输出证据 \\
+      \midrule
+      加壳 & 壳库名、StubApp、高熵 payload、动态加载 API & packer finding \\
+      混淆 & 短类名比例、反射 API、字符串/调用组合 & obfuscation finding \\
+      环境检测 & emulator properties、debugger、Frida/Xposed & environment finding \\
+      Native & JNI 入口、native loader、反分析字符串 & native finding \\
+      \bottomrule
     \end{tabular}
   \end{table}
-  \vspace{0.5em}
-  每条 finding 都包含 category、confidence、description 和 evidence。
+  \vspace{0.4em}
+  每条 finding 都包含 category、confidence、description 和 evidence，便于人工复核。
 \end{frame}
 
-\begin{frame}{数据集构造}
+\section{数据集与对比}
+
+\begin{frame}{数据集构造}{hardeninspector\_eval\_v1}
+  \centering
+  \begin{tikzpicture}[node distance=0.55cm]
+    \node[hiBox, minimum width=2.5cm] (template) {样本模板};
+    \node[hiBox, right=of template, minimum width=2.5cm] (inject) {注入信号};
+    \node[hiBox, right=of inject, minimum width=2.5cm] (build) {生成 APK};
+    \node[hiBox, right=of build, minimum width=2.5cm] (label) {标注 label};
+    \node[hiBox, below=0.75cm of build, minimum width=3.0cm] (report) {检测报告};
+    \draw[hiArrow] (template) -- (inject);
+    \draw[hiArrow] (inject) -- (build);
+    \draw[hiArrow] (build) -- (label);
+    \draw[hiArrow] (build) -- (report);
+  \end{tikzpicture}
+  \vspace{0.8em}
   \begin{itemize}
-    \item 路径：\texttt{datasets/hardeninspector\_eval\_v1/}
-    \item 6 个可复现合成 APK。
-    \item 覆盖 F-Droid 风格基线、自写环境检测、R8 风格混淆、Obfuscapk 风格反射/动态加载、加壳 stub/payload、综合展示样本。
-    \item 每个样本包含 label 和检测报告。
+    \item 共 6 个可复现合成 APK，覆盖 clean、R8 风格混淆、Obfuscapk 风格反射/动态加载、壳 stub/payload、环境检测和综合样本。
+    \item 数据集、labels、每个样本报告均维护在仓库中，可通过 \texttt{make dataset} 重新生成。
   \end{itemize}
 \end{frame}
 
-\begin{frame}{开源实现对比}
+\begin{frame}{开源实现对比口径}
   \begin{itemize}
-    \item APKiD：主要可运行基线，识别 packer/protector/obfuscator/oddity。
-    \item DroidLysis：预分析工具，本地完整能力依赖 apktool/baksmali/dex2jar。
-    \item MobSF：完整移动安全框架，作为定性对比，不作为离线 benchmark 硬依赖。
-    \item 开源工具只用于验证，不复制其规则实现。
+    \item APKiD：主要可运行基线，映射 packer/protector/obfuscator/oddity 到课程类别。
+    \item DroidLysis：预分析工具，本地完整能力依赖 apktool、baksmali、dex2jar，作为可用性受限基线记录。
+    \item MobSF：完整移动安全框架，用作定性能力参照，不作为离线 benchmark 硬依赖。
+    \item 对比只使用工具输出结果验证可靠性，不复制其规则实现。
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Benchmark 统计}
+\begin{frame}{Benchmark 统计结果}
+  \small
   \begin{table}
     \centering
     \begin{tabular}{lrrrr}
-      \hline
+      \toprule
       Tool & Precision & Recall & Micro F1 & Macro F1 \\
-      \hline
+      \midrule
       HardenInspector & 1.000 & 1.000 & 1.000 & 1.000 \\
       APKiD & 1.000 & 0.400 & 0.571 & 0.450 \\
       DroidLysis & 0.000 & 0.000 & 0.000 & 0.000 \\
-      \hline
+      \bottomrule
     \end{tabular}
   \end{table}
-  \vspace{0.5em}
-  DroidLysis 当前为有限环境运行结果，不代表完整工具能力。
+  \vspace{0.35em}
+  DroidLysis 当前为有限环境运行结果，不代表完整工具能力；核心结论以同一数据集上的可运行输出为准。
 \end{frame}
 
-\begin{frame}{结果分析}
-  \begin{itemize}
-    \item APKiD 对 Jiagu 和 \texttt{ro.kernel.qemu} 信号表现良好。
-    \item HardenInspector 覆盖中期报告要求的三类加固画像。
-    \item 对可比类别，HardenInspector 已接近或超过 APKiD 的覆盖。
-    \item 额外覆盖短标识符比例、反射/动态加载组合和 JNI 入口证据。
-  \end{itemize}
+\begin{frame}{Micro F1 可视化}
+  \centering
+  \begin{tikzpicture}[x=7.6cm,y=0.78cm]
+    \draw[->, thick] (0,0) -- (1.08,0);
+    \draw[->, thick] (0,0) -- (0,3.9);
+    \foreach \x/\lab in {0/0,0.25/0.25,0.5/0.50,0.75/0.75,1/1.00} {
+      \draw (\x,0.05) -- (\x,-0.05) node[below,font=\scriptsize] {\lab};
+    }
+    \node[anchor=east,font=\scriptsize] at (0,3) {HardenInspector};
+    \node[anchor=east,font=\scriptsize] at (0,2) {APKiD};
+    \node[anchor=east,font=\scriptsize] at (0,1) {DroidLysis};
+    \fill[structure.fg!85] (0,2.72) rectangle (1.00,3.28);
+    \fill[Orange!80] (0,1.72) rectangle (0.571,2.28);
+    \fill[gray!55] (0,0.72) rectangle (0.01,1.28);
+    \node[anchor=west,font=\scriptsize] at (1.02,3) {1.000};
+    \node[anchor=west,font=\scriptsize] at (0.60,2) {0.571};
+    \node[anchor=west,font=\scriptsize] at (0.03,1) {0.000};
+  \end{tikzpicture}
 \end{frame}
+
+\section{交付与结论}
 
 \begin{frame}{开箱即用环境}
-  \begin{itemize}
-    \item \texttt{make setup}
-    \item \texttt{make test}
-    \item \texttt{make dataset}
-    \item \texttt{make benchmark}
-    \item \texttt{make demo}
-  \end{itemize}
-  Fresh venv 验证：17 个测试通过，CLI help 正常。
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{本地环境}
+        \texttt{make setup}\\
+        \texttt{make test}\\
+        \texttt{make dataset}\\
+        \texttt{make benchmark}\\
+        \texttt{make demo}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{容器环境}
+        \texttt{docker build -t hardeninspector .}\\
+        \texttt{docker run --rm hardeninspector make test}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.7em}
+  Fresh venv 验证：测试通过，CLI help、数据集生成、benchmark 和 slides 编译均可复现。
 \end{frame}
 
 \begin{frame}{项目交付}
   \begin{itemize}
     \item 检测器源码：\texttt{src/hardeninspector/}
     \item 数据集：\texttt{datasets/hardeninspector\_eval\_v1/}
-    \item Benchmark：\texttt{reports/benchmark/}
-    \item 中文文档：\texttt{docs/}
+    \item Benchmark 统计：\texttt{reports/benchmark/}
+    \item 中文文档：\texttt{README.md}、\texttt{docs/}
     \item 总结报告：\texttt{reports/final\_summary.md}
-    \item Beamer：\texttt{slides/final\_presentation.tex}
+    \item ZJU Beamer：\texttt{slides/final\_presentation.tex}
   \end{itemize}
 \end{frame}
 
 \begin{frame}{局限与未来工作}
   \begin{itemize}
-    \item 当前数据集是合成可复现数据集，不等价于真实大规模生态。
+    \item 当前数据集是合成可复现数据集，不等价于真实大规模 Android 生态。
     \item 尚未实现完整 CFG、深度 Native 反汇编和动态 Frida 验证。
-    \item 后续可增加真实 F-Droid/Obfuscapk/R8 样本和商业壳样本。
+    \item 后续可增加真实 F-Droid、Obfuscapk、R8 和商业壳样本。
     \item 可扩展更多壳库名、StubApp 模式和 opcode/控制流轻量统计。
   \end{itemize}
 \end{frame}
 
 \begin{frame}{结论}
   \begin{itemize}
-    \item HardenInspector 实现了中期报告提出的静态证据链检测器。
-    \item 构造了可复现数据集并给出统计验证。
+    \item HardenInspector 完成了中期报告提出的轻量静态证据链检测器。
+    \item 构造了可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
     \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
-    \item 工具、数据集、文档、环境和汇报材料均维护在 GitHub 仓库中。
+    \item 工具、数据集、文档、环境和汇报材料均已维护在 GitHub 仓库中。
   \end{itemize}
 \end{frame}
 
 \end{document}
-

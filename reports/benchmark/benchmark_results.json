@@ -92,7 +92,7 @@
           "id": "fdroid_clean_baseline",
           "notes": null,
           "predicted_categories": [],
-          "runtime_ms": 0.3884481266140938,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -108,7 +108,7 @@
           "predicted_categories": [
             "environment"
           ],
-          "runtime_ms": 0.19695982336997986,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -123,7 +123,7 @@
           "predicted_categories": [
             "obfuscation"
           ],
-          "runtime_ms": 0.15673693269491196,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -141,7 +141,7 @@
             "obfuscation",
             "packer"
           ],
-          "runtime_ms": 0.1504751853644848,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -162,7 +162,7 @@
             "native",
             "packer"
           ],
-          "runtime_ms": 0.20212819799780846,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -192,7 +192,7 @@
             "obfuscation",
             "packer"
           ],
-          "runtime_ms": 0.22460008040070534,
+          "runtime_ms": null,
           "status": "ok"
         }
       ],
@@ -276,7 +276,7 @@
           "id": "fdroid_clean_baseline",
           "notes": null,
           "predicted_categories": [],
-          "runtime_ms": 26.724127121269703,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -291,7 +291,7 @@
           "predicted_categories": [
             "environment"
           ],
-          "runtime_ms": 28.072041925042868,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -302,7 +302,7 @@
           "id": "r8_identifier_obfuscation",
           "notes": null,
           "predicted_categories": [],
-          "runtime_ms": 27.81279617920518,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -314,7 +314,7 @@
           "id": "obfuscapk_reflection_dynamic",
           "notes": null,
           "predicted_categories": [],
-          "runtime_ms": 28.683001175522804,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -330,7 +330,7 @@
           "predicted_categories": [
             "packer"
           ],
-          "runtime_ms": 30.51962424069643,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -350,7 +350,7 @@
             "environment",
             "packer"
           ],
-          "runtime_ms": 30.842144042253494,
+          "runtime_ms": null,
           "status": "ok"
         }
       ],
@@ -434,7 +434,7 @@
           "id": "fdroid_clean_baseline",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 200.45483577996492,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -445,7 +445,7 @@
           "id": "self_written_environment_checks",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 188.46205528825521,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -456,7 +456,7 @@
           "id": "r8_identifier_obfuscation",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 194.72806295379996,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -468,7 +468,7 @@
           "id": "obfuscapk_reflection_dynamic",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 195.15726389363408,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -480,7 +480,7 @@
           "id": "packer_stub_payload",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 199.23652708530426,
+          "runtime_ms": null,
           "status": "ok"
         },
         {
@@ -494,7 +494,7 @@
           "id": "combined_hardened_showcase",
           "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
           "predicted_categories": [],
-          "runtime_ms": 195.60173898935318,
+          "runtime_ms": null,
           "status": "ok"
         }
       ],

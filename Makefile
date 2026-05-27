@@ -24,9 +24,10 @@ demo:
 	$(PY) -m hardeninspector samples/demo_hardened.apk
 
 slides:
-	xelatex -interaction=nonstopmode -halt-on-error -output-directory=slides slides/final_presentation.tex
+	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex
+	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex
 
 all: setup test dataset benchmark demo slides
 
 clean:
-	rm -rf .pytest_cache reports/benchmark samples/demo_hardened.apk slides/*.aux slides/*.log slides/*.nav slides/*.out slides/*.snm slides/*.toc
+	rm -rf .pytest_cache reports/benchmark samples/demo_hardened.apk slides/*.aux slides/*.log slides/*.nav slides/*.out slides/*.snm slides/*.toc slides/*.vrb slides/*.synctex.gz slides/final_presentation.pdf

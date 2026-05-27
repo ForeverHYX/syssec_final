@@ -40,3 +40,12 @@
 - Verified fresh setup path with `/tmp/hardeninspector-venv-check`: setup script installed `[all]` dependencies, `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 17 tests, and `/tmp/hardeninspector-venv-check/bin/python -m hardeninspector --help` exited 0.
 - Added `reports/final_summary.md` Chinese final report and `slides/final_presentation.tex` LaTeX Beamer deck.
 - Verified Beamer compilation with `xelatex -interaction=nonstopmode -halt-on-error -output-directory=/tmp slides/final_presentation.tex`; output was `/tmp/final_presentation.pdf` with 12 pages.
+- User requested the final slides use the ZJU Beamer template, keep the project name as the title, use member names from the midterm report, include both tables and illustrations, compile and inspect the deck, and ignore generated slide artifacts.
+- Imported ZJU Beamer Template assets into `slides/` with attribution in `slides/README.md`.
+- Rebuilt `slides/final_presentation.tex` on the ZJU template with title `HardenInspector`, authors 洪奕迅、蒋城昊、项康, rule/benchmark tables, a pipeline diagram, a dataset-construction diagram, and a Micro F1 visualization.
+- Updated `Makefile` so `make slides` compiles from `slides/` twice, matching the template's relative asset paths and stabilizing total frame count.
+- Added slide build artifacts to `.gitignore`: PDF plus LaTeX `.aux/.log/.nav/.out/.snm/.toc/.vrb` and related files.
+- Compiled the ZJU Beamer deck with `make slides`; `pdfinfo` reported 14 pages.
+- Rendered and visually inspected representative pages: title page, architecture diagram, benchmark table, and Micro F1 chart.
+- Made benchmark JSON reproducible by serializing `runtime_ms` as `null`, added a regression test, and regenerated `reports/benchmark/benchmark_results.json`.
+- Latest local and fresh-venv test runs passed with 19 tests.

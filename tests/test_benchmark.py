@@ -57,6 +57,7 @@ def test_hardeninspector_benchmark_reaches_dataset_oracle(tmp_path):
     assert result["metrics"]["micro"]["f1"] == 1.0
     assert result["coverage"]["samples_total"] == 6
     assert result["coverage"]["samples_with_results"] == 6
+    assert all(sample["runtime_ms"] is None for sample in result["samples"])
 
 
 def test_run_benchmark_writes_machine_and_markdown_reports(tmp_path):

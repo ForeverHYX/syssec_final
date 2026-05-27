@@ -7,13 +7,13 @@
 - HardenInspector 静态 APK 加固技术检测器；
 - 可运行 CLI；
 - JSON/文本报告输出；
-- 10 个自动化测试；
+- 19 个自动化测试；
 - 可复现评估数据集 `datasets/hardeninspector_eval_v1/`；
 - 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
 - 开箱即用环境：`Makefile`、`scripts/setup_env.sh`、`requirements*.txt`、`Dockerfile`、`docs/environment.md`；
 - 中文使用手册、规则说明、架构说明、数据集说明、Demo 流程和目标调整说明；
 - 期末总结报告：`reports/final_summary.md`；
-- LaTeX Beamer 汇报稿：`slides/final_presentation.tex`；
+- ZJU Beamer 模板期末汇报稿：`slides/final_presentation.tex`；
 - 中期报告 PDF 归档：`docs/references/mid_term.pdf`；
 - GitHub 远端仓库与阶段性提交记录。
 
@@ -28,7 +28,8 @@
 | 构造小规模测试集 | `datasets/hardeninspector_eval_v1/` 包含 6 个 APK、labels 和报告 |
 | 与开源实现对比并给出统计数据 | `reports/benchmark/benchmark_results.json`、`benchmark_metrics.csv`、`benchmark_summary.md` |
 | 开箱即用环境 | `make setup`、`./scripts/setup_env.sh`、Dockerfile；fresh venv 验证通过 |
-| 总结报告和汇报材料 | `reports/final_summary.md`、`slides/final_presentation.tex`；`xelatex` 编译通过 |
+| 总结报告和汇报材料 | `reports/final_summary.md`、ZJU Beamer `slides/final_presentation.tex`；标题为项目名，作者为中期报告组员，包含表格和 TikZ 插图，`make slides` 编译通过 |
+| slides 构建产物管理 | `slides/final_presentation.pdf` 和 LaTeX 辅助文件均已加入 `.gitignore`，仅提交 `.tex`、模板 `.sty` 和模板图片资源 |
 | 记录现实调整 | `docs/implementation_scope.md` |
 | 课程展示可复现 | `docs/demo.md` 和 `examples/make_demo_apk.py` |
 
@@ -38,6 +39,7 @@
 .venv/bin/pytest -q
 .venv/bin/python -m hardeninspector --help
 .venv/bin/python -m hardeninspector datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk --json
+make slides
 ```
 
 ## 当前边界

@@ -155,7 +155,9 @@ DroidLysis 当前统计为 0，是因为本仓库未配置完整 apktool/baksmal
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector --help
 ```
 
-验证结果：fresh venv 中 17 个测试通过，CLI 可用。
+验证结果：fresh venv 中 19 个测试通过，CLI 可用。
+
+Benchmark 输出中的 `runtime_ms` 字段固定为 `null`，避免毫秒级耗时导致提交产物不可复现。
 
 ## 6. 交付物索引
 
@@ -166,8 +168,10 @@ DroidLysis 当前统计为 0，是因为本仓库未配置完整 apktool/baksmal
 | benchmark 统计 | `reports/benchmark/` |
 | 中文文档 | `docs/` |
 | 中期报告 PDF | `docs/references/mid_term.pdf` |
-| 期末 Beamer | `slides/final_presentation.tex` |
+| 期末 Beamer | `slides/final_presentation.tex`，使用 ZJU Beamer Template，标题为 `HardenInspector`，作者为洪奕迅、蒋城昊、项康 |
 | 开箱即用环境 | `Makefile`、`scripts/setup_env.sh`、`Dockerfile` |
+
+Beamer 已使用 `make slides` 编译检查，实际输出为 14 页。汇报稿包含规则/benchmark 表格、总体架构图、数据集构造图和 Micro F1 可视化图；生成的 PDF 和 LaTeX 辅助文件已加入 `.gitignore`。
 
 ## 7. 局限性
 
@@ -181,4 +185,4 @@ DroidLysis 当前统计为 0，是因为本仓库未配置完整 apktool/baksmal
 - APKiD: https://github.com/rednaga/APKiD
 - DroidLysis: https://pypi.org/project/droidlysis/
 - MobSF: https://github.com/MobSF/Mobile-Security-Framework-MobSF
-
+- ZJU Beamer Template: https://github.com/qychen2001/ZJU-Beamer-Template

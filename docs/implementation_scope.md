@@ -34,6 +34,12 @@
 - CLI 支持终端摘要、JSON 输出和 `-o/--output` 文件输出。
 - `examples/make_demo_apk.py` 可生成不含真实恶意逻辑的合成展示 APK。
 
+### 数据集
+
+- `src/hardeninspector/dataset.py` 可一键构造 `hardeninspector_eval_v1` 数据集。
+- 数据集包含 6 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、加壳 stub/payload、综合展示样本。
+- 每个样本都有 `labels.json` 标签项和对应 JSON 检测报告。
+
 ## 调整的目标
 
 ### 1. 不把 Androguard 作为必需运行时依赖

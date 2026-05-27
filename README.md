@@ -73,7 +73,16 @@ python3 -m venv .venv
 - 中期报告：`Android 应用抗加固分析：代码混淆、加壳与环境检测技术的检测框架设计`，其中提出 HardenInspector 静态优先、证据链输出的方案。
 - 现实调整：见 [docs/implementation_scope.md](docs/implementation_scope.md)。核心调整是不用外部样本库和动态 Frida 环境作为必需条件，优先保证检测器可运行、可测试、可复现。
 
+## 中文文档
+
+- [使用手册](docs/usage.md)
+- [架构说明](docs/architecture.md)
+- [检测规则说明](docs/rules.md)
+- [数据集构造说明](docs/dataset.md)
+- [课程展示 Demo](docs/demo.md)
+- [实现范围与目标调整说明](docs/implementation_scope.md)
+- [期末交付说明](docs/final_deliverable.md)
+
 ## 局限
 
 HardenInspector 是课程项目原型，不是工业级商业壳签名库。它输出的是静态证据和置信度，不保证完整覆盖所有加固器版本，也不把“使用加固”直接等同于恶意。
-

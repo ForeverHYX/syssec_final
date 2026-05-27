@@ -1,0 +1,146 @@
+{
+  "dataset_version": "hardeninspector_eval_v1",
+  "description": "Deterministic synthetic evaluation dataset for HardenInspector. Samples model the dataset categories promised by the midterm report without requiring commercial APKs, F-Droid downloads, Android SDK builds, or dynamic Frida infrastructure.",
+  "samples": [
+    {
+      "actual_findings": [],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/fdroid_clean_baseline.apk",
+      "construction": "synthetic substitute for a benign open-source app: normal package names, readable class descriptors, no packer libraries, no anti-analysis strings",
+      "expected_findings": [],
+      "id": "fdroid_clean_baseline",
+      "report_path": "reports/fdroid_clean_baseline.json",
+      "source_plan": "F-Droid baseline"
+    },
+    {
+      "actual_findings": [
+        "environment.system_properties",
+        "environment.debugger_probe"
+      ],
+      "actual_summary": {
+        "environment": 2,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/self_written_environment_checks.apk",
+      "construction": "synthetic self-written sample containing emulator and debugger probe strings without packer or obfuscation signals",
+      "expected_findings": [
+        "environment.system_properties",
+        "environment.debugger_probe"
+      ],
+      "id": "self_written_environment_checks",
+      "report_path": "reports/self_written_environment_checks.json",
+      "source_plan": "self-written APK with environment checks"
+    },
+    {
+      "actual_findings": [
+        "obfuscation.short_identifiers"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 1,
+        "packer": 0
+      },
+      "apk_path": "apks/r8_identifier_obfuscation.apk",
+      "construction": "synthetic substitute for R8/ProGuard output: package structure is retained but simple class identifiers are shortened to one-character names",
+      "expected_findings": [
+        "obfuscation.short_identifiers"
+      ],
+      "id": "r8_identifier_obfuscation",
+      "report_path": "reports/r8_identifier_obfuscation.json",
+      "source_plan": "ProGuard/R8 controlled obfuscation"
+    },
+    {
+      "actual_findings": [
+        "packer.dynamic_code_loading",
+        "obfuscation.reflection"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 1,
+        "packer": 1
+      },
+      "apk_path": "apks/obfuscapk_reflection_dynamic.apk",
+      "construction": "synthetic substitute for Obfuscapk transformations: reflection and dynamic loading strings model Reflection and advanced loading passes",
+      "expected_findings": [
+        "packer.dynamic_code_loading",
+        "obfuscation.reflection"
+      ],
+      "id": "obfuscapk_reflection_dynamic",
+      "report_path": "reports/obfuscapk_reflection_dynamic.json",
+      "source_plan": "Obfuscapk-style controlled obfuscation"
+    },
+    {
+      "actual_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
+        "native.jni_entrypoint"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 1,
+        "obfuscation": 0,
+        "packer": 4
+      },
+      "apk_path": "apks/packer_stub_payload.apk",
+      "construction": "synthetic substitute for a commercial packer sample: known shell library name, manifest StubApp, high-entropy asset payload, and dynamic loading string",
+      "expected_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
+        "native.jni_entrypoint"
+      ],
+      "id": "packer_stub_payload",
+      "report_path": "reports/packer_stub_payload.json",
+      "source_plan": "packer-protected sample"
+    },
+    {
+      "actual_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
+        "obfuscation.short_identifiers",
+        "obfuscation.reflection",
+        "environment.system_properties",
+        "environment.debugger_probe",
+        "environment.instrumentation_probe",
+        "native.jni_entrypoint"
+      ],
+      "actual_summary": {
+        "environment": 3,
+        "native": 1,
+        "obfuscation": 2,
+        "packer": 4
+      },
+      "apk_path": "apks/combined_hardened_showcase.apk",
+      "construction": "synthetic sample combining all report dimensions: packer-like shell, identifier obfuscation, reflection/dynamic loading, emulator checks, debugger checks, and instrumentation probes",
+      "expected_findings": [
+        "packer.known_library",
+        "packer.stub_application",
+        "packer.high_entropy_payload",
+        "packer.dynamic_code_loading",
+        "obfuscation.short_identifiers",
+        "obfuscation.reflection",
+        "environment.system_properties",
+        "environment.debugger_probe",
+        "environment.instrumentation_probe",
+        "native.jni_entrypoint"
+      ],
+      "id": "combined_hardened_showcase",
+      "report_path": "reports/combined_hardened_showcase.json",
+      "source_plan": "combined hardened showcase"
+    }
+  ]
+}

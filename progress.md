@@ -18,3 +18,7 @@
 - Verified demo scan: summary reported `packer=4`, `obfuscation=2`, `environment=3`, `native=1`.
 - Added CLI output-directory creation after a failing test exposed the documented `-o reports/demo_report.json` path issue.
 - Latest full test run: `.venv/bin/pytest -q` passed with 10 tests.
+- Created dataset builder module and tests after user clarified the report's dataset plan must also be constructed.
+- Generated `datasets/hardeninspector_eval_v1/` with 6 synthetic APKs, labels, and per-sample reports.
+- Added complete Chinese docs for usage, architecture, rules, dataset construction, demo, implementation scope changes, and final deliverable mapping.
+- Copied the midterm report PDF into `docs/references/mid_term.pdf` so the repository is self-contained.

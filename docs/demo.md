@@ -67,3 +67,19 @@ JSON 报告：
 - 不承诺商业加固器签名覆盖率；
 - 控制流混淆只做轻量 opcode 统计信号，不实现完整 CFG。
 
+## 6. 数据集展示
+
+期末展示还可以直接扫描已构造的数据集主样本：
+
+```bash
+.venv/bin/python -m hardeninspector datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk
+```
+
+查看完整标签：
+
+```bash
+sed -n '1,220p' datasets/hardeninspector_eval_v1/labels.json
+```
+
+数据集构造方法与样本含义见 `docs/dataset.md`。
+

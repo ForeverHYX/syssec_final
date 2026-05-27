@@ -8,5 +8,11 @@ __pycache__/
 dist/
 build/
 reports/
+!reports/
+!reports/benchmark/
+!reports/benchmark/benchmark_results.json
+!reports/benchmark/benchmark_summary.md
+!reports/benchmark/benchmark_metrics.csv
+!reports/final_summary.md
 samples/*.apk
 samples/private/

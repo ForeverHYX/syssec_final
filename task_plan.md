@@ -14,6 +14,10 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Detect code obfuscation, packing, and environment detection techniques | Report sections 2, 6, 8 | Feature extractor and rules cover all three categories with evidence |
 | Construct the datasets discussed by the report | User clarification + report section 6.8 | `datasets/hardeninspector_eval_v1/` with APKs, labels, reports, and builder |
 | Provide complete Chinese documentation | User clarification | Chinese docs under `docs/` and Chinese README |
+| Compare with open-source implementations and provide statistics | User clarification | Benchmark runner, comparator outputs, metrics JSON/CSV/Markdown |
+| Preserve the midterm technical route and avoid copying open-source implementations | User clarification | Benchmark adapters only invoke/reference external tools; detector remains evidence-chain static rules |
+| Produce final summary report and LaTeX Beamer | User clarification | `reports/final_summary.md` and `slides/final_presentation.tex` |
+| Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote created/pushed, staged commits made |
 | Commit and push at milestones | User objective | Git history shows staged commits and remote branch is up to date |
 
@@ -75,9 +79,43 @@ Status: complete
 - Add Chinese usage guide, architecture guide, rule guide, dataset guide, demo guide, scope-change guide, and final deliverable guide.
 - Link docs from README.
 
+### Phase 8: Open-source comparison and reliability statistics
+
+Status: complete
+
+- Select runnable open-source comparators without changing HardenInspector's technical route.
+- Implement benchmark runner and metrics.
+- Run benchmark on the committed evaluation dataset.
+- Optimize HardenInspector rules only where the benchmark exposes legitimate gaps against the midterm target.
+- Document statistics and limitations.
+
+### Phase 9: Final report and Beamer
+
+Status: pending
+
+- Produce Chinese summary report for final deliverable.
+- Produce LaTeX Beamer slides for final presentation.
+- Add docs links from README.
+
+### Phase 10: New completion audit
+
+Status: pending
+
+- Verify tests, benchmark artifacts, report/slides, docs, git status, and remote push.
+- Audit the new comparison/statistics/report requirements.
+
+### Phase 11: Out-of-the-box environment
+
+Status: pending
+
+- Add dependency files and one-command setup/test/benchmark targets.
+- Add optional container environment.
+- Verify the setup path from a clean checkout or clean virtualenv.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
 | --- | --- | --- |
 | Workspace root was not a git repo | `git status` in `/home/yxhong/syssec` | Created project repo under `/home/yxhong/syssec/syssec_final` |
 | `pytest` missing from base environment | `pytest` and `python3 -m pytest` | Created `.venv` and installed local dev dependencies |
+| DroidLysis default config writes cache under read-only home | `droidlysis --config ...` | Use `XDG_CACHE_HOME=/tmp/droidlysis_cache` in benchmark adapter |

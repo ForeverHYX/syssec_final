@@ -1,0 +1,56 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/obfuscapk_reflection_dynamic.apk",
+    "sha256": "40ec6131ff98fd599129dbf6e1b9c95424a186041f65f3f3ef8827a3d156117a"
+  },
+  "findings": [
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "Strings or bytecode constants reference Android class-loading APIs used by packers and plugin loaders.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "DexClassLoader"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "PathClassLoader"
+        }
+      ],
+      "id": "packer.dynamic_code_loading",
+      "severity": "medium",
+      "title": "Dynamic code loading indicators"
+    },
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "APK references reflection APIs or invoke methods that can hide direct call targets.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "java.lang.reflect.Method"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Lcom/example/obfuscapk/MainActivity;->invoke"
+        }
+      ],
+      "id": "obfuscation.reflection",
+      "severity": "medium",
+      "title": "Reflection usage indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 1,
+    "packer": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/fdroid_clean_baseline.apk",
+    "sha256": "6842ce9141af5f78d8469a68c7513c2fb2b6d09f5ba0bcab51af7e42902b4905"
+  },
+  "findings": [],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

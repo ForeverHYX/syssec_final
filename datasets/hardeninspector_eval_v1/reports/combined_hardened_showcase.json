@@ -1,0 +1,206 @@
+{
+  "apk": {
+    "entry_count": 4,
+    "path": "datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk",
+    "sha256": "e4ef73aff53acb8e416621068c4a7d3339daf6d952505b884f0828c9339e905c"
+  },
+  "findings": [
+    {
+      "category": "packer",
+      "confidence": "high",
+      "description": "APK contains native library names associated with common Android packers.",
+      "evidence": [
+        {
+          "kind": "file",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "libjiagu.so"
+        }
+      ],
+      "id": "packer.known_library",
+      "severity": "high",
+      "title": "Known Android packer native library"
+    },
+    {
+      "category": "packer",
+      "confidence": "high",
+      "description": "Manifest strings contain application class names or package prefixes commonly used by shell stubs.",
+      "evidence": [
+        {
+          "kind": "manifest-string",
+          "location": "AndroidManifest.xml",
+          "value": "StubApp"
+        }
+      ],
+      "id": "packer.stub_application",
+      "severity": "medium",
+      "title": "Manifest references packer stub application"
+    },
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "APK assets contain high-entropy data that may be encrypted payload material.",
+      "evidence": [
+        {
+          "kind": "file-stat",
+          "location": "assets/payload.bin",
+          "value": "entropy=8.00, size=512"
+        }
+      ],
+      "id": "packer.high_entropy_payload",
+      "severity": "medium",
+      "title": "High-entropy asset payload"
+    },
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "Strings or bytecode constants reference Android class-loading APIs used by packers and plugin loaders.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "DexClassLoader"
+        }
+      ],
+      "id": "packer.dynamic_code_loading",
+      "severity": "medium",
+      "title": "Dynamic code loading indicators"
+    },
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "Most class descriptors use one- or two-character simple names, a common identifier-renaming signal.",
+      "evidence": [
+        {
+          "kind": "stat",
+          "location": "DEX type descriptors",
+          "value": "short_class_ratio=1.00 (3/3)"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "a"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "b"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "c"
+        }
+      ],
+      "id": "obfuscation.short_identifiers",
+      "severity": "medium",
+      "title": "Short obfuscated class identifiers"
+    },
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "APK references reflection APIs or invoke methods that can hide direct call targets.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "java.lang.reflect.Method"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "La/a;->invoke"
+        }
+      ],
+      "id": "obfuscation.reflection",
+      "severity": "medium",
+      "title": "Reflection usage indicators"
+    },
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references Android system properties commonly used for emulator or sandbox detection.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "ro.kernel.qemu"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "ro.build.fingerprint"
+        },
+        {
+          "kind": "dex-const-string",
+          "location": "classes.dex:const-string",
+          "value": "ro.kernel.qemu"
+        }
+      ],
+      "id": "environment.system_properties",
+      "severity": "medium",
+      "title": "Emulator or device-fingerprint property checks"
+    },
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references debugger status APIs, ptrace, or TracerPid process-status checks.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "isDebuggerConnected"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/proc/self/status"
+        }
+      ],
+      "id": "environment.debugger_probe",
+      "severity": "medium",
+      "title": "Debugger detection indicators"
+    },
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references Frida/Xposed/Substrate or process-map strings often used to detect instrumentation.",
+      "evidence": [
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "/proc/self/maps"
+        },
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "frida"
+        }
+      ],
+      "id": "environment.instrumentation_probe",
+      "severity": "medium",
+      "title": "Dynamic instrumentation detection indicators"
+    },
+    {
+      "category": "native",
+      "confidence": "medium",
+      "description": "Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
+      "evidence": [
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "JNI_OnLoad"
+        }
+      ],
+      "id": "native.jni_entrypoint",
+      "severity": "low",
+      "title": "Native JNI entrypoint present"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 3,
+    "native": 1,
+    "obfuscation": 2,
+    "packer": 4
+  }
+}

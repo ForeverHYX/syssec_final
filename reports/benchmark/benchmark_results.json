@@ -1,0 +1,504 @@
+{
+  "categories": [
+    "packer",
+    "obfuscation",
+    "environment",
+    "native"
+  ],
+  "comparator_notes": {
+    "apkid": "Open-source Android packer/protector/obfuscator identifier used as the main runnable baseline. Categories are mapped from APKiD's JSON match groups.",
+    "droidlysis": "Open-source suspicious-sample pre-analysis tool. Included as an availability comparator; full output requires configured apktool/baksmali/dex2jar.",
+    "hardeninspector": "Project detector following the midterm route: APK/AXML/DEX/native static parsing, feature extraction, explainable evidence-chain rules.",
+    "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow."
+  },
+  "dataset_version": "hardeninspector_eval_v1",
+  "schema_version": 1,
+  "tools": [
+    {
+      "categories": [
+        "packer",
+        "obfuscation",
+        "environment",
+        "native"
+      ],
+      "confusion_matrix": {
+        "environment": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 4,
+          "tp": 2
+        },
+        "native": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 4,
+          "tp": 2
+        },
+        "obfuscation": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 3,
+          "tp": 3
+        },
+        "packer": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 3,
+          "tp": 3
+        }
+      },
+      "coverage": {
+        "samples_total": 6,
+        "samples_with_results": 6
+      },
+      "metrics": {
+        "by_category": {
+          "environment": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "native": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "obfuscation": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "packer": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          }
+        },
+        "macro": {
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "micro": {
+          "f1": 1.0,
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      },
+      "samples": [
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_clean_baseline",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": 0.3884481266140938,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.system_properties",
+            "environment.debugger_probe"
+          ],
+          "id": "self_written_environment_checks",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": 0.19695982336997986,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "obfuscation.short_identifiers"
+          ],
+          "id": "r8_identifier_obfuscation",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": 0.15673693269491196,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.dynamic_code_loading",
+            "obfuscation.reflection"
+          ],
+          "id": "obfuscapk_reflection_dynamic",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": 0.1504751853644848,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.known_library",
+            "packer.stub_application",
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "native.jni_entrypoint"
+          ],
+          "id": "packer_stub_payload",
+          "notes": null,
+          "predicted_categories": [
+            "native",
+            "packer"
+          ],
+          "runtime_ms": 0.20212819799780846,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.known_library",
+            "packer.stub_application",
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "obfuscation.short_identifiers",
+            "obfuscation.reflection",
+            "environment.system_properties",
+            "environment.debugger_probe",
+            "environment.instrumentation_probe",
+            "native.jni_entrypoint"
+          ],
+          "id": "combined_hardened_showcase",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": 0.22460008040070534,
+          "status": "ok"
+        }
+      ],
+      "tool": "hardeninspector"
+    },
+    {
+      "categories": [
+        "packer",
+        "obfuscation",
+        "environment",
+        "native"
+      ],
+      "confusion_matrix": {
+        "environment": {
+          "fn": 0,
+          "fp": 0,
+          "tn": 4,
+          "tp": 2
+        },
+        "native": {
+          "fn": 2,
+          "fp": 0,
+          "tn": 4,
+          "tp": 0
+        },
+        "obfuscation": {
+          "fn": 3,
+          "fp": 0,
+          "tn": 3,
+          "tp": 0
+        },
+        "packer": {
+          "fn": 1,
+          "fp": 0,
+          "tn": 3,
+          "tp": 2
+        }
+      },
+      "coverage": {
+        "samples_total": 6,
+        "samples_with_results": 6
+      },
+      "metrics": {
+        "by_category": {
+          "environment": {
+            "f1": 1.0,
+            "precision": 1.0,
+            "recall": 1.0
+          },
+          "native": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "obfuscation": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "packer": {
+            "f1": 0.8,
+            "precision": 1.0,
+            "recall": 0.6666666666666666
+          }
+        },
+        "macro": {
+          "f1": 0.45,
+          "precision": 0.5,
+          "recall": 0.41666666666666663
+        },
+        "micro": {
+          "f1": 0.5714285714285715,
+          "precision": 1.0,
+          "recall": 0.4
+        }
+      },
+      "samples": [
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_clean_baseline",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": 26.724127121269703,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "apkid.anti_vm.ro.kernel.qemu check"
+          ],
+          "id": "self_written_environment_checks",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": 28.072041925042868,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "r8_identifier_obfuscation",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": 27.81279617920518,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "obfuscapk_reflection_dynamic",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": 28.683001175522804,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "apkid.packer.Jiagu"
+          ],
+          "id": "packer_stub_payload",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": 30.51962424069643,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "apkid.anti_vm.ro.kernel.qemu check",
+            "apkid.packer.Jiagu"
+          ],
+          "id": "combined_hardened_showcase",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "packer"
+          ],
+          "runtime_ms": 30.842144042253494,
+          "status": "ok"
+        }
+      ],
+      "tool": "apkid"
+    },
+    {
+      "categories": [
+        "packer",
+        "obfuscation",
+        "environment",
+        "native"
+      ],
+      "confusion_matrix": {
+        "environment": {
+          "fn": 2,
+          "fp": 0,
+          "tn": 4,
+          "tp": 0
+        },
+        "native": {
+          "fn": 2,
+          "fp": 0,
+          "tn": 4,
+          "tp": 0
+        },
+        "obfuscation": {
+          "fn": 3,
+          "fp": 0,
+          "tn": 3,
+          "tp": 0
+        },
+        "packer": {
+          "fn": 3,
+          "fp": 0,
+          "tn": 3,
+          "tp": 0
+        }
+      },
+      "coverage": {
+        "samples_total": 6,
+        "samples_with_results": 6
+      },
+      "metrics": {
+        "by_category": {
+          "environment": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "native": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "obfuscation": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          },
+          "packer": {
+            "f1": 0.0,
+            "precision": 0.0,
+            "recall": 0.0
+          }
+        },
+        "macro": {
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        },
+        "micro": {
+          "f1": 0.0,
+          "precision": 0.0,
+          "recall": 0.0
+        }
+      },
+      "samples": [
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_clean_baseline",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 200.45483577996492,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "self_written_environment_checks",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 188.46205528825521,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "r8_identifier_obfuscation",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 194.72806295379996,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "obfuscapk_reflection_dynamic",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 195.15726389363408,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "packer_stub_payload",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 199.23652708530426,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "combined_hardened_showcase",
+          "notes": "DroidLysis ran as an availability comparator; this benchmark does not map its full output because apktool/baksmali/dex2jar are not configured. WARNING:droidconfig.py:Cannot access /home/yxhong/softs/apktool_2.9.3.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site-packages/conf/general.conf WARNING:droidconfig.py:Cannot access /home/yxhong/softs/baksmali-2.5.2.jar - check your configuration file /home/yxhong/syssec/syssec_final/.venv/lib/python3.13/site...",
+          "predicted_categories": [],
+          "runtime_ms": 195.60173898935318,
+          "status": "ok"
+        }
+      ],
+      "tool": "droidlysis"
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 - JSON/文本报告输出；
 - 10 个自动化测试；
 - 可复现评估数据集 `datasets/hardeninspector_eval_v1/`；
+- 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
 - 中文使用手册、规则说明、架构说明、数据集说明、Demo 流程和目标调整说明；
 - 中期报告 PDF 归档：`docs/references/mid_term.pdf`；
 - GitHub 远端仓库与阶段性提交记录。
@@ -22,6 +23,7 @@
 | 静态规则为核心 | `src/hardeninspector/rules.py` |
 | 输出证据链 | JSON/text report 中每条 finding 都有 evidence |
 | 构造小规模测试集 | `datasets/hardeninspector_eval_v1/` 包含 6 个 APK、labels 和报告 |
+| 与开源实现对比并给出统计数据 | `reports/benchmark/benchmark_results.json`、`benchmark_metrics.csv`、`benchmark_summary.md` |
 | 记录现实调整 | `docs/implementation_scope.md` |
 | 课程展示可复现 | `docs/demo.md` 和 `examples/make_demo_apk.py` |
 

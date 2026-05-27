@@ -24,3 +24,15 @@
 - Copied the midterm report PDF into `docs/references/mid_term.pdf` so the repository is self-contained.
 - Ran final verification before final push: `.venv/bin/pytest -q` passed with 12 tests; CLI help exited 0; clean baseline sample produced zero findings; combined showcase sample produced `packer=4`, `obfuscation=2`, `environment=3`, `native=1`.
 - Added `docs/completion_audit.md` with requirement-by-requirement evidence.
+
+## 2026-05-28 Benchmark Extension
+
+- User added a new objective: compare with open-source implementations, provide reliability statistics, keep optimizing, maintain docs/readme, and produce final summary report plus LaTeX Beamer.
+- Looked up primary sources for APKiD, DroidLysis, and MobSF. APKiD is directly relevant as an Android packer/protector/obfuscator identifier; DroidLysis is a pre-analysis tool for suspicious Android samples; MobSF is a broader static/dynamic mobile analysis framework.
+- Installed APKiD 3.1.0 and DroidLysis 3.4.7 into `.venv` for local comparator runs.
+- Ran APKiD on `datasets/hardeninspector_eval_v1/apks/*.apk`; it detected `Jiagu` packer on the two shell-like samples and `ro.kernel.qemu check` on the two environment-check samples, but not the synthetic R8/Obfuscapk-style samples.
+- Ran DroidLysis help and a smoke run. It requires external disassembly tools for full analysis; with package defaults it can run only with `XDG_CACHE_HOME=/tmp/droidlysis_cache` and warns about missing apktool/baksmali/dex2jar paths.
+- User clarified the final repo must also maintain an out-of-the-box environment. This is now tracked as setup automation, dependency files, optional Docker environment, and fresh setup verification.
+- Added `src/hardeninspector/benchmark.py` and tests for category-level multilabel precision/recall/F1.
+- Generated benchmark artifacts under `reports/benchmark/`: JSON, CSV, and Markdown summary. Current category-level micro F1: HardenInspector 1.000, APKiD 0.571, DroidLysis 0.000 in limited local mode.
+- Added `docs/benchmark.md` explaining comparator scope, metrics, and why open-source tools are validation baselines rather than the implementation route.

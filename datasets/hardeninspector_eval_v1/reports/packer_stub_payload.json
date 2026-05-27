@@ -1,0 +1,91 @@
+{
+  "apk": {
+    "entry_count": 4,
+    "path": "datasets/hardeninspector_eval_v1/apks/packer_stub_payload.apk",
+    "sha256": "38a81cbb4492c71ed54651312b256c8887d3a08f7e2f887c9b27ad715a5e2389"
+  },
+  "findings": [
+    {
+      "category": "packer",
+      "confidence": "high",
+      "description": "APK contains native library names associated with common Android packers.",
+      "evidence": [
+        {
+          "kind": "file",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "libjiagu.so"
+        }
+      ],
+      "id": "packer.known_library",
+      "severity": "high",
+      "title": "Known Android packer native library"
+    },
+    {
+      "category": "packer",
+      "confidence": "high",
+      "description": "Manifest strings contain application class names or package prefixes commonly used by shell stubs.",
+      "evidence": [
+        {
+          "kind": "manifest-string",
+          "location": "AndroidManifest.xml",
+          "value": "StubApp"
+        }
+      ],
+      "id": "packer.stub_application",
+      "severity": "medium",
+      "title": "Manifest references packer stub application"
+    },
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "APK assets contain high-entropy data that may be encrypted payload material.",
+      "evidence": [
+        {
+          "kind": "file-stat",
+          "location": "assets/encrypted_payload.bin",
+          "value": "entropy=8.00, size=512"
+        }
+      ],
+      "id": "packer.high_entropy_payload",
+      "severity": "medium",
+      "title": "High-entropy asset payload"
+    },
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "Strings or bytecode constants reference Android class-loading APIs used by packers and plugin loaders.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "DexClassLoader"
+        }
+      ],
+      "id": "packer.dynamic_code_loading",
+      "severity": "medium",
+      "title": "Dynamic code loading indicators"
+    },
+    {
+      "category": "native",
+      "confidence": "medium",
+      "description": "Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
+      "evidence": [
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libjiagu.so",
+          "value": "JNI_OnLoad"
+        }
+      ],
+      "id": "native.jni_entrypoint",
+      "severity": "low",
+      "title": "Native JNI entrypoint present"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 1,
+    "obfuscation": 0,
+    "packer": 4
+  }
+}

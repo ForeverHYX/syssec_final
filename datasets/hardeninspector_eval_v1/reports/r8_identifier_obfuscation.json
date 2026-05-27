@@ -1,0 +1,51 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/r8_identifier_obfuscation.apk",
+    "sha256": "8585a9f5aecc48266bfe2df7291b4d19cbd9edcb3d39fae989ae518c3c426cdb"
+  },
+  "findings": [
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "Most class descriptors use one- or two-character simple names, a common identifier-renaming signal.",
+      "evidence": [
+        {
+          "kind": "stat",
+          "location": "DEX type descriptors",
+          "value": "short_class_ratio=1.00 (4/4)"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "a"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "b"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "c"
+        },
+        {
+          "kind": "class",
+          "location": "DEX type descriptors",
+          "value": "d"
+        }
+      ],
+      "id": "obfuscation.short_identifiers",
+      "severity": "medium",
+      "title": "Short obfuscated class identifiers"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 1,
+    "packer": 0
+  }
+}

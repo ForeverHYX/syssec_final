@@ -148,6 +148,23 @@ Status: complete
 - Update docs, reports, slides, and environment targets.
 - Verify tests, synthetic benchmark, external corpus scan, slides, and git state.
 
+### Phase 15: Test-result synchronization in docs and slides
+
+Status: complete
+
+- Synchronize latest test/benchmark/external-corpus results into README, docs, final summary, and Beamer.
+- Recompile slides and inspect updated result pages.
+- Re-run verification, commit, and push the documentation refresh.
+
+### Phase 16: Include external corpus in scoring metrics
+
+Status: complete
+
+- Add coarse external `expected_categories` and `label_basis` entries.
+- Merge the labeled external corpus into default `make benchmark` scoring.
+- Regenerate benchmark reports, docs, README, and slides with 23-sample metrics.
+- Re-run verification, commit, and push the scoring update.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

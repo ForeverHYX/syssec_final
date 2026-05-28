@@ -36,7 +36,7 @@ Androguard is used as a runnable open-source DEX parser baseline. It does not re
 
 ZIP Strings is a dependency-free baseline added to make the benchmark range wider. It scans ZIP entry names and printable strings without Android structure awareness. It is intentionally simple, so the report can distinguish raw string visibility from HardenInspector's structured evidence-chain output.
 
-The expanded default scored benchmark is therefore: HardenInspector, APKiD, Androguard DEX, and ZIP Strings. All four produce results for all 11 committed synthetic APKs. DroidLysis and MobSF remain documented qualitative references outside the metric table.
+At the 11-sample synthetic-only benchmark phase, the expanded default scored benchmark was: HardenInspector, APKiD, Androguard DEX, and ZIP Strings. All four produced results for all 11 committed synthetic APKs. DroidLysis and MobSF remain documented qualitative references outside the metric table.
 
 Important route constraint from user: open-source implementations are benchmarks only. HardenInspector must continue following the midterm report route: static parsing, feature extraction, explainable rules, and evidence-chain output. Do not copy APKiD/MobSF/DroidLysis rules into the detector.
 
@@ -48,7 +48,7 @@ The ZJU Beamer deck uses generated imagery only for the complex APK cutaway illu
 
 The previous limitation around opcode/control-flow statistics has been partially optimized without attempting full CFG recovery. `dex.py` now exposes an opcode profile with instruction count, control-flow count, density, and if/goto/switch/throw counts. `rules.py` turns dense branch/jump patterns into `obfuscation.control_flow_density` findings with DEX-location evidence.
 
-The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. Current scored benchmark coverage remains 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values are 1.000, 0.476, 0.769, and 0.933 respectively. The slide deck now explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
+The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. At the 11-sample phase, scored benchmark coverage remained 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values were 1.000, 0.476, 0.769, and 0.933 respectively. The slide deck explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
 
 Synthetic APK generation now fixes ZIP entry timestamps and permissions. Running `make dataset` twice keeps APK SHA-256 values stable, so the committed dataset is reproducible instead of changing due only to archive metadata.
 
@@ -63,3 +63,9 @@ PIVAA/InsecureShop-style intentionally vulnerable APKs are useful as security te
 Implementation decision: include 12 external APKs in `datasets/external_apk_corpus_v1/`: 10 DroidBench APKs, one F-Droid APK (`org.billthefarmer.editor_198.apk`), and PIVAA. The corpus is intentionally small enough to commit, about 5.7 MiB, while spanning reflection, dynamic loading, emulator detection, native, self-modification, a normal open-source app, and an intentionally vulnerable security-test APK.
 
 External corpus statistics after rule tuning: all four tools cover 12/12 samples. HardenInspector reports at least one category on 9/12 samples with category counts packer=3, obfuscation=6, environment=3, native=0. APKiD reports 2/12, Androguard DEX reports 8/12, ZIP Strings reports 9/12. `fdroid_editor` has no HardenInspector finding after tightening `control_flow_density`, which reduces a real false-positive risk found by the external corpus.
+
+## External Corpus Scoring Decision
+
+The external APKs are now included in the default scored benchmark through coarse, auditable `expected_categories` mappings in `datasets/external_apk_corpus_v1/manifest.json`. These are not official hardening ground-truth labels from DroidBench/F-Droid/PIVAA; they are project-level mappings from the public sample scenario to HardenInspector categories, recorded with `label_basis` for review.
+
+Current combined scoring set: 11 synthetic oracle APKs + 12 external APKs = 23 samples. Current Micro F1 values are HardenInspector 0.842, APKiD 0.389, Androguard DEX 0.653, and ZIP Strings 0.778. The separate `make external-corpus` report remains useful because it shows external coverage and finding distribution independent of the scoring labels.

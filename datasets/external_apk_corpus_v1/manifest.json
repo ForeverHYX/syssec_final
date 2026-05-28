@@ -1,6 +1,6 @@
 {
   "corpus_version": "external_apk_corpus_v1",
-  "description": "Public external APK corpus for HardenInspector scan-statistics expansion. These APKs do not provide hardening ground-truth labels, so they are used for coverage, finding distribution, and comparator-output statistics rather than precision/recall scoring.",
+  "description": "Public external APK corpus for HardenInspector scan-statistics and extended scoring. expected_categories are coarse, auditable mappings from each public APK's documented analysis scenario to HardenInspector's four hardening-signal categories.",
   "samples": [
     {
       "id": "droidbench_reflection_1",
@@ -8,7 +8,11 @@
       "source": "DroidBench",
       "source_context": "Reflection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Reflection/Reflection1.apk",
-      "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc"
+      "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
+      "expected_categories": [
+        "obfuscation"
+      ],
+      "label_basis": "DroidBench Reflection sample; reflection is scored as an obfuscation/indirection signal."
     },
     {
       "id": "droidbench_reflection_5",
@@ -16,7 +20,11 @@
       "source": "DroidBench",
       "source_context": "Reflection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Reflection/Reflection5.apk",
-      "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d"
+      "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
+      "expected_categories": [
+        "obfuscation"
+      ],
+      "label_basis": "DroidBench Reflection sample; reflection is scored as an obfuscation/indirection signal."
     },
     {
       "id": "droidbench_dynamic_both_1",
@@ -24,7 +32,11 @@
       "source": "DroidBench",
       "source_context": "DynamicLoading",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/DynamicLoading/DynamicBoth1.apk",
-      "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477"
+      "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477",
+      "expected_categories": [
+        "packer"
+      ],
+      "label_basis": "DroidBench DynamicLoading sample; dynamic code loading is scored as a packer/runtime-loading signal."
     },
     {
       "id": "droidbench_dynamic_source_1",
@@ -32,7 +44,11 @@
       "source": "DroidBench",
       "source_context": "DynamicLoading",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/DynamicLoading/DynamicSource1.apk",
-      "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0"
+      "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0",
+      "expected_categories": [
+        "packer"
+      ],
+      "label_basis": "DroidBench DynamicLoading sample; dynamic code loading is scored as a packer/runtime-loading signal."
     },
     {
       "id": "droidbench_emulator_build_1",
@@ -40,7 +56,11 @@
       "source": "DroidBench",
       "source_context": "EmulatorDetection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/Build1.apk",
-      "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7"
+      "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7",
+      "expected_categories": [
+        "environment"
+      ],
+      "label_basis": "DroidBench EmulatorDetection sample; emulator checks are scored as environment-detection signals."
     },
     {
       "id": "droidbench_emulator_file_1",
@@ -48,7 +68,11 @@
       "source": "DroidBench",
       "source_context": "EmulatorDetection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/File1.apk",
-      "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397"
+      "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397",
+      "expected_categories": [
+        "environment"
+      ],
+      "label_basis": "DroidBench EmulatorDetection sample; emulator checks are scored as environment-detection signals."
     },
     {
       "id": "droidbench_emulator_imei_1",
@@ -56,7 +80,11 @@
       "source": "DroidBench",
       "source_context": "EmulatorDetection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/IMEI1.apk",
-      "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f"
+      "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
+      "expected_categories": [
+        "environment"
+      ],
+      "label_basis": "DroidBench EmulatorDetection sample; emulator checks are scored as environment-detection signals."
     },
     {
       "id": "droidbench_bytecode_tamper_1",
@@ -64,7 +92,11 @@
       "source": "DroidBench",
       "source_context": "SelfModification",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/SelfModification/BytecodeTamper1.apk",
-      "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea"
+      "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
+      "expected_categories": [
+        "environment"
+      ],
+      "label_basis": "DroidBench SelfModification sample; bytecode tamper/instrumentation checks are scored as environment/instrumentation-detection signals."
     },
     {
       "id": "droidbench_native_id_function",
@@ -72,7 +104,11 @@
       "source": "DroidBench",
       "source_context": "Native",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Native/NativeIDFunction.apk",
-      "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185"
+      "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185",
+      "expected_categories": [
+        "native"
+      ],
+      "label_basis": "DroidBench Native sample; native-code involvement is scored as a native signal."
     },
     {
       "id": "droidbench_source_in_native_code",
@@ -80,7 +116,11 @@
       "source": "DroidBench",
       "source_context": "Native",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Native/SourceInNativeCode.apk",
-      "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd"
+      "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd",
+      "expected_categories": [
+        "native"
+      ],
+      "label_basis": "DroidBench Native sample; native-code involvement is scored as a native signal."
     },
     {
       "id": "fdroid_editor",
@@ -88,7 +128,9 @@
       "source": "F-Droid",
       "source_context": "open-source real APK",
       "source_url": "https://f-droid.org/repo/org.billthefarmer.editor_198.apk",
-      "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9"
+      "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+      "expected_categories": [],
+      "label_basis": "F-Droid real open-source APK used as a benign/no-hardening baseline for this benchmark."
     },
     {
       "id": "pivaa",
@@ -96,7 +138,13 @@
       "source": "PIVAA",
       "source_context": "intentionally vulnerable Android test APK",
       "source_url": "https://raw.githubusercontent.com/HTBridge/pivaa/7fde8956083ec4c6023c75f013f72023d60eda12/apks/pivaa.apk",
-      "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a"
+      "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+      "expected_categories": [
+        "packer",
+        "obfuscation",
+        "environment"
+      ],
+      "label_basis": "PIVAA contains dynamic-loading/reflection/instrumentation-style signals visible to this hardening-signal benchmark."
     }
   ]
 }

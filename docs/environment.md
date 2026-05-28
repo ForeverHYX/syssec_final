@@ -41,6 +41,18 @@ make all
 .venv/bin/python -m hardeninspector --help
 ```
 
+## 当前验证结果
+
+2026-05-28 的本地与 fresh venv 复核结果：
+
+| 命令 | 结果 |
+| --- | --- |
+| `.venv/bin/python -m pytest -q` | 28 个测试通过 |
+| `make dataset` | 生成 11 个合成 oracle APK |
+| `make benchmark` | 合成 + 外部共 23 个评分样本；四个默认评分工具均为 23/23 coverage |
+| `make external-corpus` | 单独外部统计中四个工具均为 12/12 coverage |
+| `make slides` | ZJU Beamer 可编译为 20 页，构建产物由 `.gitignore` 忽略 |
+
 ## 方式三：Docker
 
 ```bash

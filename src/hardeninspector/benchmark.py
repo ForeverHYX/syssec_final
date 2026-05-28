@@ -92,14 +92,36 @@ def load_external_corpus(corpus_dir: str | Path) -> BenchmarkDataset:
     samples: list[dict[str, Any]] = []
     for sample in manifest["samples"]:
         apk_path = root / sample["apk_path"]
+        has_expected_categories = "expected_categories" in sample
+        expected_categories = sorted(
+            category for category in sample.get("expected_categories", []) if category in DEFAULT_CATEGORIES
+        )
         samples.append(
             {
                 **sample,
                 "absolute_apk_path": str(apk_path),
-                "expected_categories": [],
+                "expected_categories": expected_categories,
+                "_has_expected_categories": has_expected_categories,
             }
         )
     return BenchmarkDataset(dataset_version=manifest["corpus_version"], samples=samples)
+
+
+def load_scored_dataset(
+    dataset_dir: str | Path,
+    scored_external_corpus: str | Path | None = None,
+) -> BenchmarkDataset:
+    dataset = load_dataset(dataset_dir)
+    if scored_external_corpus is None:
+        return dataset
+    external = load_external_corpus(scored_external_corpus)
+    unlabeled = [sample["id"] for sample in external.samples if not sample.get("_has_expected_categories")]
+    if unlabeled:
+        raise ValueError(f"external samples missing expected_categories: {', '.join(unlabeled)}")
+    return BenchmarkDataset(
+        dataset_version=f"{dataset.dataset_version}+{external.dataset_version}",
+        samples=[*dataset.samples, *external.samples],
+    )
 
 
 def evaluate_predictions(
@@ -185,14 +207,18 @@ def run_benchmark(
     dataset_dir: str | Path,
     output_dir: str | Path,
     tools: list[str] | None = None,
+    scored_external_corpus: str | Path | None = None,
 ) -> dict[str, Any]:
-    dataset = load_dataset(dataset_dir)
+    dataset = load_scored_dataset(dataset_dir, scored_external_corpus)
     tools = tools or DEFAULT_TOOLS
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
     results = {
         "schema_version": 1,
         "dataset_version": dataset.dataset_version,
+        "scored_external_corpus": load_external_corpus(scored_external_corpus).dataset_version
+        if scored_external_corpus is not None
+        else None,
         "categories": DEFAULT_CATEGORIES,
         "tools": [evaluate_predictions(dataset, tool, None) for tool in tools],
         "comparator_notes": _comparator_notes(),
@@ -205,6 +231,7 @@ def run_benchmark(
     (output / "benchmark_metrics.csv").write_text(_render_metrics_csv(results), encoding="utf-8")
     return {
         "dataset_version": dataset.dataset_version,
+        "scored_external_corpus": results["scored_external_corpus"],
         "output_dir": str(output),
         "tools": tools,
         "results_path": str(output / "benchmark_results.json"),
@@ -229,9 +256,10 @@ def run_external_corpus(
         "samples_total": len(dataset.samples),
         "tools": [_external_tool_summary(dataset, tool, _run_tool(dataset, tool)) for tool in tools],
         "scope_note": (
-            "External APKs have source metadata and checksums but no HardenInspector hardening "
-            "ground-truth labels. Results are coverage and finding-distribution statistics, "
-            "not precision/recall scores."
+            "External APKs have source metadata, checksums, and coarse expected_categories used by "
+            "the combined benchmark. This standalone report remains coverage and "
+            "finding-distribution statistics; precision/recall scores are reported in "
+            "reports/benchmark/."
         ),
         "comparator_notes": _comparator_notes(),
     }
@@ -539,6 +567,9 @@ def _render_markdown_summary(results: dict[str, Any]) -> str:
         "| Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |",
         "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
+    if results.get("scored_external_corpus"):
+        lines.insert(4, f"Scored external corpus: `{results['scored_external_corpus']}`")
+        lines.insert(5, "")
     for tool_result in results["tools"]:
         metrics = tool_result["metrics"]
         coverage = tool_result["coverage"]
@@ -721,6 +752,10 @@ def main(argv: list[str] | None = None) -> int:
         help="optional external APK corpus directory containing manifest.json",
     )
     parser.add_argument(
+        "--score-external-corpus",
+        help="optional labeled external APK corpus directory to merge into precision/recall scoring",
+    )
+    parser.add_argument(
         "--external-output",
         default="reports/external_corpus",
         help="directory where external corpus statistics are written",
@@ -736,7 +771,7 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("--external-only requires --external-corpus")
         manifest = run_external_corpus(args.external_corpus, args.external_output, args.tools)
     else:
-        manifest = run_benchmark(args.dataset, args.output, args.tools)
+        manifest = run_benchmark(args.dataset, args.output, args.tools, args.score_external_corpus)
         if args.external_corpus:
             manifest["external_corpus"] = run_external_corpus(
                 args.external_corpus,

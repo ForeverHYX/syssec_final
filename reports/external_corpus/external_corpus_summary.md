@@ -2,7 +2,7 @@
 
 Corpus: `external_apk_corpus_v1`
 
-External APKs have source metadata and checksums but no HardenInspector hardening ground-truth labels. Results are coverage and finding-distribution statistics, not precision/recall scores.
+External APKs have source metadata, checksums, and coarse expected_categories used by the combined benchmark. This standalone report remains coverage and finding-distribution statistics; precision/recall scores are reported in reports/benchmark/.
 
 ## Coverage and Category Counts
 

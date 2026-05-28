@@ -10,14 +10,17 @@ The corpus currently includes:
 - 1 real open-source APK from F-Droid: `org.billthefarmer.editor_198.apk`.
 - 1 intentionally vulnerable Android test APK: PIVAA.
 
-These APKs do not provide ground-truth labels for HardenInspector's hardening
-categories. They are therefore used for scan coverage, finding distribution,
-and comparator-output statistics, not for precision/recall scoring.
+The manifest records coarse `expected_categories` and `label_basis` values so
+these APKs are included in the 23-sample combined benchmark. They are still also
+used for standalone scan coverage, finding distribution, and comparator-output
+statistics.
 
 Run:
 
 ```bash
+make benchmark
 make external-corpus
 ```
 
-Outputs are written to `reports/external_corpus/`.
+Benchmark outputs are written to `reports/benchmark/`; standalone external
+statistics are written to `reports/external_corpus/`.

@@ -7,7 +7,7 @@
 默认 benchmark 只纳入同时满足以下条件的比较对象：
 
 - 能通过 `make setup` 安装；
-- 能通过 `make benchmark` 在本仓库数据集上完成 11/11 个样本；
+- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 23/23 个样本；
 - 能产生可映射到 `packer`、`obfuscation`、`environment`、`native` 的类别输出；
 - 失败时不把“缺环境/缺外部工具”记为 0 分。
 
@@ -54,12 +54,13 @@ ZIP Strings 是仓库内的最小浅层基线：只读取 APK ZIP 文件名和 p
 
 ## 数据集
 
-Benchmark 使用 `datasets/hardeninspector_eval_v1/`：
+Benchmark 使用两个数据源合并评分：
 
 - 11 个合成 APK；
 - 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、综合加固样本；
 - 每个样本包含 expected findings 和当前检测器报告；
 - 合成 DEX 包含标准 checksum、signature 和 map list，保证 Androguard DEX baseline 可解析。
+- 12 个外部现成 APK，来自 DroidBench、F-Droid、PIVAA；`manifest.json` 为每个外部样本记录粗粒度 `expected_categories` 和 `label_basis`，纳入同一 Precision/Recall/F1 评分表。
 
 ## 运行命令
 
@@ -72,6 +73,7 @@ make benchmark
 ```bash
 .venv/bin/python -m hardeninspector.benchmark \
   --dataset datasets/hardeninspector_eval_v1 \
+  --score-external-corpus datasets/external_apk_corpus_v1 \
   --output reports/benchmark \
   --tools hardeninspector apkid androguard_dex zip_string_baseline
 ```
@@ -100,17 +102,19 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 11/11 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 11/11 | 1.000 | 0.312 | 0.476 | 0.414 |
-| Androguard DEX | 11/11 | 1.000 | 0.625 | 0.769 | 0.688 |
-| ZIP Strings | 11/11 | 1.000 | 0.875 | 0.933 | 0.938 |
+| HardenInspector | 23/23 | 0.857 | 0.828 | 0.842 | 0.848 |
+| APKiD | 23/23 | 1.000 | 0.241 | 0.389 | 0.317 |
+| Androguard DEX | 23/23 | 0.800 | 0.552 | 0.653 | 0.564 |
+| ZIP Strings | 23/23 | 0.840 | 0.724 | 0.778 | 0.789 |
+
+测试状态：`.venv/bin/python -m pytest -q` 和 fresh venv 测试均为 28 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
-- `packer`：HardenInspector 4/4，APKiD 3/4，Androguard DEX 4/4，ZIP Strings 4/4。
-- `obfuscation`：HardenInspector 5/5，APKiD 0/5，Androguard DEX 3/5，ZIP Strings 3/5。
-- `environment`：HardenInspector 3/3，APKiD 2/3，Androguard DEX 3/3，ZIP Strings 3/3。
-- `native`：HardenInspector 4/4，APKiD 0/4，Androguard DEX 0/4，ZIP Strings 4/4。
+- `packer`：HardenInspector 7/7，APKiD 3/7，Androguard DEX 7/7，ZIP Strings 7/7。
+- `obfuscation`：HardenInspector 7/8，APKiD 0/8，Androguard DEX 5/8，ZIP Strings 5/8。
+- `environment`：HardenInspector 6/8，APKiD 4/8，Androguard DEX 4/8，ZIP Strings 5/8。
+- `native`：HardenInspector 4/6，APKiD 0/6，Androguard DEX 0/6，ZIP Strings 4/6。
 
 ## 结果解释
 
@@ -124,7 +128,7 @@ HardenInspector 的优势来自中期报告路线中的多源结构化证据：M
 
 ## 外部 APK 统计
 
-为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们用于扫描覆盖和 finding 分布，不用于 F1。
+为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 23 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -133,12 +137,14 @@ HardenInspector 的优势来自中期报告路线中的多源结构化证据：M
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
 | ZIP Strings | 12/12 | 9 | 3 | 6 | 2 | 0 |
 
+测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
+
 外部样本暴露出一个规则调优点：早期 `control_flow_density` 对 F-Droid 普通 APK 命中过敏。当前规则已收紧为“控制流 opcode 数和密度同时超过阈值”，`fdroid_editor` 已无 finding。
 
 ## 局限
 
 - 数据集是合成可复现数据集，不等价于大规模真实 APK 生态。
-- 外部 APK 没有本项目四类 hardening 标签，因此只报告覆盖和分布，不计算 F1。
+- 外部 APK 的标签是粗粒度评估映射，不等同于官方 hardening ground truth；报告中通过 `label_basis` 记录每个映射依据。
 - ZIP Strings 对合成样本较强，是因为样本显式植入了可观测字符串；真实加密/压缩样本下会明显退化。
 - APKiD 的 `compiler` 类输出没有纳入本项目类别，因为 HardenInspector 的目标不是编译器识别。
 - DroidLysis/MobSF 的完整能力需要更重的外部环境，因此只保留定性说明，不进入默认评分。

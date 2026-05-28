@@ -16,7 +16,7 @@
   "corpus_version": "external_apk_corpus_v1",
   "samples_total": 12,
   "schema_version": 1,
-  "scope_note": "External APKs have source metadata and checksums but no HardenInspector hardening ground-truth labels. Results are coverage and finding-distribution statistics, not precision/recall scores.",
+  "scope_note": "External APKs have source metadata, checksums, and coarse expected_categories used by the combined benchmark. This standalone report remains coverage and finding-distribution statistics; precision/recall scores are reported in reports/benchmark/.",
   "tools": [
     {
       "category_counts": {

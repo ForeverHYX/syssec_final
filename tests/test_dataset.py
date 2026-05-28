@@ -86,4 +86,7 @@ def test_external_apk_corpus_manifest_matches_committed_files():
         apk_path = corpus / sample["apk_path"]
         assert apk_path.exists(), sample["id"]
         assert sample["source_url"].startswith("https://")
+        assert "expected_categories" in sample
+        assert set(sample["expected_categories"]).issubset({"packer", "obfuscation", "environment", "native"})
+        assert "label_basis" in sample
         assert sha256_hex(apk_path.read_bytes()) == sample["sha256"]

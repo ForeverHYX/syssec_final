@@ -32,9 +32,22 @@ make external-corpus
 make slides
 ```
 
-默认 benchmark 只包含当前环境可安装、可运行且 11/11 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
+默认 benchmark 现在把 11 个合成 oracle APK 和 12 个外部现成 APK 合并评分，共 23 个样本。评分表只包含当前环境可安装、可运行且 23/23 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
 
-外部 APK 语料位于 `datasets/external_apk_corpus_v1/`，包含 DroidBench、F-Droid 和 PIVAA 的 12 个现成 APK。它们没有本项目四类标签，因此通过 `make external-corpus` 统计覆盖率和 finding 分布，不计算 F1。
+外部 APK 语料位于 `datasets/external_apk_corpus_v1/`，包含 DroidBench、F-Droid 和 PIVAA 的 12 个现成 APK。`manifest.json` 记录粗粒度 `expected_categories` 和 `label_basis`，用于合并 benchmark 评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布。
+
+## 最新测试结果
+
+2026-05-28 的最终验证结果：
+
+| 项目 | 结果 |
+| --- | --- |
+| 自动化测试 | `28 passed` |
+| 合并评分数据集 | 11 个 synthetic APK + 12 个外部 APK，四个默认评分工具均为 23/23 coverage |
+| Combined benchmark Micro F1 | HardenInspector 0.842；APKiD 0.389；Androguard DEX 0.653；ZIP Strings 0.778 |
+| 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
+| 外部语料 HardenInspector 分布 | Any 9/12；packer=3；obfuscation=6；environment=3；native=0；F-Droid 样本无 finding |
+| Slides | ZJU Beamer 可通过 `make slides` 编译为 20 页，PDF/aux/log 等构建产物已忽略 |
 
 ## 使用
 
@@ -86,7 +99,7 @@ make slides
 
 - 课程题目：Android 应用抗加固分析，期末方向选择“实现一个能够检测 Android 应用使用了哪些加固技术的工具”。
 - 中期报告：`Android 应用抗加固分析：代码混淆、加壳与环境检测技术的检测框架设计`，其中提出 HardenInspector 静态优先、证据链输出的方案。
-- 现实调整：见 [docs/implementation_scope.md](docs/implementation_scope.md)。核心调整是不用外部样本库和动态 Frida 环境作为必需条件，优先保证检测器可运行、可测试、可复现。
+- 现实调整：见 [docs/implementation_scope.md](docs/implementation_scope.md)。核心调整是不用商业壳样本和动态 Frida 环境作为必需条件，优先保证检测器可运行、可测试、可复现；公开现成 APK 已作为补充语料纳入扫描统计。
 
 ## 中文文档
 

@@ -93,3 +93,15 @@
 - Current external corpus stats: all four tools cover 12/12 samples; HardenInspector reports any category on 9/12, APKiD 2/12, Androguard DEX 8/12, ZIP Strings 9/12.
 - Final local verification passed: `.venv/bin/python -m pytest -q` reported 27 tests; `make dataset` regenerated 11 synthetic samples; `make benchmark` regenerated 11/11 scored benchmark reports; `make external-corpus` regenerated 12/12 external APK statistics; `make slides` compiled a 19-page ZJU Beamer PDF with no `Overfull`/`Underfull`/`Warning`/`Error` log matches.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 27 tests; fresh synthetic benchmark kept all four tools at 11/11 coverage; fresh external-corpus run kept all four tools at 12/12 coverage.
+
+## 2026-05-28 External Corpus Scoring Inclusion
+
+- User noticed the current score table did not include the external corpus and requested including it.
+- Added coarse, auditable `expected_categories` and `label_basis` values to all 12 samples in `datasets/external_apk_corpus_v1/manifest.json`.
+- Updated `src/hardeninspector/benchmark.py` so `--score-external-corpus datasets/external_apk_corpus_v1` merges the external APKs into the scored dataset while `make external-corpus` remains a standalone coverage/finding-distribution report.
+- Updated `Makefile`, tests, README, benchmark/external-corpus/dataset/environment/final-deliverable docs, final summary, completion audit, benchmark reports, external reports, and ZJU Beamer slides.
+- Current combined scoring set is 23 samples: 11 synthetic oracle APKs plus 12 external APKs. Micro F1 values are HardenInspector 0.842, APKiD 0.389, Androguard DEX 0.653, and ZIP Strings 0.778; all four scored tools have 23/23 coverage.
+- Visual slide check after rendering pages 14, 15, and 16 showed readable benchmark table, Micro F1 chart, and test-result table.
+- Final local verification passed: `.venv/bin/python -m pytest -q` reported 28 tests; `make dataset` regenerated 11 synthetic samples; `make benchmark` regenerated the 23-sample combined scoring reports; `make external-corpus` regenerated 12/12 external APK statistics; `make slides` compiled a 20-page ZJU Beamer PDF.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 28 tests; fresh combined benchmark kept all four tools at 23/23 coverage; fresh external-corpus run kept all four tools at 12/12 coverage.
+- Repository hygiene checks passed: `pdfinfo` reported 20 slide pages, LaTeX log scan found no `Overfull`/`Underfull`/`Warning`/`Error` matches, `git diff --check` reported no whitespace errors, and slide PDF/aux/log artifacts remain ignored.

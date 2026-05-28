@@ -105,6 +105,7 @@
         \begin{itemize}
           \item 一个可运行 CLI：输入 APK，输出 JSON/text report。
           \item 一个可复现数据集：11 个 APK、labels 和逐样本报告。
+          \item 一个外部语料：12 个 DroidBench/F-Droid/PIVAA 现成 APK。
           \item 一个公平 benchmark：只统计本仓库可运行的对比工具。
         \end{itemize}
       \end{block}
@@ -296,7 +297,7 @@
     \end{tabular}
   \end{table}
   \vspace{0.2em}
-  数据集、labels、每个样本报告都提交在仓库中；`make dataset` 可重新生成。
+  数据集、labels、每个样本报告都提交在仓库中；\texttt{make dataset} 可重新生成。
 \end{frame}
 
 \begin{frame}{外部 APK 语料}{不只扫描自构造样本}
@@ -311,20 +312,20 @@
         \end{itemize}
       \end{block}
       \vspace{0.35em}
-      外部 APK 无 hardening oracle，不计算 F1；只统计覆盖率和 finding 分布。
+      外部 APK 已补充粗粒度评分标签；同时保留覆盖率和 finding 分布统计。
     \end{column}
     \begin{column}{0.56\textwidth}
       \scriptsize
       \begin{table}
         \centering
-        \begin{tabular}{lrrrr}
+        \begin{tabular}{lrrrrrr}
           \toprule
-          Tool & Samples & Any & Pack & Obf \\
+          Tool & Cov & Any & Pack & Obf & Env & Nat \\
           \midrule
-          HardenInspector & 12/12 & 9 & 3 & 6 \\
-          APKiD & 12/12 & 2 & 0 & 0 \\
-          Androguard DEX & 12/12 & 8 & 3 & 6 \\
-          ZIP Strings & 12/12 & 9 & 3 & 6 \\
+          HardenInspector & 12/12 & 9 & 3 & 6 & 3 & 0 \\
+          APKiD & 12/12 & 2 & 0 & 0 & 2 & 0 \\
+          Androguard DEX & 12/12 & 8 & 3 & 6 & 1 & 0 \\
+          ZIP Strings & 12/12 & 9 & 3 & 6 & 2 & 0 \\
           \bottomrule
         \end{tabular}
       \end{table}
@@ -345,13 +346,13 @@
       HardenInspector & 是 & 本项目检测器，四类 evidence-chain 输出 \\
       APKiD & 是 & 可安装可运行，输出 packer/oddity 相关签名 \\
       Androguard DEX & 是 & 可运行 DEX parser baseline，验证样本可被外部 parser 解析 \\
-      ZIP Strings & 是 & 无结构字符串扫描下限，11/11 样本有输出 \\
+      ZIP Strings & 是 & 无结构字符串扫描下限，23/23 样本有输出 \\
       DroidLysis & 否 & 缺 apktool/baksmali/dex2jar 时不是完整能力 \\
       MobSF & 否 & 需要服务/Docker 工作流，不纳入离线评分 \\
       \bottomrule
     \end{tabular}
   \end{table}
-  评分只比较当前仓库环境中 11/11 样本可运行的工具，避免把“环境不可用”统计成工具能力差。
+  评分比较当前仓库环境中 23/23 合并样本可运行的工具，避免把“环境不可用”统计成工具能力差。
 \end{frame}
 
 \begin{frame}{Benchmark 统计结果}
@@ -362,15 +363,15 @@
       \toprule
       Tool & Samples & Precision & Recall & Micro F1 \\
       \midrule
-      HardenInspector & 11/11 & 1.000 & 1.000 & 1.000 \\
-      APKiD & 11/11 & 1.000 & 0.312 & 0.476 \\
-      Androguard DEX & 11/11 & 1.000 & 0.625 & 0.769 \\
-      ZIP Strings & 11/11 & 1.000 & 0.875 & 0.933 \\
+      HardenInspector & 23/23 & 0.857 & 0.828 & 0.842 \\
+      APKiD & 23/23 & 1.000 & 0.241 & 0.389 \\
+      Androguard DEX & 23/23 & 0.800 & 0.552 & 0.653 \\
+      ZIP Strings & 23/23 & 0.840 & 0.724 & 0.778 \\
       \bottomrule
     \end{tabular}
   \end{table}
   \vspace{0.35em}
-  默认评分工具均完成 11/11 个样本；不可用环境工具不计入指标表。
+  默认评分工具均完成 23/23 个合成 + 外部样本；不可用环境工具不计入指标表。
 \end{frame}
 
 \begin{frame}{Micro F1 可视化}
@@ -385,14 +386,14 @@
     \node[anchor=east,font=\scriptsize] at (0,3) {ZIP Strings};
     \node[anchor=east,font=\scriptsize] at (0,2) {Androguard DEX};
     \node[anchor=east,font=\scriptsize] at (0,1) {APKiD};
-    \fill[structure.fg!85] (0,3.72) rectangle (1.00,4.28);
-    \fill[gray!65] (0,2.72) rectangle (0.933,3.28);
-    \fill[PineGreen!75] (0,1.72) rectangle (0.769,2.28);
-    \fill[Orange!80] (0,0.72) rectangle (0.476,1.28);
-    \node[anchor=west,font=\scriptsize] at (1.02,4) {1.000};
-    \node[anchor=west,font=\scriptsize] at (0.96,3) {0.933};
-    \node[anchor=west,font=\scriptsize] at (0.80,2) {0.769};
-    \node[anchor=west,font=\scriptsize] at (0.51,1) {0.476};
+    \fill[structure.fg!85] (0,3.72) rectangle (0.842,4.28);
+    \fill[gray!65] (0,2.72) rectangle (0.778,3.28);
+    \fill[PineGreen!75] (0,1.72) rectangle (0.653,2.28);
+    \fill[Orange!80] (0,0.72) rectangle (0.389,1.28);
+    \node[anchor=west,font=\scriptsize] at (0.87,4) {0.842};
+    \node[anchor=west,font=\scriptsize] at (0.80,3) {0.778};
+    \node[anchor=west,font=\scriptsize] at (0.68,2) {0.653};
+    \node[anchor=west,font=\scriptsize] at (0.42,1) {0.389};
   \end{tikzpicture}
 
   \vspace{0.5em}
@@ -401,26 +402,51 @@
 
 \section{交付与结论}
 
+\begin{frame}{测试结果复核}{本地与 fresh venv 的最终结果一致}
+  \scriptsize
+  \begin{table}
+    \centering
+    \begin{tabular}{p{2.25cm}p{8.75cm}}
+      \toprule
+      检查项 & 结果 \\
+      \midrule
+      自动化测试 & 28 个测试通过 \\
+      合成数据集 & \texttt{make dataset} 生成 11 个带标签 APK \\
+      评分统计 & 四工具均为 23/23；Micro F1：HI 0.842 / APKiD 0.389 / Androguard 0.653 / ZIP 0.778 \\
+      外部 APK 语料 & 12 个现成 APK 已纳入评分；单独统计四工具均为 12/12 \\
+      外部语料误报观察 & F-Droid 真实 APK 当前无 HardenInspector finding \\
+      汇报稿 & ZJU Beamer 可编译；PDF/aux/log 已忽略 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{0.25em}
+  这些结果同步写入 README、benchmark 文档、外部语料文档、完成审计和总结报告。
+\end{frame}
+
 \begin{frame}{开箱即用环境}
   \begin{columns}[T,totalwidth=\textwidth]
     \begin{column}{0.48\textwidth}
       \begin{block}{本地环境}
+        \scriptsize
         \texttt{make setup}\\
         \texttt{make test}\\
         \texttt{make dataset}\\
         \texttt{make benchmark}\\
+        \texttt{make external-corpus}\\
+        \texttt{make slides}\\
         \texttt{make demo}
       \end{block}
     \end{column}
     \begin{column}{0.48\textwidth}
       \begin{block}{容器环境}
+        \scriptsize
         \texttt{docker build -t hardeninspector .}\\
         \texttt{docker run --rm hardeninspector make test}
       \end{block}
     \end{column}
   \end{columns}
   \vspace{0.7em}
-  Fresh venv 验证：测试通过，CLI help、数据集生成、benchmark 和 slides 编译均可复现。
+  Fresh venv 验证：28 个测试通过；combined benchmark 为 23/23 coverage；external corpus 单独统计为 12/12 coverage。
 \end{frame}
 
 \begin{frame}{项目交付}
@@ -463,6 +489,7 @@
   \begin{itemize}
     \item HardenInspector 完成了中期报告提出的轻量静态证据链检测器。
     \item 构造了 11 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
+    \item 纳入 12 个公开现成 APK 进入合并评分，同时保留覆盖率和 finding 分布统计。
     \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
     \item 工具、数据集、文档、环境和汇报材料均已维护在 GitHub 仓库中。
   \end{itemize}

@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK，作为真实/外部样本扫描统计。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 23 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 
@@ -20,17 +20,21 @@
 - 来源上下文；
 - 下载 URL；
 - SHA-256。
+- 粗粒度 `expected_categories`；
+- `label_basis`，说明为什么把该公开样本映射到本项目四类 hardening-signal 标签。
 
-## 为什么不计算 F1
+## 评分标签口径
 
-这些外部 APK 没有 HardenInspector 四类 hardening 标签的 ground truth。DroidBench 主要服务于 taint-analysis benchmark；PIVAA 主要服务于移动漏洞扫描器测试；F-Droid 样本是普通开源应用。因此外部语料只用于：
+外部 APK 的原始标签目标和 HardenInspector 不完全相同：DroidBench 主要服务于 taint-analysis benchmark；PIVAA 主要服务于移动漏洞扫描器测试；F-Droid 样本是普通开源应用。为了按用户要求纳入评分，本仓库采用可审计的粗粒度映射：
 
-- APK 解析覆盖率；
-- 每个工具是否能跑完；
-- finding/category 分布；
-- 普通真实 APK 的误报观察。
+- Reflection -> `obfuscation`；
+- DynamicLoading -> `packer`；
+- EmulatorDetection / SelfModification -> `environment`；
+- Native -> `native`；
+- F-Droid Editor -> 空标签，作为真实开源 APK 低误报基线；
+- PIVAA -> `packer`、`obfuscation`、`environment`，因为它包含 dynamic-loading、reflection 和 instrumentation 风格信号。
 
-Precision、Recall、Micro F1、Macro F1 仍只在 `datasets/hardeninspector_eval_v1/` 合成 oracle 数据集上计算。
+这些标签不是官方 hardening ground truth，而是本项目四类检测目标下的评估映射；每条映射都写入 `manifest.json` 的 `label_basis`。
 
 ## 运行
 
@@ -44,6 +48,14 @@ make external-corpus
 - `reports/external_corpus/external_corpus_counts.csv`
 - `reports/external_corpus/external_corpus_summary.md`
 
+合并评分运行：
+
+```bash
+make benchmark
+```
+
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 23 个评分样本。
+
 ## 当前统计
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
@@ -53,15 +65,26 @@ make external-corpus
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
 | ZIP Strings | 12/12 | 9 | 3 | 6 | 2 | 0 |
 
+测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
+
+合并评分结果：
+
+| Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| HardenInspector | 23/23 | 0.857 | 0.828 | 0.842 | 0.848 |
+| APKiD | 23/23 | 1.000 | 0.241 | 0.389 | 0.317 |
+| Androguard DEX | 23/23 | 0.800 | 0.552 | 0.653 | 0.564 |
+| ZIP Strings | 23/23 | 0.840 | 0.724 | 0.778 | 0.789 |
+
 重要观察：
 
 - `fdroid_editor` 是真实开源 APK，当前 HardenInspector 无 finding，说明收紧后的控制流密度规则没有在该普通样本上误报。
 - DroidBench 的 reflection/dynamic-loading/emulator 场景能触发对应静态证据，说明检测器不仅能扫描合成 APK，也能处理公开现成测试 APK。
 - PIVAA 同时触发 dynamic loading、reflection 和 instrumentation 字符串，适合作为安全测试 APK 的外部 smoke sample。
 
-## 不能作为有标签 benchmark 的原因
+## 标签边界
 
-外部 APK 的标签目标和 HardenInspector 不同。把 DroidBench 或 PIVAA 的漏洞/污点标签直接映射成 hardening 标签会造成不公平统计。因此报告中明确区分：
+外部 APK 的标签目标和 HardenInspector 不同，因此本项目不声称这些标签是官方 hardening oracle。报告中明确区分：
 
 - `hardeninspector_eval_v1`：可计算 F1 的合成 oracle 数据集；
-- `external_apk_corpus_v1`：现成 APK 的扫描覆盖和分布统计。
+- `external_apk_corpus_v1`：带粗粒度标签的现成 APK 评估扩展，同时保留扫描覆盖和分布统计。

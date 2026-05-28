@@ -13,8 +13,9 @@
     "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow.",
     "zip_string_baseline": "Dependency-free raw ZIP filename/string baseline. It shows what a shallow strings-only scanner can recover without structured Android parsing."
   },
-  "dataset_version": "hardeninspector_eval_v1",
+  "dataset_version": "hardeninspector_eval_v1+external_apk_corpus_v1",
   "schema_version": 1,
+  "scored_external_corpus": "external_apk_corpus_v1",
   "tools": [
     {
       "categories": [
@@ -25,50 +26,50 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 0,
+          "fn": 2,
           "fp": 0,
-          "tn": 8,
-          "tp": 3
+          "tn": 15,
+          "tp": 6
         },
         "native": {
-          "fn": 0,
+          "fn": 2,
           "fp": 0,
-          "tn": 7,
+          "tn": 17,
           "tp": 4
         },
         "obfuscation": {
-          "fn": 0,
-          "fp": 0,
-          "tn": 6,
-          "tp": 5
+          "fn": 1,
+          "fp": 4,
+          "tn": 11,
+          "tp": 7
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
-          "tp": 4
+          "tn": 16,
+          "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 11,
-        "samples_with_results": 11
+        "samples_total": 23,
+        "samples_with_results": 23
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 1.0,
+            "f1": 0.8571428571428571,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.75
           },
           "native": {
-            "f1": 1.0,
+            "f1": 0.8,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.6666666666666666
           },
           "obfuscation": {
-            "f1": 1.0,
-            "precision": 1.0,
-            "recall": 1.0
+            "f1": 0.7368421052631579,
+            "precision": 0.6363636363636364,
+            "recall": 0.875
           },
           "packer": {
             "f1": 1.0,
@@ -77,14 +78,14 @@
           }
         },
         "macro": {
-          "f1": 1.0,
-          "precision": 1.0,
-          "recall": 1.0
+          "f1": 0.8484962406015037,
+          "precision": 0.9090909090909091,
+          "recall": 0.8229166666666666
         },
         "micro": {
-          "f1": 1.0,
-          "precision": 1.0,
-          "recall": 1.0
+          "f1": 0.8421052631578947,
+          "precision": 0.8571428571428571,
+          "recall": 0.8275862068965517
         }
       },
       "samples": [
@@ -277,6 +278,183 @@
           ],
           "runtime_ms": null,
           "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection",
+            "environment.system_properties"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.instrumentation_probe"
+          ],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "obfuscation.reflection",
+            "environment.instrumentation_probe"
+          ],
+          "id": "pivaa",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
         }
       ],
       "tool": "hardeninspector"
@@ -290,40 +468,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 1,
-          "fp": 0,
-          "tn": 8,
-          "tp": 2
-        },
-        "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 7,
+          "tn": 15,
+          "tp": 4
+        },
+        "native": {
+          "fn": 6,
+          "fp": 0,
+          "tn": 17,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 5,
+          "fn": 8,
           "fp": 0,
-          "tn": 6,
+          "tn": 15,
           "tp": 0
         },
         "packer": {
-          "fn": 1,
+          "fn": 4,
           "fp": 0,
-          "tn": 7,
+          "tn": 16,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 11,
-        "samples_with_results": 11
+        "samples_total": 23,
+        "samples_with_results": 23
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.8,
+            "f1": 0.6666666666666666,
             "precision": 1.0,
-            "recall": 0.6666666666666666
+            "recall": 0.5
           },
           "native": {
             "f1": 0.0,
@@ -336,20 +514,20 @@
             "recall": 0.0
           },
           "packer": {
-            "f1": 0.8571428571428571,
+            "f1": 0.6,
             "precision": 1.0,
-            "recall": 0.75
+            "recall": 0.42857142857142855
           }
         },
         "macro": {
-          "f1": 0.41428571428571426,
+          "f1": 0.31666666666666665,
           "precision": 0.5,
-          "recall": 0.35416666666666663
+          "recall": 0.23214285714285715
         },
         "micro": {
-          "f1": 0.47619047619047616,
+          "f1": 0.3888888888888889,
           "precision": 1.0,
-          "recall": 0.3125
+          "recall": 0.2413793103448276
         }
       },
       "samples": [
@@ -495,6 +673,153 @@
           ],
           "runtime_ms": null,
           "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_reflection_5",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_dynamic_both_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_dynamic_source_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "apkid.anti_vm.Build.BOARD check",
+            "apkid.anti_vm.Build.FINGERPRINT check",
+            "apkid.anti_vm.Build.HARDWARE check",
+            "apkid.anti_vm.Build.MANUFACTURER check",
+            "apkid.anti_vm.Build.MODEL check",
+            "apkid.anti_vm.Build.PRODUCT check",
+            "apkid.anti_vm.Build.TAGS check",
+            "apkid.anti_vm.Build.USER check"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_emulator_file_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "apkid.anti_vm.device ID check"
+          ],
+          "id": "droidbench_emulator_imei_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_native_id_function",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_source_in_native_code",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "pivaa",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
         }
       ],
       "tool": "apkid"
@@ -508,40 +833,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 0,
-          "fp": 0,
-          "tn": 8,
-          "tp": 3
-        },
-        "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 7,
+          "tn": 15,
+          "tp": 4
+        },
+        "native": {
+          "fn": 6,
+          "fp": 0,
+          "tn": 17,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 2,
-          "fp": 0,
-          "tn": 6,
-          "tp": 3
+          "fn": 3,
+          "fp": 4,
+          "tn": 11,
+          "tp": 5
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
-          "tp": 4
+          "tn": 16,
+          "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 11,
-        "samples_with_results": 11
+        "samples_total": 23,
+        "samples_with_results": 23
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 1.0,
+            "f1": 0.6666666666666666,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.5
           },
           "native": {
             "f1": 0.0,
@@ -549,9 +874,9 @@
             "recall": 0.0
           },
           "obfuscation": {
-            "f1": 0.7499999999999999,
-            "precision": 1.0,
-            "recall": 0.6
+            "f1": 0.5882352941176471,
+            "precision": 0.5555555555555556,
+            "recall": 0.625
           },
           "packer": {
             "f1": 1.0,
@@ -560,14 +885,14 @@
           }
         },
         "macro": {
-          "f1": 0.6875,
-          "precision": 0.75,
-          "recall": 0.65
+          "f1": 0.5637254901960784,
+          "precision": 0.6388888888888888,
+          "recall": 0.53125
         },
         "micro": {
-          "f1": 0.7692307692307693,
-          "precision": 1.0,
-          "recall": 0.625
+          "f1": 0.6530612244897959,
+          "precision": 0.8,
+          "recall": 0.5517241379310345
         }
       },
       "samples": [
@@ -732,6 +1057,180 @@
           ],
           "runtime_ms": null,
           "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "androguard.environment.frida",
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method",
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "pivaa",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
         }
       ],
       "tool": "androguard_dex"
@@ -745,50 +1244,50 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 0,
+          "fn": 3,
           "fp": 0,
-          "tn": 8,
-          "tp": 3
+          "tn": 15,
+          "tp": 5
         },
         "native": {
-          "fn": 0,
+          "fn": 2,
           "fp": 0,
-          "tn": 7,
+          "tn": 17,
           "tp": 4
         },
         "obfuscation": {
-          "fn": 2,
-          "fp": 0,
-          "tn": 6,
-          "tp": 3
+          "fn": 3,
+          "fp": 4,
+          "tn": 11,
+          "tp": 5
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 7,
-          "tp": 4
+          "tn": 16,
+          "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 11,
-        "samples_with_results": 11
+        "samples_total": 23,
+        "samples_with_results": 23
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 1.0,
+            "f1": 0.7692307692307693,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.625
           },
           "native": {
-            "f1": 1.0,
+            "f1": 0.8,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.6666666666666666
           },
           "obfuscation": {
-            "f1": 0.7499999999999999,
-            "precision": 1.0,
-            "recall": 0.6
+            "f1": 0.5882352941176471,
+            "precision": 0.5555555555555556,
+            "recall": 0.625
           },
           "packer": {
             "f1": 1.0,
@@ -797,14 +1296,14 @@
           }
         },
         "macro": {
-          "f1": 0.9375,
-          "precision": 1.0,
-          "recall": 0.9
+          "f1": 0.7893665158371042,
+          "precision": 0.8888888888888888,
+          "recall": 0.7291666666666666
         },
         "micro": {
-          "f1": 0.9333333333333333,
-          "precision": 1.0,
-          "recall": 0.875
+          "f1": 0.7777777777777777,
+          "precision": 0.84,
+          "recall": 0.7241379310344828
         }
       },
       "samples": [
@@ -971,6 +1470,178 @@
           "predicted_categories": [
             "environment",
             "native",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.environment./proc/self/maps"
+          ],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [],
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.environment.frida",
+            "zip_string.obfuscation.java/lang/reflect/Method",
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "pivaa",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment",
             "obfuscation",
             "packer"
           ],

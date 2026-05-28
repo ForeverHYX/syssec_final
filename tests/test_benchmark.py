@@ -124,6 +124,7 @@ def test_external_corpus_reports_distribution_without_oracle_metrics(tmp_path):
                 "source_context": "dynamic-loading",
                 "source_url": "https://example.invalid/sample.apk",
                 "sha256": "test-only",
+                "expected_categories": ["packer"],
             }
         ],
     }
@@ -133,6 +134,7 @@ def test_external_corpus_reports_distribution_without_oracle_metrics(tmp_path):
     result = run_external_corpus(corpus_dir, output_dir, tools=["hardeninspector"])
 
     assert dataset.samples[0]["absolute_apk_path"] == str(apk_path)
+    assert dataset.samples[0]["expected_categories"] == ["packer"]
     assert result["corpus_version"] == "test_external"
     assert (output_dir / "external_corpus_results.json").exists()
     payload = json.loads((output_dir / "external_corpus_results.json").read_text(encoding="utf-8"))
@@ -141,3 +143,56 @@ def test_external_corpus_reports_distribution_without_oracle_metrics(tmp_path):
     assert tool["coverage"] == {"samples_total": 1, "samples_with_results": 1}
     assert tool["category_counts"]["packer"] == 1
     assert tool["samples"][0]["finding_ids"] == ["packer.dynamic_code_loading"]
+
+
+def test_run_benchmark_can_score_external_corpus_samples(tmp_path):
+    dataset_dir = tmp_path / "dataset"
+    output_dir = tmp_path / "benchmark"
+    corpus_dir = tmp_path / "external"
+    apks_dir = corpus_dir / "apks"
+    build_dataset(dataset_dir)
+    apks_dir.mkdir(parents=True)
+    build_synthetic_apk(
+        apks_dir / "external.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.external", "com.example.external.MainActivity"],
+            class_descriptors=["Lcom/example/external/MainActivity;"],
+            dex_strings=["DexClassLoader"],
+        ),
+    )
+    (corpus_dir / "manifest.json").write_text(
+        json.dumps(
+            {
+                "corpus_version": "external_test",
+                "samples": [
+                    {
+                        "id": "external_dynamic_loading",
+                        "apk_path": "apks/external.apk",
+                        "source": "unit-test",
+                        "source_context": "dynamic-loading",
+                        "source_url": "https://example.invalid/external.apk",
+                        "sha256": "test-only",
+                        "expected_categories": ["packer"],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    manifest = run_benchmark(
+        dataset_dir,
+        output_dir,
+        tools=["hardeninspector"],
+        scored_external_corpus=corpus_dir,
+    )
+
+    payload = json.loads((output_dir / "benchmark_results.json").read_text(encoding="utf-8"))
+    tool_result = payload["tools"][0]
+    sample_ids = {sample["id"] for sample in tool_result["samples"]}
+
+    assert manifest["dataset_version"] == "hardeninspector_eval_v1+external_test"
+    assert payload["scored_external_corpus"] == "external_test"
+    assert tool_result["coverage"] == {"samples_total": 12, "samples_with_results": 12}
+    assert "external_dynamic_loading" in sample_ids
+    assert tool_result["metrics"]["micro"]["recall"] == 1.0

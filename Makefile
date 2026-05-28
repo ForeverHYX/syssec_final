@@ -17,7 +17,7 @@ dataset:
 	$(PY) -m hardeninspector.dataset datasets/hardeninspector_eval_v1
 
 benchmark:
-	$(PY) -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --output reports/benchmark --tools hardeninspector apkid androguard_dex zip_string_baseline
+	$(PY) -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output reports/benchmark --tools hardeninspector apkid androguard_dex zip_string_baseline
 
 external-corpus:
 	$(PY) -m hardeninspector.benchmark --external-only --external-corpus datasets/external_apk_corpus_v1 --external-output reports/external_corpus --tools hardeninspector apkid androguard_dex zip_string_baseline

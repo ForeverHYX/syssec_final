@@ -297,3 +297,11 @@
 - TDD RED: updated Web demo and final-artifact expectations to require the current displayed regression-test count; focused tests failed because Web demo, README/docs, final summary, and slides still showed the old count.
 - TDD GREEN: synchronized final-facing materials and Web demo HTML to the current 69-test result. The first synchronization to 68 immediately exposed the fact that the new consistency test itself increased the suite to 69, so the final materials were corrected to 69.
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` and `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` both passed with 69 tests; `make slides` compiled 22 pages; stale 67/68 final-material scan had no matches; LaTeX log scan, `pdfinfo`, and `git diff --check` were clean.
+- Committed Phase 34 locally as `fb5993e test: keep final test counts synchronized`.
+
+## 2026-05-28 GitHub Push and Web Demo Launch
+
+- User explicitly approved pushing the repository to GitHub after the prior sandbox escalation rejection.
+- Ran `git push origin main` with escalation; GitHub accepted `55e8ce4..fb5993e main -> main`, synchronizing the four local commits.
+- Started the local Web demo at `http://127.0.0.1:8000/`.
+- Web demo smoke checks passed: homepage shows Exhibit Map, Evidence Chain, Dataset Story, 34 scored APKs, 22 + 12 dataset split, HardenInspector Micro F1 1.000, and 69 regression tests; `/api/samples` lists curated synthetic/external samples; `/api/scan?id=combined_hardened_showcase` returns packer=4, obfuscation=2, environment=3, native=1; `/api/metrics` returns current benchmark metrics; `HEAD /assets/apk-cutaway.png` returns 200 image/png.

@@ -16,7 +16,7 @@
 - 期末总结报告：`reports/final_summary.md`；
 - ZJU Beamer 模板期末汇报稿：`slides/final_presentation.tex`；
 - 中期报告 PDF 归档：`docs/references/mid_term.pdf`；
-- GitHub 远端仓库与阶段性提交记录。
+- GitHub 远端仓库与阶段性提交记录；最新本地提交等待明确授权后推送。
 
 ## 对课程要求的覆盖
 
@@ -34,6 +34,7 @@
 | slides 构建产物管理 | `slides/final_presentation.pdf` 和 LaTeX 辅助文件均已加入 `.gitignore`，仅提交 `.tex`、模板 `.sty` 和模板图片资源 |
 | 记录现实调整 | `docs/implementation_scope.md` |
 | 课程展示可复现 | `docs/demo.md` 和 `examples/make_demo_apk.py` |
+| GitHub 状态 | 远端已配置为 `git@github.com:ForeverHYX/syssec_final.git`；当前本地分支包含最新改进提交，需明确授权后执行 `git push origin main` |
 
 ## 运行检查
 

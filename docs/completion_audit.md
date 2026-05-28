@@ -17,8 +17,8 @@
 | 产出中文总结报告 | `reports/final_summary.md` |
 | 产出期末 Beamer | `slides/final_presentation.tex` 使用 ZJU Beamer Template，标题为项目名，作者为洪奕迅、蒋城昊、项康，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图 |
 | slides 编译产物忽略 | `slides/final_presentation.pdf` 及 `.aux/.log/.nav/.out/.snm/.toc` 等 LaTeX 产物在 `.gitignore` 中忽略 |
-| 维护 GitHub repo `syssec_final` | 远端为 `git@github.com:ForeverHYX/syssec_final.git`，GitHub URL 为 `https://github.com/ForeverHYX/syssec_final` |
-| 阶段性 commit | Git history 包含 planning、APK/AXML parser、DEX parser、detector CLI、docs/demo、dataset/docs 等提交 |
+| 维护 GitHub repo `syssec_final` | 远端为 `git@github.com:ForeverHYX/syssec_final.git`，GitHub URL 为 `https://github.com/ForeverHYX/syssec_final`；最新本地提交等待明确授权后推送 |
+| 阶段性 commit | Git history 包含 planning、APK/AXML parser、DEX parser、detector CLI、docs/demo、dataset/docs 和最新规则/标签审计提交 |
 
 ## 最新验证命令
 

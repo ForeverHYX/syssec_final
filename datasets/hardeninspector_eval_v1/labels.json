@@ -210,6 +210,48 @@
     },
     {
       "actual_findings": [
+        "packer.high_entropy_payload"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 1
+      },
+      "apk_path": "apks/high_entropy_payload_only.apk",
+      "construction": "synthetic APK whose only hardening signal is a high-entropy asset payload; this exercises file-stat evidence that a plain string baseline cannot recover",
+      "expected_findings": [
+        "packer.high_entropy_payload"
+      ],
+      "id": "high_entropy_payload_only",
+      "report_path": "reports/high_entropy_payload_only.json",
+      "source_plan": "opaque encrypted-payload control sample"
+    },
+    {
+      "actual_findings": [
+        "environment.native_debugger_symbol",
+        "packer.native_dynamic_loader",
+        "native.jni_entrypoint"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 1,
+        "obfuscation": 0,
+        "packer": 1
+      },
+      "apk_path": "apks/native_ptrace_loader.apk",
+      "construction": "synthetic APK with ELF dynamic symbol evidence for JNI_OnLoad, ptrace, and android_dlopen_ext; this exercises Native symbol-table parsing rather than relying only on DEX or Manifest strings",
+      "expected_findings": [
+        "environment.native_debugger_symbol",
+        "packer.native_dynamic_loader",
+        "native.jni_entrypoint"
+      ],
+      "id": "native_ptrace_loader",
+      "report_path": "reports/native_ptrace_loader.json",
+      "source_plan": "native anti-debug and loader symbol sample"
+    },
+    {
+      "actual_findings": [
         "packer.known_library",
         "packer.stub_application",
         "packer.high_entropy_payload",

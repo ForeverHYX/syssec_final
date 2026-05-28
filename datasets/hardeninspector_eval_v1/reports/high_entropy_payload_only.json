@@ -1,0 +1,31 @@
+{
+  "apk": {
+    "entry_count": 3,
+    "path": "datasets/hardeninspector_eval_v1/apks/high_entropy_payload_only.apk",
+    "sha256": "2d458e028eba8d0ff7211b9f163da1201567ecc1f7e8c869b2c1d476020c6efc"
+  },
+  "findings": [
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "APK assets contain high-entropy data that may be encrypted payload material.",
+      "evidence": [
+        {
+          "kind": "file-stat",
+          "location": "assets/opaque_payload.bin",
+          "value": "entropy=8.00, size=512"
+        }
+      ],
+      "id": "packer.high_entropy_payload",
+      "severity": "medium",
+      "title": "High-entropy asset payload"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 1
+  }
+}

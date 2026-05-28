@@ -8,6 +8,7 @@ from pathlib import Path
 from .apk import ApkArchive, FileEntry
 from .axml import extract_axml_strings
 from .dex import DexFile, MethodReference
+from .native import ElfSymbol, extract_elf_symbols
 from .util import extract_printable_strings, sha256_hex
 
 
@@ -26,6 +27,7 @@ class ApkFeatures:
     manifest_strings: list[StringEvidence]
     dex_files: list[DexFile]
     native_strings: dict[str, list[str]]
+    native_symbols: dict[str, list[ElfSymbol]]
     resource_entries: list[FileEntry]
 
     @property
@@ -68,10 +70,12 @@ def extract_features(path: str | Path) -> ApkFeatures:
     archive = ApkArchive.open(apk_path)
     manifest_strings = _extract_manifest_strings(archive)
     dex_files = [DexFile.parse(entry.name, archive.read(entry.name)) for entry in archive.dex_files]
-    native_strings = {
-        entry.name: extract_printable_strings(archive.read(entry.name), min_length=4)
-        for entry in archive.native_libraries
-    }
+    native_strings: dict[str, list[str]] = {}
+    native_symbols: dict[str, list[ElfSymbol]] = {}
+    for entry in archive.native_libraries:
+        data = archive.read(entry.name)
+        native_strings[entry.name] = extract_printable_strings(data, min_length=4)
+        native_symbols[entry.name] = extract_elf_symbols(data)
     return ApkFeatures(
         path=apk_path,
         sha256=sha256_hex(apk_path.read_bytes()),
@@ -79,6 +83,7 @@ def extract_features(path: str | Path) -> ApkFeatures:
         manifest_strings=manifest_strings,
         dex_files=dex_files,
         native_strings=native_strings,
+        native_symbols=native_symbols,
         resource_entries=archive.resource_entries,
     )
 
@@ -93,4 +98,3 @@ def _extract_manifest_strings(archive: ApkArchive) -> list[StringEvidence]:
         StringEvidence(value=value, location="AndroidManifest.xml", kind="manifest-string")
         for value in values
     ]
-

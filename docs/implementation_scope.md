@@ -18,6 +18,7 @@
 - 识别 `AndroidManifest.xml`、`classes*.dex`、`lib/**/*.so` 和资源文件。
 - 从 Android binary XML string pool 中提取 Manifest 字符串。
 - 从 Native `.so` 或任意二进制数据中提取 ASCII 可打印字符串。
+- 从 ELF `.dynsym`/`.symtab` 和字符串表中提取 Native 符号名，作为结构化证据。
 
 ### DEX 静态证据提取
 
@@ -30,14 +31,14 @@
 - 加壳规则：已知壳库名、Manifest StubApp、高熵 assets、动态加载 API。
 - 混淆规则：短类名比例、反射 API/`invoke` 证据。
 - 环境检测规则：模拟器 system properties、debugger probe、Frida/Xposed/Substrate/process maps。
-- Native 规则：`JNI_OnLoad` 入口证据。
+- Native/符号规则：`JNI_OnLoad` 入口证据、Native anti-debug 符号、Native dynamic loader 符号。
 - CLI 支持终端摘要、JSON 输出和 `-o/--output` 文件输出。
 - `examples/make_demo_apk.py` 可生成不含真实恶意逻辑的合成展示 APK。
 
 ### 数据集
 
 - `src/hardeninspector/dataset.py` 可一键构造 `hardeninspector_eval_v1` 数据集。
-- 数据集包含 11 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、综合展示样本。
+- 数据集包含 13 个 APK：F-Droid 风格基线、自写环境检测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader 符号样本、综合展示样本。
 - 每个样本都有 `labels.json` 标签项和对应 JSON 检测报告。
 
 ## 调整的目标

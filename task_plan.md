@@ -165,6 +165,16 @@ Status: complete
 - Regenerate benchmark reports, docs, README, and slides with 23-sample metrics.
 - Re-run verification, commit, and push the scoring update.
 
+### Phase 17: Native structural evidence and harder synthetic samples
+
+Status: complete
+
+- Add a lightweight ELF parser for Native symbol/import evidence.
+- Detect native anti-debug/dynamic-loader symbols as environment/native findings with evidence locations.
+- Add harder synthetic APK samples that rely on structural signals such as entropy and ELF symbols rather than obvious DEX strings.
+- Regenerate dataset, benchmark, reports, docs, README, and slides.
+- Verify locally, commit, and push.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

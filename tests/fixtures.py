@@ -6,6 +6,7 @@ from pathlib import Path
 from hardeninspector.synthetic import (
     build_axml_string_pool,
     build_dex,
+    build_elf_shared_object,
     build_synthetic_apk,
     const_string_instruction,
     goto_instruction,
@@ -20,6 +21,7 @@ __all__ = [
     "build_apk",
     "build_axml_string_pool",
     "build_dex_fixture",
+    "build_elf_shared_object",
     "build_hardened_apk",
     "const_string_instruction",
     "goto_instruction",

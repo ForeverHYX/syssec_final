@@ -28,43 +28,43 @@
         "environment": {
           "fn": 2,
           "fp": 0,
-          "tn": 15,
-          "tp": 6
+          "tn": 16,
+          "tp": 7
         },
         "native": {
           "fn": 2,
           "fp": 0,
-          "tn": 17,
-          "tp": 4
+          "tn": 18,
+          "tp": 5
         },
         "obfuscation": {
           "fn": 1,
           "fp": 4,
-          "tn": 11,
+          "tn": 13,
           "tp": 7
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 16,
-          "tp": 7
+          "tn": 15,
+          "tp": 10
         }
       },
       "coverage": {
-        "samples_total": 23,
-        "samples_with_results": 23
+        "samples_total": 25,
+        "samples_with_results": 25
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.8571428571428571,
+            "f1": 0.8750000000000001,
             "precision": 1.0,
-            "recall": 0.75
+            "recall": 0.7777777777777778
           },
           "native": {
-            "f1": 0.8,
+            "f1": 0.8333333333333333,
             "precision": 1.0,
-            "recall": 0.6666666666666666
+            "recall": 0.7142857142857143
           },
           "obfuscation": {
             "f1": 0.7368421052631579,
@@ -78,14 +78,14 @@
           }
         },
         "macro": {
-          "f1": 0.8484962406015037,
+          "f1": 0.8612938596491229,
           "precision": 0.9090909090909091,
-          "recall": 0.8229166666666666
+          "recall": 0.841765873015873
         },
         "micro": {
-          "f1": 0.8421052631578947,
-          "precision": 0.8571428571428571,
-          "recall": 0.8275862068965517
+          "f1": 0.8656716417910447,
+          "precision": 0.8787878787878788,
+          "recall": 0.8529411764705882
         }
       },
       "samples": [
@@ -251,6 +251,42 @@
         },
         {
           "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [
+            "packer.high_entropy_payload"
+          ],
+          "id": "high_entropy_payload_only",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "environment.native_debugger_symbol",
+            "packer.native_dynamic_loader",
+            "native.jni_entrypoint"
+          ],
+          "id": "native_ptrace_loader",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -382,15 +418,18 @@
         },
         {
           "expected_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "finding_ids": [
-            "environment.instrumentation_probe"
+            "environment.instrumentation_probe",
+            "packer.native_dynamic_loader"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": null,
           "predicted_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "runtime_ms": null,
           "status": "ok"
@@ -468,40 +507,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 4,
+          "fn": 5,
           "fp": 0,
-          "tn": 15,
+          "tn": 16,
           "tp": 4
         },
         "native": {
-          "fn": 6,
+          "fn": 7,
           "fp": 0,
-          "tn": 17,
+          "tn": 18,
           "tp": 0
         },
         "obfuscation": {
           "fn": 8,
           "fp": 0,
-          "tn": 15,
+          "tn": 17,
           "tp": 0
         },
         "packer": {
-          "fn": 4,
+          "fn": 7,
           "fp": 0,
-          "tn": 16,
+          "tn": 15,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 23,
-        "samples_with_results": 23
+        "samples_total": 25,
+        "samples_with_results": 25
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.6666666666666666,
+            "f1": 0.6153846153846153,
             "precision": 1.0,
-            "recall": 0.5
+            "recall": 0.4444444444444444
           },
           "native": {
             "f1": 0.0,
@@ -514,20 +553,20 @@
             "recall": 0.0
           },
           "packer": {
-            "f1": 0.6,
+            "f1": 0.4615384615384615,
             "precision": 1.0,
-            "recall": 0.42857142857142855
+            "recall": 0.3
           }
         },
         "macro": {
-          "f1": 0.31666666666666665,
+          "f1": 0.2692307692307692,
           "precision": 0.5,
-          "recall": 0.23214285714285715
+          "recall": 0.18611111111111112
         },
         "micro": {
-          "f1": 0.3888888888888889,
+          "f1": 0.34146341463414637,
           "precision": 1.0,
-          "recall": 0.2413793103448276
+          "recall": 0.20588235294117646
         }
       },
       "samples": [
@@ -656,6 +695,30 @@
         },
         {
           "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "high_entropy_payload_only",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "native_ptrace_loader",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -768,7 +831,8 @@
         },
         {
           "expected_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "finding_ids": [],
           "id": "droidbench_bytecode_tamper_1",
@@ -833,40 +897,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 4,
+          "fn": 5,
           "fp": 0,
-          "tn": 15,
+          "tn": 16,
           "tp": 4
         },
         "native": {
-          "fn": 6,
+          "fn": 7,
           "fp": 0,
-          "tn": 17,
+          "tn": 18,
           "tp": 0
         },
         "obfuscation": {
           "fn": 3,
           "fp": 4,
-          "tn": 11,
+          "tn": 13,
           "tp": 5
         },
         "packer": {
-          "fn": 0,
+          "fn": 3,
           "fp": 0,
-          "tn": 16,
+          "tn": 15,
           "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 23,
-        "samples_with_results": 23
+        "samples_total": 25,
+        "samples_with_results": 25
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.6666666666666666,
+            "f1": 0.6153846153846153,
             "precision": 1.0,
-            "recall": 0.5
+            "recall": 0.4444444444444444
           },
           "native": {
             "f1": 0.0,
@@ -879,20 +943,20 @@
             "recall": 0.625
           },
           "packer": {
-            "f1": 1.0,
+            "f1": 0.8235294117647058,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.7
           }
         },
         "macro": {
-          "f1": 0.5637254901960784,
+          "f1": 0.5067873303167421,
           "precision": 0.6388888888888888,
-          "recall": 0.53125
+          "recall": 0.4423611111111111
         },
         "micro": {
-          "f1": 0.6530612244897959,
+          "f1": 0.5925925925925927,
           "precision": 0.8,
-          "recall": 0.5517241379310345
+          "recall": 0.47058823529411764
         }
       },
       "samples": [
@@ -1037,6 +1101,30 @@
         },
         {
           "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "high_entropy_payload_only",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "native_ptrace_loader",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -1160,7 +1248,8 @@
         },
         {
           "expected_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "finding_ids": [],
           "id": "droidbench_bytecode_tamper_1",
@@ -1246,43 +1335,43 @@
         "environment": {
           "fn": 3,
           "fp": 0,
-          "tn": 15,
-          "tp": 5
+          "tn": 16,
+          "tp": 6
         },
         "native": {
           "fn": 2,
           "fp": 0,
-          "tn": 17,
-          "tp": 4
+          "tn": 18,
+          "tp": 5
         },
         "obfuscation": {
           "fn": 3,
           "fp": 4,
-          "tn": 11,
+          "tn": 13,
           "tp": 5
         },
         "packer": {
-          "fn": 0,
+          "fn": 1,
           "fp": 0,
-          "tn": 16,
-          "tp": 7
+          "tn": 15,
+          "tp": 9
         }
       },
       "coverage": {
-        "samples_total": 23,
-        "samples_with_results": 23
+        "samples_total": 25,
+        "samples_with_results": 25
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.7692307692307693,
-            "precision": 1.0,
-            "recall": 0.625
-          },
-          "native": {
             "f1": 0.8,
             "precision": 1.0,
             "recall": 0.6666666666666666
+          },
+          "native": {
+            "f1": 0.8333333333333333,
+            "precision": 1.0,
+            "recall": 0.7142857142857143
           },
           "obfuscation": {
             "f1": 0.5882352941176471,
@@ -1290,20 +1379,20 @@
             "recall": 0.625
           },
           "packer": {
-            "f1": 1.0,
+            "f1": 0.9473684210526316,
             "precision": 1.0,
-            "recall": 1.0
+            "recall": 0.9
           }
         },
         "macro": {
-          "f1": 0.7893665158371042,
+          "f1": 0.792234262125903,
           "precision": 0.8888888888888888,
-          "recall": 0.7291666666666666
+          "recall": 0.7264880952380952
         },
         "micro": {
-          "f1": 0.7777777777777777,
-          "precision": 0.84,
-          "recall": 0.7241379310344828
+          "f1": 0.7936507936507937,
+          "precision": 0.8620689655172413,
+          "recall": 0.7352941176470589
         }
       },
       "samples": [
@@ -1454,6 +1543,38 @@
         },
         {
           "expected_categories": [
+            "packer"
+          ],
+          "finding_ids": [],
+          "id": "high_entropy_payload_only",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "finding_ids": [
+            "zip_string.environment.ptrace",
+            "zip_string.native.JNI_OnLoad",
+            "zip_string.packer.dlopen"
+          ],
+          "id": "native_ptrace_loader",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment",
+            "native",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -1575,15 +1696,18 @@
         },
         {
           "expected_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "finding_ids": [
-            "zip_string.environment./proc/self/maps"
+            "zip_string.environment./proc/self/maps",
+            "zip_string.packer.dlopen"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
           "predicted_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "runtime_ms": null,
           "status": "ok"

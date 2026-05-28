@@ -26,14 +26,16 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "control_flow_flattening",
         "fdroid_clean_baseline",
         "frida_xposed_probe",
+        "high_entropy_payload_only",
         "native_jni_bridge_only",
+        "native_ptrace_loader",
         "obfuscapk_reflection_dynamic",
         "packer_stub_payload",
         "reflection_only_dispatch",
         "r8_identifier_obfuscation",
         "self_written_environment_checks",
     }
-    assert manifest["sample_count"] == 11
+    assert manifest["sample_count"] == 13
     assert (dataset_dir / "README.md").exists()
 
     for sample in labels["samples"]:
@@ -58,6 +60,8 @@ def test_dataset_documents_practical_source_substitutions(tmp_path):
     assert by_id["r8_identifier_obfuscation"]["source_plan"] == "ProGuard/R8 controlled obfuscation"
     assert by_id["obfuscapk_reflection_dynamic"]["source_plan"] == "Obfuscapk-style controlled obfuscation"
     assert by_id["packer_stub_payload"]["source_plan"] == "packer-protected sample"
+    assert by_id["high_entropy_payload_only"]["expected_findings"] == ["packer.high_entropy_payload"]
+    assert "ELF dynamic symbol" in by_id["native_ptrace_loader"]["construction"]
 
 
 def test_synthetic_apk_generation_is_byte_reproducible(tmp_path):

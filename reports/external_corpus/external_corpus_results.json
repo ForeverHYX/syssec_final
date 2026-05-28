@@ -23,7 +23,7 @@
         "environment": 3,
         "native": 0,
         "obfuscation": 6,
-        "packer": 3
+        "packer": 4
       },
       "coverage": {
         "samples_total": 12,
@@ -141,12 +141,14 @@
         {
           "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
           "finding_ids": [
-            "environment.instrumentation_probe"
+            "environment.instrumentation_probe",
+            "packer.native_dynamic_loader"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": null,
           "predicted_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "runtime_ms": null,
           "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
@@ -616,7 +618,7 @@
         "environment": 2,
         "native": 0,
         "obfuscation": 6,
-        "packer": 3
+        "packer": 4
       },
       "coverage": {
         "samples_total": 12,
@@ -730,12 +732,14 @@
         {
           "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
           "finding_ids": [
-            "zip_string.environment./proc/self/maps"
+            "zip_string.environment./proc/self/maps",
+            "zip_string.packer.dlopen"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
           "predicted_categories": [
-            "environment"
+            "environment",
+            "packer"
           ],
           "runtime_ms": null,
           "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",

@@ -4,6 +4,7 @@ from hardeninspector.rules import evaluate_rules
 
 from .fixtures import (
     SyntheticApkSpec,
+    build_elf_shared_object,
     build_hardened_apk,
     build_synthetic_apk,
     goto_instruction,
@@ -78,3 +79,34 @@ def test_detector_reports_lightweight_control_flow_density(tmp_path):
     assert finding.category == "obfuscation"
     assert finding.evidence[0].kind == "dex-opcode-stat"
     assert "control_flow_density=0.75" in finding.evidence[0].value
+
+
+def test_detector_reports_native_structural_symbol_findings(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "native-symbols.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.nativeprobe", "com.example.nativeprobe.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/nativeprobe/MainActivity;",
+                "Lcom/example/nativeprobe/NativeProbe;",
+                "Lcom/example/nativeprobe/Loader;",
+            ],
+            method_names=["<clinit>", "run"],
+            dex_strings=["native symbol sample"],
+            native_libraries={
+                "lib/arm64-v8a/libnativeprobe.so": build_elf_shared_object(
+                    ["JNI_OnLoad", "ptrace", "android_dlopen_ext"]
+                ),
+            },
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "native.jni_entrypoint" in finding_ids
+    assert "environment.native_debugger_symbol" in finding_ids
+    assert "packer.native_dynamic_loader" in finding_ids
+    native_debug = next(finding for finding in report.findings if finding.id == "environment.native_debugger_symbol")
+    assert native_debug.evidence[0].kind == "elf-symbol"
+    assert native_debug.evidence[0].location == "lib/arm64-v8a/libnativeprobe.so:.dynsym"

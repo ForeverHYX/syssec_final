@@ -19,7 +19,9 @@ datasets/hardeninspector_eval_v1/
     combined_hardened_showcase.apk
     fdroid_clean_baseline.apk
     frida_xposed_probe.apk
+    high_entropy_payload_only.apk
     native_jni_bridge_only.apk
+    native_ptrace_loader.apk
     obfuscapk_reflection_dynamic.apk
     control_flow_flattening.apk
     r8_identifier_obfuscation.apk
@@ -44,6 +46,8 @@ datasets/hardeninspector_eval_v1/
 | `frida_xposed_probe` | instrumentation-detection sample | Frida/Xposed/Substrate/process maps 字符串 | 单独验证 instrumentation 检测 |
 | `reflection_only_dispatch` | reflection-only obfuscation sample | 只包含反射 dispatch，不含动态加载 | 单独验证反射混淆 |
 | `control_flow_flattening` | control-flow obfuscation sample | 构造密集 `if-*`/`goto` bytecode 模式 | 验证轻量控制流密度规则 |
+| `high_entropy_payload_only` | opaque encrypted-payload control sample | 只放置高熵 asset，不植入显式加壳字符串 | 验证文件熵结构化证据 |
+| `native_ptrace_loader` | native anti-debug and loader symbol sample | 构造含 `JNI_OnLoad`、`ptrace`、`android_dlopen_ext` 的 ELF `.dynsym` | 验证 Native 符号表解析 |
 | `combined_hardened_showcase` | 综合加固样本 | 合并三类加固证据 | 课程展示主样本 |
 
 ## 标签格式
@@ -73,7 +77,7 @@ datasets/hardeninspector_eval_v1/
 
 单元测试会在临时目录重新构造数据集，验证：
 
-- 11 个样本全部生成；
+- 13 个样本全部生成；
 - `labels.json` 和每个报告存在；
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。
@@ -87,4 +91,4 @@ datasets/hardeninspector_eval_v1/
 - 1 个 F-Droid 真实开源 APK；
 - 1 个 PIVAA 漏洞测试 APK。
 
-外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 23 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。
+外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 25 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。

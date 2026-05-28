@@ -104,7 +104,7 @@
       \begin{block}{我们实现了什么}
         \begin{itemize}
           \item 一个可运行 CLI：输入 APK，输出 JSON/text report。
-          \item 一个可复现数据集：11 个 APK、labels 和逐样本报告。
+          \item 一个可复现数据集：13 个 APK、labels 和逐样本报告。
           \item 一个外部语料：12 个 DroidBench/F-Droid/PIVAA 现成 APK。
           \item 一个公平 benchmark：只统计本仓库可运行的对比工具。
         \end{itemize}
@@ -137,7 +137,7 @@
         \begin{itemize}
           \item Manifest：入口类、权限、硬编码字符串。
           \item DEX：类名、方法名、字符串池和调用痕迹。
-          \item Native：\texttt{JNI\_OnLoad}、反调试和 Hook 字符串。
+          \item Native：\texttt{JNI\_OnLoad}、ELF 符号表、反调试和 Hook 字符串。
           \item assets/resources：高熵 payload 和可疑文件路径。
         \end{itemize}
       \end{block}
@@ -162,7 +162,7 @@
       \scriptsize 文件清单与熵值\\
       \scriptsize AXML string pool\\
       \scriptsize DEX strings/types/methods\\
-      \scriptsize Native printable strings
+      \scriptsize Native strings/symbols
     };
     \node[hiBoxOrange, right=of parse, minimum width=3.0cm, minimum height=3.05cm] (feature) {
       \textbf{特征层}\\[0.35em]
@@ -195,7 +195,7 @@
           \item APK：文件清单、压缩大小、熵值、资源路径。
           \item Manifest：壳入口类、权限、硬编码字符串。
           \item DEX：字符串池、类型描述符、方法名、\texttt{const-string}、\texttt{invoke-*}。
-          \item Native：\texttt{JNI\_OnLoad}、反调试和 Hook 相关字符串。
+          \item Native：\texttt{JNI\_OnLoad}、ELF 符号、反调试和 Hook 相关字符串。
         \end{itemize}
       \end{block}
     \end{column}
@@ -229,10 +229,10 @@
       \toprule
       类别 & 规则信号 & 输出证据 \\
       \midrule
-      加壳 & 壳库名、StubApp、高熵 payload、动态加载 API & packer finding \\
+      加壳 & 壳库名、StubApp、高熵 payload、动态加载 API、ELF loader 符号 & packer finding \\
       混淆 & 短类名比例、反射 API、字符串/调用组合 & obfuscation finding \\
-      环境检测 & emulator properties、debugger、Frida/Xposed & environment finding \\
-      Native & JNI 入口、native loader、反分析字符串 & native finding \\
+      环境检测 & emulator properties、debugger、Native anti-debug 符号、Frida/Xposed & environment finding \\
+      Native & JNI 入口、native loader、反分析字符串/符号 & native finding \\
       \bottomrule
     \end{tabular}
   \end{table}
@@ -274,8 +274,8 @@
 
 \section{数据集与对比}
 
-\begin{frame}{数据集构造}{11 个样本如何覆盖课程概念}
-  \scriptsize
+\begin{frame}{数据集构造}{13 个样本如何覆盖课程概念}
+  \tiny
   \begin{table}
     \centering
     \begin{tabular}{p{2.35cm}ccccp{4.1cm}}
@@ -292,6 +292,8 @@
       frida\_xposed & & & \hitick & & Hook 探测 \\
       reflection\_only & & \hitick & & & 单独反射混淆 \\
       control\_flow & & \hitick & & & 分支/跳转密度 \\
+      entropy\_only & \hitick & & & & 无显式字符串的高熵 payload \\
+      native\_symbols & \hitick & & \hitick & \hitick & ELF \texttt{ptrace}/loader 符号 \\
       combined & \hitick & \hitick & \hitick & \hitick & 综合展示 \\
       \bottomrule
     \end{tabular}
@@ -322,10 +324,10 @@
           \toprule
           Tool & Cov & Any & Pack & Obf & Env & Nat \\
           \midrule
-          HardenInspector & 12/12 & 9 & 3 & 6 & 3 & 0 \\
+          HardenInspector & 12/12 & 9 & 4 & 6 & 3 & 0 \\
           APKiD & 12/12 & 2 & 0 & 0 & 2 & 0 \\
           Androguard DEX & 12/12 & 8 & 3 & 6 & 1 & 0 \\
-          ZIP Strings & 12/12 & 9 & 3 & 6 & 2 & 0 \\
+          ZIP Strings & 12/12 & 9 & 4 & 6 & 2 & 0 \\
           \bottomrule
         \end{tabular}
       \end{table}
@@ -346,13 +348,13 @@
       HardenInspector & 是 & 本项目检测器，四类 evidence-chain 输出 \\
       APKiD & 是 & 可安装可运行，输出 packer/oddity 相关签名 \\
       Androguard DEX & 是 & 可运行 DEX parser baseline，验证样本可被外部 parser 解析 \\
-      ZIP Strings & 是 & 无结构字符串扫描下限，23/23 样本有输出 \\
+      ZIP Strings & 是 & 无结构字符串扫描下限，25/25 样本有输出 \\
       DroidLysis & 否 & 缺 apktool/baksmali/dex2jar 时不是完整能力 \\
       MobSF & 否 & 需要服务/Docker 工作流，不纳入离线评分 \\
       \bottomrule
     \end{tabular}
   \end{table}
-  评分比较当前仓库环境中 23/23 合并样本可运行的工具，避免把“环境不可用”统计成工具能力差。
+  评分比较当前仓库环境中 25/25 合并样本可运行的工具，避免把“环境不可用”统计成工具能力差。
 \end{frame}
 
 \begin{frame}{Benchmark 统计结果}
@@ -363,15 +365,15 @@
       \toprule
       Tool & Samples & Precision & Recall & Micro F1 \\
       \midrule
-      HardenInspector & 23/23 & 0.857 & 0.828 & 0.842 \\
-      APKiD & 23/23 & 1.000 & 0.241 & 0.389 \\
-      Androguard DEX & 23/23 & 0.800 & 0.552 & 0.653 \\
-      ZIP Strings & 23/23 & 0.840 & 0.724 & 0.778 \\
+      HardenInspector & 25/25 & 0.879 & 0.853 & 0.866 \\
+      APKiD & 25/25 & 1.000 & 0.206 & 0.341 \\
+      Androguard DEX & 25/25 & 0.800 & 0.471 & 0.593 \\
+      ZIP Strings & 25/25 & 0.862 & 0.735 & 0.794 \\
       \bottomrule
     \end{tabular}
   \end{table}
   \vspace{0.35em}
-  默认评分工具均完成 23/23 个合成 + 外部样本；不可用环境工具不计入指标表。
+  默认评分工具均完成 25/25 个合成 + 外部样本；不可用环境工具不计入指标表。
 \end{frame}
 
 \begin{frame}{Micro F1 可视化}
@@ -386,14 +388,14 @@
     \node[anchor=east,font=\scriptsize] at (0,3) {ZIP Strings};
     \node[anchor=east,font=\scriptsize] at (0,2) {Androguard DEX};
     \node[anchor=east,font=\scriptsize] at (0,1) {APKiD};
-    \fill[structure.fg!85] (0,3.72) rectangle (0.842,4.28);
-    \fill[gray!65] (0,2.72) rectangle (0.778,3.28);
-    \fill[PineGreen!75] (0,1.72) rectangle (0.653,2.28);
-    \fill[Orange!80] (0,0.72) rectangle (0.389,1.28);
-    \node[anchor=west,font=\scriptsize] at (0.87,4) {0.842};
-    \node[anchor=west,font=\scriptsize] at (0.80,3) {0.778};
-    \node[anchor=west,font=\scriptsize] at (0.68,2) {0.653};
-    \node[anchor=west,font=\scriptsize] at (0.42,1) {0.389};
+    \fill[structure.fg!85] (0,3.72) rectangle (0.866,4.28);
+    \fill[gray!65] (0,2.72) rectangle (0.794,3.28);
+    \fill[PineGreen!75] (0,1.72) rectangle (0.593,2.28);
+    \fill[Orange!80] (0,0.72) rectangle (0.341,1.28);
+    \node[anchor=west,font=\scriptsize] at (0.89,4) {0.866};
+    \node[anchor=west,font=\scriptsize] at (0.82,3) {0.794};
+    \node[anchor=west,font=\scriptsize] at (0.62,2) {0.593};
+    \node[anchor=west,font=\scriptsize] at (0.37,1) {0.341};
   \end{tikzpicture}
 
   \vspace{0.5em}
@@ -410,9 +412,9 @@
       \toprule
       检查项 & 结果 \\
       \midrule
-      自动化测试 & 28 个测试通过 \\
-      合成数据集 & \texttt{make dataset} 生成 11 个带标签 APK \\
-      评分统计 & 四工具均为 23/23；Micro F1：HI 0.842 / APKiD 0.389 / Androguard 0.653 / ZIP 0.778 \\
+      自动化测试 & 31 个测试通过 \\
+      合成数据集 & \texttt{make dataset} 生成 13 个带标签 APK \\
+      评分统计 & 四工具均为 25/25；Micro F1：HI 0.866 / APKiD 0.341 / Androguard 0.593 / ZIP 0.794 \\
       外部 APK 语料 & 12 个现成 APK 已纳入评分；单独统计四工具均为 12/12 \\
       外部语料误报观察 & F-Droid 真实 APK 当前无 HardenInspector finding \\
       汇报稿 & ZJU Beamer 可编译；PDF/aux/log 已忽略 \\
@@ -446,7 +448,7 @@
     \end{column}
   \end{columns}
   \vspace{0.7em}
-  Fresh venv 验证：28 个测试通过；combined benchmark 为 23/23 coverage；external corpus 单独统计为 12/12 coverage。
+  本地验证：31 个测试通过；combined benchmark 为 25/25 coverage；external corpus 单独统计为 12/12 coverage。
 \end{frame}
 
 \begin{frame}{项目交付}
@@ -469,7 +471,8 @@
         \begin{itemize}
           \item opcode 统计升级为 branch/goto/switch/throw profile。
           \item 增加 \texttt{obfuscation.control\_flow\_density} 规则。
-          \item 数据集加入 \texttt{control\_flow\_flattening} 样本。
+          \item 增加 ELF 符号解析和 Native anti-debug/loader 规则。
+          \item 数据集加入控制流、高熵 payload 和 Native 符号样本。
         \end{itemize}
       \end{block}
     \end{column}
@@ -488,7 +491,7 @@
 \begin{frame}{结论}
   \begin{itemize}
     \item HardenInspector 完成了中期报告提出的轻量静态证据链检测器。
-    \item 构造了 11 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
+    \item 构造了 13 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
     \item 纳入 12 个公开现成 APK 进入合并评分，同时保留覆盖率和 finding 分布统计。
     \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
     \item 工具、数据集、文档、环境和汇报材料均已维护在 GitHub 仓库中。

@@ -99,6 +99,19 @@ INSTRUMENTATION_PATTERNS = [
     "libfrida",
 ]
 
+NATIVE_DEBUGGER_SYMBOLS = [
+    "ptrace",
+    "prctl",
+    "syscall",
+]
+
+NATIVE_DYNAMIC_LOADER_SYMBOLS = [
+    "dlopen",
+    "android_dlopen_ext",
+    "dlsym",
+    "dladdr",
+]
+
 
 def evaluate_rules(features: ApkFeatures) -> list[Finding]:
     findings: list[Finding] = []
@@ -113,6 +126,8 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _system_properties,
         _debugger_probe,
         _instrumentation_probe,
+        _native_debugger_symbol,
+        _native_dynamic_loader,
         _jni_entrypoint,
     ):
         finding = rule(features)
@@ -279,7 +294,11 @@ def _system_properties(features: ApkFeatures) -> Finding | None:
 
 
 def _debugger_probe(features: ApkFeatures) -> Finding | None:
-    evidence = _string_matches(features.string_evidence, DEBUGGER_PATTERNS)
+    evidence = _string_matches(
+        features.string_evidence,
+        DEBUGGER_PATTERNS,
+        kinds={"manifest-string", "dex-string", "dex-const-string"},
+    )
     for method in features.methods + features.invoked_methods:
         if method.name == "isDebuggerConnected":
             evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
@@ -311,8 +330,39 @@ def _instrumentation_probe(features: ApkFeatures) -> Finding | None:
     )
 
 
+def _native_debugger_symbol(features: ApkFeatures) -> Finding | None:
+    evidence = _native_symbol_matches(features, NATIVE_DEBUGGER_SYMBOLS)
+    if not evidence:
+        return None
+    return Finding(
+        id="environment.native_debugger_symbol",
+        category="environment",
+        severity="medium",
+        confidence="high",
+        title="Native anti-debug symbol indicators",
+        description="Native ELF symbols reference debugger or process-control APIs used by anti-analysis checks.",
+        evidence=evidence[:10],
+    )
+
+
+def _native_dynamic_loader(features: ApkFeatures) -> Finding | None:
+    evidence = _native_symbol_matches(features, NATIVE_DYNAMIC_LOADER_SYMBOLS)
+    if not evidence:
+        return None
+    return Finding(
+        id="packer.native_dynamic_loader",
+        category="packer",
+        severity="medium",
+        confidence="medium",
+        title="Native dynamic loader symbol indicators",
+        description="Native ELF symbols reference dynamic-loader APIs often used by shell stubs or runtime payload loaders.",
+        evidence=evidence[:10],
+    )
+
+
 def _jni_entrypoint(features: ApkFeatures) -> Finding | None:
     evidence: list[Evidence] = []
+    evidence.extend(_native_symbol_matches(features, ["JNI_OnLoad"]))
     for location, strings in features.native_strings.items():
         if "JNI_OnLoad" in strings:
             evidence.append(Evidence("native-string", "JNI_OnLoad", location))
@@ -325,8 +375,18 @@ def _jni_entrypoint(features: ApkFeatures) -> Finding | None:
         confidence="medium",
         title="Native JNI entrypoint present",
         description="Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
-        evidence=evidence,
+        evidence=_dedupe_evidence(evidence),
     )
+
+
+def _native_symbol_matches(features: ApkFeatures, names: list[str]) -> list[Evidence]:
+    wanted = {name.lower(): name for name in names}
+    evidence: list[Evidence] = []
+    for location, symbols in features.native_symbols.items():
+        for symbol in symbols:
+            if symbol.name.lower() in wanted:
+                evidence.append(Evidence("elf-symbol", wanted[symbol.name.lower()], f"{location}:{symbol.table}"))
+    return _dedupe_evidence(evidence)
 
 
 def _string_matches(

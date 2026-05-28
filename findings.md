@@ -69,3 +69,20 @@ External corpus statistics after rule tuning: all four tools cover 12/12 samples
 The external APKs are now included in the default scored benchmark through coarse, auditable `expected_categories` mappings in `datasets/external_apk_corpus_v1/manifest.json`. These are not official hardening ground-truth labels from DroidBench/F-Droid/PIVAA; they are project-level mappings from the public sample scenario to HardenInspector categories, recorded with `label_basis` for review.
 
 Current combined scoring set: 11 synthetic oracle APKs + 12 external APKs = 23 samples. Current Micro F1 values are HardenInspector 0.842, APKiD 0.389, Androguard DEX 0.653, and ZIP Strings 0.778. The separate `make external-corpus` report remains useful because it shows external coverage and finding distribution independent of the scoring labels.
+
+## Native Structural Evidence Expansion
+
+Review identified two high-value gaps for the next improvement pass:
+
+- Native analysis currently treats `.so` files mostly as printable-string blobs. A lightweight ELF reader can extract `.dynsym` / `.dynstr` names and preserve symbol-level evidence locations without becoming a full disassembler.
+- ZIP Strings remains close to HardenInspector on the benchmark because many synthetic samples expose obvious strings. Adding samples whose main evidence is entropy or parsed ELF symbols makes the benchmark better test structured analysis.
+
+Chosen first slice: implement a small standard-library ELF symbol extractor, wire it into `features.py`, add rules for native anti-debug/dynamic-loader symbols, then add synthetic samples for encrypted-payload-only and native ptrace/dlopen evidence.
+
+Implemented slice results:
+
+- `src/hardeninspector/native.py` parses ELF32/ELF64 section headers and extracts `.dynsym` / `.symtab` symbols with table, binding, and type metadata.
+- `environment.native_debugger_symbol` reports Native `ptrace`, `prctl`, and `syscall` symbols as environment evidence.
+- `packer.native_dynamic_loader` reports Native `dlopen`, `android_dlopen_ext`, `dlsym`, and `dladdr` as runtime-loader evidence.
+- `datasets/hardeninspector_eval_v1/` now contains 13 synthetic APKs, adding `high_entropy_payload_only` and `native_ptrace_loader`.
+- Combined benchmark is now 25 samples. HardenInspector Micro F1 is 0.866; ZIP Strings is 0.794, so the gap widened modestly after adding a non-string entropy-only sample and symbol-aware native evidence.

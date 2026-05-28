@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 23 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 25 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 
@@ -54,16 +54,16 @@ make external-corpus
 make benchmark
 ```
 
-`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 23 个评分样本。
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 25 个评分样本。
 
 ## 当前统计
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 12/12 | 9 | 3 | 6 | 3 | 0 |
+| HardenInspector | 12/12 | 9 | 4 | 6 | 3 | 0 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
-| ZIP Strings | 12/12 | 9 | 3 | 6 | 2 | 0 |
+| ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
 
 测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
 
@@ -71,10 +71,10 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 23/23 | 0.857 | 0.828 | 0.842 | 0.848 |
-| APKiD | 23/23 | 1.000 | 0.241 | 0.389 | 0.317 |
-| Androguard DEX | 23/23 | 0.800 | 0.552 | 0.653 | 0.564 |
-| ZIP Strings | 23/23 | 0.840 | 0.724 | 0.778 | 0.789 |
+| HardenInspector | 25/25 | 0.879 | 0.853 | 0.866 | 0.861 |
+| APKiD | 25/25 | 1.000 | 0.206 | 0.341 | 0.269 |
+| Androguard DEX | 25/25 | 0.800 | 0.471 | 0.593 | 0.507 |
+| ZIP Strings | 25/25 | 0.862 | 0.735 | 0.794 | 0.792 |
 
 重要观察：
 

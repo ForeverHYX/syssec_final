@@ -19,6 +19,8 @@ The samples correspond to the dataset categories described in the midterm report
 - instrumentation-probe sample
 - reflection-only dispatch sample
 - lightweight control-flow flattening sample
+- high-entropy payload-only sample
+- native ptrace/dlopen ELF-symbol sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

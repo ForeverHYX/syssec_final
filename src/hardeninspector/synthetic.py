@@ -49,6 +49,72 @@ def build_synthetic_apk(path: Path, spec: SyntheticApkSpec) -> Path:
     return path
 
 
+def build_elf_shared_object(symbol_names: list[str]) -> bytes:
+    """Build a tiny deterministic ELF64 shared object with a `.dynsym` table."""
+
+    symbols = _dedupe(symbol_names)
+    dynstr_offsets: dict[str, int] = {}
+    dynstr = bytearray(b"\x00")
+    for name in symbols:
+        dynstr_offsets[name] = len(dynstr)
+        dynstr.extend(name.encode("utf-8"))
+        dynstr.append(0)
+
+    dynsym = bytearray(b"\x00" * 24)
+    for name in symbols:
+        st_name = dynstr_offsets[name]
+        st_info = (1 << 4) | 2  # STB_GLOBAL + STT_FUNC
+        dynsym.extend(struct.pack("<IBBHQQ", st_name, st_info, 0, 0, 0, 0))
+
+    shstrtab = b"\x00.dynstr\x00.dynsym\x00.shstrtab\x00"
+    sh_name_dynstr = shstrtab.index(b".dynstr")
+    sh_name_dynsym = shstrtab.index(b".dynsym")
+    sh_name_shstrtab = shstrtab.index(b".shstrtab")
+
+    elf_header_size = 64
+    dynstr_off = elf_header_size
+    dynsym_off = _align(dynstr_off + len(dynstr), 8)
+    shstrtab_off = _align(dynsym_off + len(dynsym), 1)
+    shoff = _align(shstrtab_off + len(shstrtab), 8)
+    file_size = shoff + 4 * 64
+
+    data = bytearray(b"\x00" * file_size)
+    data[dynstr_off : dynstr_off + len(dynstr)] = dynstr
+    data[dynsym_off : dynsym_off + len(dynsym)] = dynsym
+    data[shstrtab_off : shstrtab_off + len(shstrtab)] = shstrtab
+
+    data[0:16] = b"\x7fELF" + bytes([2, 1, 1, 0]) + b"\x00" * 8
+    struct.pack_into(
+        "<HHIQQQIHHHHHH",
+        data,
+        16,
+        3,  # ET_DYN
+        183,  # EM_AARCH64
+        1,
+        0,
+        0,
+        shoff,
+        0,
+        elf_header_size,
+        0,
+        0,
+        64,
+        4,
+        3,
+    )
+
+    section_headers = [
+        (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        (sh_name_dynstr, 3, 0, 0, dynstr_off, len(dynstr), 0, 0, 1, 0),
+        (sh_name_dynsym, 11, 0, 0, dynsym_off, len(dynsym), 1, 1, 8, 24),
+        (sh_name_shstrtab, 3, 0, 0, shstrtab_off, len(shstrtab), 0, 0, 1, 0),
+    ]
+    for index, header in enumerate(section_headers):
+        struct.pack_into("<IIQQQQIIQQ", data, shoff + index * 64, *header)
+
+    return bytes(data)
+
+
 def build_axml_string_pool(strings: list[str]) -> bytes:
     encoded = []
     offsets = []
@@ -235,6 +301,12 @@ def goto_instruction(offset: int = 0) -> list[int]:
 
 def packed_switch_instruction(payload_offset: int = 0) -> list[int]:
     return [0x002B, payload_offset & 0xFFFF, (payload_offset >> 16) & 0xFFFF]
+
+
+def _align(value: int, alignment: int) -> int:
+    if alignment <= 1:
+        return value
+    return (value + alignment - 1) // alignment * alignment
 
 
 def _dedupe(values: list[str]) -> list[str]:

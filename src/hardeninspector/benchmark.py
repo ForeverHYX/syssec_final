@@ -32,6 +32,9 @@ ZIP_BASELINE_KEYWORDS = {
         "DexClassLoader",
         "PathClassLoader",
         "BaseDexClassLoader",
+        "dlopen",
+        "android_dlopen_ext",
+        "dlsym",
     ],
     "obfuscation": ["java.lang.reflect.Method", "java/lang/reflect/Method", "Method.invoke"],
     "environment": [
@@ -39,6 +42,8 @@ ZIP_BASELINE_KEYWORDS = {
         "ro.build.fingerprint",
         "isDebuggerConnected",
         "/proc/self/status",
+        "ptrace",
+        "prctl",
         "frida",
         "xposed",
         "substrate",

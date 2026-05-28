@@ -98,5 +98,4 @@ sed -n '1,220p' datasets/hardeninspector_eval_v1/labels.json
 
 ### 能否扫描真实 APK？
 
-可以。工具读取 APK ZIP、Manifest、DEX 和 Native 字符串，不依赖 Android SDK。真实 APK 的复杂结构可能带来漏报，报告应作为预筛结果而不是最终结论。
-
+可以。工具读取 APK ZIP、Manifest、DEX、Native 字符串和 ELF 符号表，不依赖 Android SDK。真实 APK 的复杂结构可能带来漏报，报告应作为预筛结果而不是最终结论。

@@ -1,0 +1,66 @@
+{
+  "apk": {
+    "entry_count": 3,
+    "path": "datasets/hardeninspector_eval_v1/apks/native_ptrace_loader.apk",
+    "sha256": "9a3412349448db4529cec038457ed7e83e39bb1c98b3339a83a27443d150968a"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "Native ELF symbols reference debugger or process-control APIs used by anti-analysis checks.",
+      "evidence": [
+        {
+          "kind": "elf-symbol",
+          "location": "lib/arm64-v8a/libnativeprobe.so:.dynsym",
+          "value": "ptrace"
+        }
+      ],
+      "id": "environment.native_debugger_symbol",
+      "severity": "medium",
+      "title": "Native anti-debug symbol indicators"
+    },
+    {
+      "category": "packer",
+      "confidence": "medium",
+      "description": "Native ELF symbols reference dynamic-loader APIs often used by shell stubs or runtime payload loaders.",
+      "evidence": [
+        {
+          "kind": "elf-symbol",
+          "location": "lib/arm64-v8a/libnativeprobe.so:.dynsym",
+          "value": "android_dlopen_ext"
+        }
+      ],
+      "id": "packer.native_dynamic_loader",
+      "severity": "medium",
+      "title": "Native dynamic loader symbol indicators"
+    },
+    {
+      "category": "native",
+      "confidence": "medium",
+      "description": "Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
+      "evidence": [
+        {
+          "kind": "elf-symbol",
+          "location": "lib/arm64-v8a/libnativeprobe.so:.dynsym",
+          "value": "JNI_OnLoad"
+        },
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libnativeprobe.so",
+          "value": "JNI_OnLoad"
+        }
+      ],
+      "id": "native.jni_entrypoint",
+      "severity": "low",
+      "title": "Native JNI entrypoint present"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 1,
+    "obfuscation": 0,
+    "packer": 1
+  }
+}

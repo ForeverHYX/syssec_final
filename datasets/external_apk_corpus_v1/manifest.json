@@ -94,9 +94,10 @@
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/SelfModification/BytecodeTamper1.apk",
       "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
       "expected_categories": [
-        "environment"
+        "environment",
+        "packer"
       ],
-      "label_basis": "DroidBench SelfModification sample; bytecode tamper/instrumentation checks are scored as environment/instrumentation-detection signals."
+      "label_basis": "DroidBench SelfModification sample; bytecode tamper/instrumentation checks are scored as environment/instrumentation-detection signals, and native dlopen/dlsym loading evidence is scored as a runtime-loading/packer signal."
     },
     {
       "id": "droidbench_native_id_function",

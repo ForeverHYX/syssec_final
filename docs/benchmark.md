@@ -7,7 +7,7 @@
 默认 benchmark 只纳入同时满足以下条件的比较对象：
 
 - 能通过 `make setup` 安装；
-- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 23/23 个样本；
+- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 25/25 个样本；
 - 能产生可映射到 `packer`、`obfuscation`、`environment`、`native` 的类别输出；
 - 失败时不把“缺环境/缺外部工具”记为 0 分。
 
@@ -56,8 +56,8 @@ ZIP Strings 是仓库内的最小浅层基线：只读取 APK ZIP 文件名和 p
 
 Benchmark 使用两个数据源合并评分：
 
-- 11 个合成 APK；
-- 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、综合加固样本；
+- 13 个合成 APK；
+- 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader ELF 符号样本、综合加固样本；
 - 每个样本包含 expected findings 和当前检测器报告；
 - 合成 DEX 包含标准 checksum、signature 和 map list，保证 Androguard DEX baseline 可解析。
 - 12 个外部现成 APK，来自 DroidBench、F-Droid、PIVAA；`manifest.json` 为每个外部样本记录粗粒度 `expected_categories` 和 `label_basis`，纳入同一 Precision/Recall/F1 评分表。
@@ -102,40 +102,40 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 23/23 | 0.857 | 0.828 | 0.842 | 0.848 |
-| APKiD | 23/23 | 1.000 | 0.241 | 0.389 | 0.317 |
-| Androguard DEX | 23/23 | 0.800 | 0.552 | 0.653 | 0.564 |
-| ZIP Strings | 23/23 | 0.840 | 0.724 | 0.778 | 0.789 |
+| HardenInspector | 25/25 | 0.879 | 0.853 | 0.866 | 0.861 |
+| APKiD | 25/25 | 1.000 | 0.206 | 0.341 | 0.269 |
+| Androguard DEX | 25/25 | 0.800 | 0.471 | 0.593 | 0.507 |
+| ZIP Strings | 25/25 | 0.862 | 0.735 | 0.794 | 0.792 |
 
-测试状态：`.venv/bin/python -m pytest -q` 和 fresh venv 测试均为 28 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 31 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
-- `packer`：HardenInspector 7/7，APKiD 3/7，Androguard DEX 7/7，ZIP Strings 7/7。
+- `packer`：HardenInspector 10/10，APKiD 3/10，Androguard DEX 7/10，ZIP Strings 9/10。
 - `obfuscation`：HardenInspector 7/8，APKiD 0/8，Androguard DEX 5/8，ZIP Strings 5/8。
-- `environment`：HardenInspector 6/8，APKiD 4/8，Androguard DEX 4/8，ZIP Strings 5/8。
-- `native`：HardenInspector 4/6，APKiD 0/6，Androguard DEX 0/6，ZIP Strings 4/6。
+- `environment`：HardenInspector 7/9，APKiD 4/9，Androguard DEX 4/9，ZIP Strings 6/9。
+- `native`：HardenInspector 5/7，APKiD 0/7，Androguard DEX 0/7，ZIP Strings 5/7。
 
 ## 结果解释
 
 APKiD 对 packer 指纹和部分 anti-vm 信号表现稳定，但它的目标是识别 packer/protector/obfuscator/oddity 指纹，不覆盖本项目的 Native 入口证据和大部分课程构造的 reflection/short-identifier 标签。
 
-Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX strings/classes/methods，不看 Manifest/Native/resource，也不复刻 HardenInspector 的 opcode-density 规则，所以 Native 类别为 0/4，控制流样本不命中。
+Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX strings/classes/methods，不看 Manifest/Native/resource，也不复刻 HardenInspector 的 opcode-density 与 ELF-symbol 规则，所以 Native 类别为 0/7，控制流和 Native 符号样本不命中。
 
-ZIP Strings baseline 说明浅层字符串扫描在本合成数据集上也能捕获很多显式字符串，但它没有结构化 evidence chain，无法区分 Manifest、DEX、Native、资源上下文，也不能从 bytecode opcode 分布中识别控制流密度。
+ZIP Strings baseline 说明浅层字符串扫描在本数据集上也能捕获很多显式字符串和符号名，但它没有结构化 evidence chain，无法区分 Manifest、DEX、Native、资源上下文，也不能从 bytecode opcode 分布中识别控制流密度或从文件统计中解释高熵 payload。
 
 HardenInspector 的优势来自中期报告路线中的多源结构化证据：Manifest + DEX + Native + 资源文件 + 规则证据链，而不是复制 APKiD/Androguard 的实现。
 
 ## 外部 APK 统计
 
-为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 23 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
+为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 25 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 12/12 | 9 | 3 | 6 | 3 | 0 |
+| HardenInspector | 12/12 | 9 | 4 | 6 | 3 | 0 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
-| ZIP Strings | 12/12 | 9 | 3 | 6 | 2 | 0 |
+| ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
 
 测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
 

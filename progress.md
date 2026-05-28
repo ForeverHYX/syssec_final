@@ -105,3 +105,13 @@
 - Final local verification passed: `.venv/bin/python -m pytest -q` reported 28 tests; `make dataset` regenerated 11 synthetic samples; `make benchmark` regenerated the 23-sample combined scoring reports; `make external-corpus` regenerated 12/12 external APK statistics; `make slides` compiled a 20-page ZJU Beamer PDF.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 28 tests; fresh combined benchmark kept all four tools at 23/23 coverage; fresh external-corpus run kept all four tools at 12/12 coverage.
 - Repository hygiene checks passed: `pdfinfo` reported 20 slide pages, LaTeX log scan found no `Overfull`/`Underfull`/`Warning`/`Error` matches, `git diff --check` reported no whitespace errors, and slide PDF/aux/log artifacts remain ignored.
+
+## 2026-05-28 Native Structural Evidence Expansion
+
+- Started Phase 17 to address review weaknesses: Native analysis was only printable-string based, and the benchmark still had too many string-visible synthetic signals.
+- Planned first improvement slice: add ELF symbol/import extraction, add native anti-debug/dynamic-loader rule evidence, and add harder samples for high-entropy payload and native ptrace/dlopen symbols.
+- TDD RED: added tests for ELF symbol parsing, native structural detector findings, and two harder dataset samples. Targeted pytest failed at collection because `build_elf_shared_object` / `hardeninspector.native` do not exist yet, confirming the new behavior is not already implemented.
+- Implemented `native.py` ELF symbol extraction, synthetic ELF fixture generation, native symbol feature extraction, and rules `environment.native_debugger_symbol` / `packer.native_dynamic_loader`.
+- TDD GREEN: targeted native/detector/dataset tests passed with 5 tests; full pytest passed with 31 tests after synchronizing benchmark sample-count assertions.
+- Regenerated dataset, benchmark, external-corpus reports, and slides. Current combined scoring set is 25 samples: 13 synthetic + 12 external. Micro F1 values: HardenInspector 0.866, APKiD 0.341, Androguard DEX 0.593, ZIP Strings 0.794.
+- Verification passed locally and in `/tmp/hardeninspector-venv-check`: 31 tests passed, combined benchmark had 25/25 coverage for all four default tools, external corpus had 12/12 coverage, slides compiled to 20 pages, LaTeX log had no Overfull/Underfull/Warning/Error/Undefined/Missing matches, and `git diff --check` passed.

@@ -10,6 +10,7 @@ from pathlib import Path
 from .report import scan_apk
 from .synthetic import (
     SyntheticApkSpec,
+    build_elf_shared_object,
     build_synthetic_apk,
     goto_instruction,
     if_eq_instruction,
@@ -280,6 +281,57 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="high_entropy_payload_only",
+        apk_name="high_entropy_payload_only.apk",
+        source_plan="opaque encrypted-payload control sample",
+        construction=(
+            "synthetic APK whose only hardening signal is a high-entropy asset payload; "
+            "this exercises file-stat evidence that a plain string baseline cannot recover"
+        ),
+        expected_findings=["packer.high_entropy_payload"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.opaque", "com.example.opaque.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/opaque/MainActivity;",
+                "Lcom/example/opaque/FeatureController;",
+                "Lcom/example/opaque/AssetReader;",
+            ],
+            method_names=["<clinit>", "onCreate", "openAsset"],
+            dex_strings=["ordinary feature flag", "image cache"],
+            assets={"assets/opaque_payload.bin": HIGH_ENTROPY_PAYLOAD},
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="native_ptrace_loader",
+        apk_name="native_ptrace_loader.apk",
+        source_plan="native anti-debug and loader symbol sample",
+        construction=(
+            "synthetic APK with ELF dynamic symbol evidence for JNI_OnLoad, ptrace, "
+            "and android_dlopen_ext; this exercises Native symbol-table parsing rather "
+            "than relying only on DEX or Manifest strings"
+        ),
+        expected_findings=[
+            "environment.native_debugger_symbol",
+            "packer.native_dynamic_loader",
+            "native.jni_entrypoint",
+        ],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.nativeprobe", "com.example.nativeprobe.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/nativeprobe/MainActivity;",
+                "Lcom/example/nativeprobe/NativeProbe;",
+                "Lcom/example/nativeprobe/Loader;",
+            ],
+            method_names=["<clinit>", "run"],
+            dex_strings=["native symbol sample"],
+            native_libraries={
+                "lib/arm64-v8a/libnativeprobe.so": build_elf_shared_object(
+                    ["JNI_OnLoad", "ptrace", "android_dlopen_ext"]
+                ),
+            },
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="combined_hardened_showcase",
         apk_name="combined_hardened_showcase.apk",
         source_plan="combined hardened showcase",
@@ -395,6 +447,8 @@ The samples correspond to the dataset categories described in the midterm report
 - instrumentation-probe sample
 - reflection-only dispatch sample
 - lightweight control-flow flattening sample
+- high-entropy payload-only sample
+- native ptrace/dlopen ELF-symbol sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

@@ -104,6 +104,16 @@ DEMO_SAMPLES = (
         expected_categories=("environment",),
     ),
     DemoSample(
+        id="root_artifact_probe",
+        title="Root artifact probe",
+        source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Rooted-device environment probe",
+        apk_path=Path("datasets/hardeninspector_eval_v1/apks/root_artifact_probe.apk"),
+        description="Root-detection sample with su paths, Superuser/Magisk package names, and test-key evidence.",
+        expected_categories=("environment",),
+    ),
+    DemoSample(
         id="pivaa",
         title="PIVAA training APK",
         source="External corpus",
@@ -606,10 +616,10 @@ def render_index_html() -> str:
           <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
         </div>
         <div class="stat-grid">
-          <div class="stat-tile"><strong>30</strong><span class="muted">30 scored APKs</span></div>
-          <div class="stat-tile"><strong>18 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>31</strong><span class="muted">31 scored APKs</span></div>
+          <div class="stat-tile"><strong>19 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>50</strong><span class="muted">50 regression tests</span></div>
+          <div class="stat-tile"><strong>53</strong><span class="muted">53 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">

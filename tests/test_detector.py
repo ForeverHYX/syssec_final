@@ -286,6 +286,54 @@ def test_package_manager_metadata_lookup_is_not_integrity_check(tmp_path):
     assert "environment.integrity_check" not in finding_ids
 
 
+def test_detector_reports_root_artifact_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "root-artifacts.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.rootprobe", "edu.syssec.rootprobe.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/rootprobe/MainActivity;",
+                "Ledu/syssec/rootprobe/RootProbe;",
+            ],
+            method_names=["<clinit>", "isRooted"],
+            dex_strings=[
+                "/system/xbin/su",
+                "/system/app/Superuser.apk",
+                "com.topjohnwu.magisk",
+                "test-keys",
+                "which su",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.root_artifact_probe")
+
+    assert finding.category == "environment"
+    assert any(item.value == "/system/xbin/su" for item in finding.evidence)
+    assert any(item.value == "com.topjohnwu.magisk" for item in finding.evidence)
+
+
+def test_regular_words_containing_su_are_not_root_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "regular-strings.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.regular", "edu.syssec.regular.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/regular/MainActivity;",
+                "Ledu/syssec/regular/SupportScreen;",
+            ],
+            method_names=["<clinit>", "submitSupportRequest"],
+            dex_strings=["support", "subscribe", "sunset", "result"],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.root_artifact_probe" not in finding_ids
+
+
 def test_telephony_sink_phone_number_is_not_emulator_probe(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "telephony-source.apk",

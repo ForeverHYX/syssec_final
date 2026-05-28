@@ -432,6 +432,32 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="root_artifact_probe",
+        apk_name="root_artifact_probe.apk",
+        source_plan="self-written rooted-device environment check sample",
+        construction=(
+            "synthetic sample modeling root-detection logic: su binary paths, Superuser/Magisk "
+            "package names, test-key build tags, and explicit root-check commands"
+        ),
+        expected_findings=["environment.root_artifact_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.rootprobe", "edu.syssec.rootprobe.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/rootprobe/MainActivity;",
+                "Ledu/syssec/rootprobe/RootProbe;",
+                "Ledu/syssec/rootprobe/MagiskProbe;",
+            ],
+            method_names=["<clinit>", "isRooted"],
+            dex_strings=[
+                "/system/xbin/su",
+                "/system/app/Superuser.apk",
+                "com.topjohnwu.magisk",
+                "test-keys",
+                "which su",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="native_jni_export_only",
         apk_name="native_jni_export_only.apk",
         source_plan="JNI Java_* export sample",
@@ -578,6 +604,7 @@ The samples correspond to the dataset categories described in the midterm report
 - emulator file-artifact sample
 - emulator IMEI probe sample
 - app signature integrity-check sample
+- root artifact probe sample
 - JNI Java_* export sample
 - combined hardening showcase
 

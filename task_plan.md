@@ -278,6 +278,17 @@ Status: complete
 - Regenerate dataset, combined benchmark, external-corpus reports, README/docs/final summary, and slides with 18 synthetic + 12 external samples, 30/30 benchmark coverage, 50 tests, and 22 slides.
 - Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
 
+### Phase 28: Root artifact environment detection
+
+Status: complete
+
+- Add detector coverage for strong rooted-device artifacts such as `/system/xbin/su`, Superuser/Magisk package names, `test-keys`, and explicit `which su` commands.
+- Add negative coverage proving ordinary words containing `su`, such as `support` and `subscribe`, do not trigger root detection.
+- Add `root_artifact_probe.apk` to the synthetic oracle dataset and Web demo catalog.
+- Extend benchmark shallow environment keywords for root artifacts and regenerate combined/external reports.
+- Synchronize README, rules/dataset/benchmark/external/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides with 19 synthetic + 12 external samples, 31/31 benchmark coverage, 53 tests, and 22 slides.
+- Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

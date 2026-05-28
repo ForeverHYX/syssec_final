@@ -331,6 +331,25 @@
     },
     {
       "actual_findings": [
+        "environment.root_artifact_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/root_artifact_probe.apk",
+      "construction": "synthetic sample modeling root-detection logic: su binary paths, Superuser/Magisk package names, test-key build tags, and explicit root-check commands",
+      "expected_findings": [
+        "environment.root_artifact_probe"
+      ],
+      "id": "root_artifact_probe",
+      "report_path": "reports/root_artifact_probe.json",
+      "source_plan": "self-written rooted-device environment check sample"
+    },
+    {
+      "actual_findings": [
         "native.jni_export"
       ],
       "actual_summary": {

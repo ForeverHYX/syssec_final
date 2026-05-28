@@ -96,7 +96,8 @@
           "apk_path": "apks/droidbench/emulator_build_1.apk",
           "finding_ids": [
             "environment.system_properties",
-            "environment.emulator_artifacts"
+            "environment.emulator_artifacts",
+            "environment.root_artifact_probe"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": null,
@@ -415,7 +416,7 @@
     },
     {
       "category_counts": {
-        "environment": 1,
+        "environment": 2,
         "native": 0,
         "obfuscation": 6,
         "packer": 3
@@ -489,12 +490,14 @@
         {
           "apk_path": "apks/droidbench/emulator_build_1.apk",
           "finding_ids": [
+            "androguard.environment.test-keys",
             "androguard.obfuscation.java/lang/reflect/Method",
             "androguard.obfuscation.reflective_method"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [
+            "environment",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -621,7 +624,7 @@
     },
     {
       "category_counts": {
-        "environment": 3,
+        "environment": 4,
         "native": 0,
         "obfuscation": 6,
         "packer": 4
@@ -694,11 +697,13 @@
         {
           "apk_path": "apks/droidbench/emulator_build_1.apk",
           "finding_ids": [
+            "zip_string.environment.test-keys",
             "zip_string.obfuscation.java/lang/reflect/Method"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
           "predicted_categories": [
+            "environment",
             "obfuscation"
           ],
           "runtime_ms": null,

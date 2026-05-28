@@ -162,6 +162,23 @@ INTEGRITY_DIGEST_PATTERNS = [
     "checkSignature",
 ]
 
+ROOT_ARTIFACT_PATTERNS = [
+    "/system/bin/su",
+    "/system/xbin/su",
+    "/sbin/su",
+    "/su/bin/su",
+    "/system/app/Superuser.apk",
+    "/system/app/SuperSU.apk",
+    "/system/xbin/busybox",
+    "com.topjohnwu.magisk",
+    "com.noshufou.android.su",
+    "eu.chainfire.supersu",
+    "magiskhide",
+    "RootBeer",
+    "test-keys",
+    "which su",
+]
+
 DEBUGGER_PATTERNS = [
     "isDebuggerConnected",
     "/proc/self/status",
@@ -205,6 +222,7 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _emulator_artifacts,
         _telephony_identifier_probe,
         _integrity_check,
+        _root_artifact_probe,
         _debugger_probe,
         _instrumentation_probe,
         _native_debugger_symbol,
@@ -449,6 +467,34 @@ def _integrity_check(features: ApkFeatures) -> Finding | None:
             "a static signal for anti-tamper or self-integrity checks."
         ),
         evidence=evidence[:10],
+    )
+
+
+def _root_artifact_probe(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item
+        for item in features.string_evidence
+        if item.kind in {"manifest-string", "dex-string", "dex-const-string"}
+    ]
+    evidence = _string_matches(string_evidence, ROOT_ARTIFACT_PATTERNS)
+    if not evidence:
+        return None
+
+    for method in features.methods + features.invoked_methods:
+        if method.name in {"isRooted", "checkRoot", "detectRoot"}:
+            evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+
+    return Finding(
+        id="environment.root_artifact_probe",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="Rooted-device artifact probe",
+        description=(
+            "APK references rooted-device artifacts, root-management packages, test-key builds, "
+            "or explicit root-check commands used in anti-analysis environment checks."
+        ),
+        evidence=_dedupe_evidence(evidence)[:10],
     )
 
 

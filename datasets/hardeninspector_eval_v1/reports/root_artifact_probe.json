@@ -1,0 +1,56 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/root_artifact_probe.apk",
+    "sha256": "2ac3f72be49c003c86436a77159934b14509e4e112571b4c4bdfbb16bd1365b0"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "medium",
+      "description": "APK references rooted-device artifacts, root-management packages, test-key builds, or explicit root-check commands used in anti-analysis environment checks.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/system/xbin/su"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/system/app/Superuser.apk"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "com.topjohnwu.magisk"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "test-keys"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "which su"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Ledu/syssec/rootprobe/MainActivity;->isRooted"
+        }
+      ],
+      "id": "environment.root_artifact_probe",
+      "severity": "medium",
+      "title": "Rooted-device artifact probe"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

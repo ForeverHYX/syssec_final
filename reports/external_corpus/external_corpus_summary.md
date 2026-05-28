@@ -10,8 +10,8 @@ External APKs have source metadata, checksums, and coarse expected_categories us
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | HardenInspector | 12/12 | 10 | 4 | 2 | 5 | 3 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
-| Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
-| ZIP Strings | 12/12 | 10 | 4 | 6 | 3 | 0 |
+| Androguard DEX | 12/12 | 8 | 3 | 6 | 2 | 0 |
+| ZIP Strings | 12/12 | 10 | 4 | 6 | 4 | 0 |
 
 ## HardenInspector Sample Results
 
@@ -21,7 +21,7 @@ External APKs have source metadata, checksums, and coarse expected_categories us
 | droidbench_reflection_5 | DroidBench | Reflection | - | - |
 | droidbench_dynamic_both_1 | DroidBench | DynamicLoading | packer | packer.high_entropy_payload, packer.dynamic_code_loading |
 | droidbench_dynamic_source_1 | DroidBench | DynamicLoading | packer | packer.high_entropy_payload, packer.dynamic_code_loading |
-| droidbench_emulator_build_1 | DroidBench | EmulatorDetection | environment | environment.system_properties, environment.emulator_artifacts |
+| droidbench_emulator_build_1 | DroidBench | EmulatorDetection | environment | environment.system_properties, environment.emulator_artifacts, environment.root_artifact_probe |
 | droidbench_emulator_file_1 | DroidBench | EmulatorDetection | environment | environment.emulator_artifacts |
 | droidbench_emulator_imei_1 | DroidBench | EmulatorDetection | environment | environment.telephony_identifier_probe |
 | droidbench_bytecode_tamper_1 | DroidBench | SelfModification | environment, native, packer | environment.instrumentation_probe, packer.native_dynamic_loader, native.jni_export |

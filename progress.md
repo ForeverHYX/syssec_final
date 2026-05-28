@@ -225,3 +225,15 @@
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 50 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 50 tests; fresh combined benchmark kept all four tools at 30/30 coverage with the same Micro F1 values; fresh external-corpus run kept all four tools at 12/12 coverage.
 - Local Web demo smoke test passed on port 8765: the homepage showed 30 scored APKs, 18 + 12 samples, and 50 tests; `/api/scan?id=signature_integrity_check` returned `environment.integrity_check`; `HEAD /assets/apk-cutaway.png` returned 200 image/png.
+
+## 2026-05-28 Root Artifact Environment Detection
+
+- Started Phase 28 after the signature-integrity increment was committed and pushed, continuing the environment-detection coverage audit.
+- TDD RED: added detector coverage for `/system/xbin/su`, Superuser/Magisk package names, `test-keys`, and `which su`; it failed because no root artifact rule existed. Added a negative test proving ordinary strings such as `support`, `subscribe`, and `sunset` do not trigger root detection.
+- TDD RED: extended dataset, benchmark, and Web demo tests to require `root_artifact_probe`; dataset/catalog tests failed until the sample and generated APK existed.
+- TDD GREEN: implemented `environment.root_artifact_probe`, added `root_artifact_probe.apk`, added Web demo catalog metadata, and added shallow benchmark keywords for root artifacts.
+- Regenerated dataset, benchmark, and external-corpus artifacts. Current combined scoring set is 31 samples: 19 synthetic + 12 external. Micro F1 values: HardenInspector 1.000, APKiD 0.333, Androguard DEX 0.571, ZIP Strings 0.740.
+- Updated README, rules/dataset/benchmark/external/demo/environment/final-deliverable docs, defense/live-demo docs, final summary, completion audit, task plan, and slides to reflect the root rule, 31 scored APKs, 53 tests, and current metrics.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 53 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 53 tests; fresh combined benchmark kept all four tools at 31/31 coverage with the same Micro F1 values; fresh external-corpus run kept all four tools at 12/12 coverage.
+- Local Web demo smoke test passed on port 8765: the homepage showed 31 scored APKs, 19 + 12 samples, and 53 tests; `/api/scan?id=root_artifact_probe` returned `environment.root_artifact_probe`; `/api/samples` listed the root sample with the `Rooted-device environment probe` role.

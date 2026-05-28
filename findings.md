@@ -171,3 +171,11 @@ Self-integrity and anti-tamper checks are a natural environment/anti-analysis si
 The negative test matters: a PackageManager `getPackageInfo` query used only for `versionName` is not treated as hardening evidence. This keeps the rule explainable and avoids turning every app metadata lookup into an anti-tamper finding.
 
 The dataset now includes `signature_integrity_check.apk`, and the Web demo exposes it as a curated anti-tamper sample. After regeneration, the combined scoring set is 30 samples: 18 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.340, 0.533, and 0.714 Micro F1 respectively.
+
+## Root Artifact Environment Detection
+
+Rooted-device checks are another common environment/anti-analysis technique in Android hardening. The detector now emits `environment.root_artifact_probe` for strong root artifacts and root-check contexts such as `/system/xbin/su`, Superuser/Magisk package names, `test-keys`, and `which su`.
+
+The rule intentionally does not match bare `su`; the negative regression uses ordinary strings like `support`, `subscribe`, and `sunset` to keep this boundary explicit. The signal is medium confidence because benign diagnostics can mention root artifacts, so evidence is preserved for review rather than treated as a malicious verdict.
+
+The dataset now includes `root_artifact_probe.apk`, and the Web demo exposes it as a rooted-device environment sample. After regeneration, the combined scoring set is 31 samples: 19 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.333, 0.571, and 0.740 Micro F1 respectively.

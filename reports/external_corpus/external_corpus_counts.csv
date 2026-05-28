@@ -1,5 +1,5 @@
 tool,samples_total,samples_with_results,samples_with_any_category,packer,obfuscation,environment,native
 hardeninspector,12,12,10,4,2,5,3
 apkid,12,12,2,0,0,2,0
-androguard_dex,12,12,8,3,6,1,0
-zip_string_baseline,12,12,10,4,6,3,0
+androguard_dex,12,12,8,3,6,2,0
+zip_string_baseline,12,12,10,4,6,4,0

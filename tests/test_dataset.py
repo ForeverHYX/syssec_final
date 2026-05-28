@@ -39,10 +39,11 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "packer_stub_payload",
         "reflection_only_dispatch",
         "r8_identifier_obfuscation",
+        "root_artifact_probe",
         "self_written_environment_checks",
         "signature_integrity_check",
     }
-    assert manifest["sample_count"] == 18
+    assert manifest["sample_count"] == 19
     assert (dataset_dir / "README.md").exists()
 
     for sample in labels["samples"]:
@@ -73,6 +74,7 @@ def test_dataset_documents_practical_source_substitutions(tmp_path):
     assert by_id["emulator_imei_probe"]["expected_findings"] == ["environment.telephony_identifier_probe"]
     assert by_id["native_jni_export_only"]["expected_findings"] == ["native.jni_export"]
     assert by_id["signature_integrity_check"]["expected_findings"] == ["environment.integrity_check"]
+    assert by_id["root_artifact_probe"]["expected_findings"] == ["environment.root_artifact_probe"]
 
 
 def test_synthetic_apk_generation_is_byte_reproducible(tmp_path):

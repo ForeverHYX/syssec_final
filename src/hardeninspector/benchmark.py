@@ -53,6 +53,12 @@ ZIP_BASELINE_KEYWORDS = {
         "MessageDigest",
         "SHA-256",
         "checkSignature",
+        "/system/xbin/su",
+        "/system/bin/su",
+        "/system/app/Superuser.apk",
+        "com.topjohnwu.magisk",
+        "test-keys",
+        "which su",
     ],
     "native": ["JNI_OnLoad"],
 }

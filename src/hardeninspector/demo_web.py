@@ -94,6 +94,16 @@ DEMO_SAMPLES = (
         expected_categories=("environment",),
     ),
     DemoSample(
+        id="java_debug_api_probe",
+        title="Java Debug API probe",
+        source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Java-layer anti-debug API probe",
+        apk_path=Path("datasets/hardeninspector_eval_v1/apks/java_debug_api_probe.apk"),
+        description="Java-layer anti-debug sample using android.os.Debug and waitingForDebugger evidence.",
+        expected_categories=("environment",),
+    ),
+    DemoSample(
         id="signature_integrity_check",
         title="Signature integrity check",
         source="Synthetic oracle",
@@ -616,10 +626,10 @@ def render_index_html() -> str:
           <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
         </div>
         <div class="stat-grid">
-          <div class="stat-tile"><strong>31</strong><span class="muted">31 scored APKs</span></div>
-          <div class="stat-tile"><strong>19 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>32</strong><span class="muted">32 scored APKs</span></div>
+          <div class="stat-tile"><strong>20 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>54</strong><span class="muted">54 regression tests</span></div>
+          <div class="stat-tile"><strong>58</strong><span class="muted">58 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">

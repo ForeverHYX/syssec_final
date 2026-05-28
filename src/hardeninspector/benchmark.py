@@ -41,6 +41,8 @@ ZIP_BASELINE_KEYWORDS = {
         "ro.kernel.qemu",
         "ro.build.fingerprint",
         "isDebuggerConnected",
+        "waitingForDebugger",
+        "Landroid/os/Debug;",
         "/proc/self/status",
         "ptrace",
         "prctl",

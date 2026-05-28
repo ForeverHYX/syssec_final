@@ -10,11 +10,11 @@
 | 参考中期报告实现期末展品 | `docs/references/mid_term.pdf` 已归档；`docs/architecture.md` 和 `docs/implementation_scope.md` 对应 HardenInspector 设计 |
 | 检测代码混淆、加壳、环境检测 | `src/hardeninspector/rules.py` 覆盖 packer、obfuscation、environment、native 规则；`src/hardeninspector/native.py` 补充 ELF 符号表证据 |
 | 输出证据链 | `src/hardeninspector/report.py` 的 JSON/text report 为每条 finding 输出 evidence |
-| 构造报告中提到的数据集 | `datasets/hardeninspector_eval_v1/` 包含 19 个 APK、`labels.json` 和 per-sample reports |
+| 构造报告中提到的数据集 | `datasets/hardeninspector_eval_v1/` 包含 20 个 APK、`labels.json` 和 per-sample reports |
 | 纳入外部现成 APK/测试集 | `datasets/external_apk_corpus_v1/` 包含 12 个 DroidBench/F-Droid/PIVAA APK，`reports/external_corpus/` 包含覆盖率和 finding 分布统计 |
-| 公平 benchmark 对比 | 默认评分表包含 19 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 31/31 coverage；DroidLysis/MobSF 不进入评分表 |
+| 公平 benchmark 对比 | 默认评分表包含 20 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 32/32 coverage；DroidLysis/MobSF 不进入评分表 |
 | 提供完善中文文档 | `docs/usage.md`、`docs/architecture.md`、`docs/rules.md`、`docs/dataset.md`、`docs/demo.md`、`docs/demo_web.md`、`docs/implementation_scope.md`、`docs/final_deliverable.md` |
-| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、31 个评分 APK、54 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
+| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、32 个评分 APK、58 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
 | 产出中文总结报告 | `reports/final_summary.md` |
 | 产出期末 Beamer | `slides/final_presentation.tex` 使用 ZJU Beamer Template，标题为项目名，作者为洪奕迅、蒋城昊、项康，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图 |
 | slides 编译产物忽略 | `slides/final_presentation.pdf` 及 `.aux/.log/.nav/.out/.snm/.toc` 等 LaTeX 产物在 `.gitignore` 中忽略 |
@@ -30,20 +30,20 @@
 结果：
 
 ```text
-54 passed
+58 passed
 ```
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m pytest -q
 ```
 
-结果：fresh venv 中 54 个测试通过。
+结果：fresh venv 中 58 个测试通过。
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output /tmp/hardeninspector-benchmark-check --tools hardeninspector apkid androguard_dex zip_string_baseline
 ```
 
-结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 31/31 coverage，Micro F1 分别为 1.000、0.333、0.571、0.740。
+结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 32/32 coverage，Micro F1 分别为 1.000、0.327、0.585、0.747。
 
 ```bash
 .venv/bin/python -m hardeninspector --help
@@ -74,7 +74,7 @@ make benchmark
 make external-corpus
 ```
 
-结果：重新生成 `reports/benchmark/`，合成 + 外部共 31 个评分样本；HardenInspector Micro F1 为 1.000，APKiD 为 0.333，Androguard DEX 为 0.571，ZIP Strings 为 0.740；所有评分工具 coverage 都是 31/31。
+结果：重新生成 `reports/benchmark/`，合成 + 外部共 32 个评分样本；HardenInspector Micro F1 为 1.000，APKiD 为 0.327，Androguard DEX 为 0.585，ZIP Strings 为 0.747；所有评分工具 coverage 都是 32/32。
 
 `make external-corpus` 重新生成 `reports/external_corpus/`；四个工具均为 12/12 外部 APK coverage。HardenInspector 在 12 个外部 APK 中 10 个报告至少一个类别，分布为 packer=4、obfuscation=2、environment=5、native=3；F-Droid 真实 APK `fdroid_editor` 无 finding。
 

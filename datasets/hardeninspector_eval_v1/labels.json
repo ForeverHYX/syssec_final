@@ -40,6 +40,25 @@
     },
     {
       "actual_findings": [
+        "environment.debugger_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/java_debug_api_probe.apk",
+      "construction": "synthetic Java-layer anti-debug sample combining `Landroid/os/Debug;` with `waitingForDebugger` evidence, so debugger API checks are covered separately from Native ptrace symbols",
+      "expected_findings": [
+        "environment.debugger_probe"
+      ],
+      "id": "java_debug_api_probe",
+      "report_path": "reports/java_debug_api_probe.json",
+      "source_plan": "Java Debug API anti-debug sample"
+    },
+    {
+      "actual_findings": [
         "obfuscation.short_identifiers"
       ],
       "actual_summary": {

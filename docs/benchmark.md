@@ -7,7 +7,7 @@
 默认 benchmark 只纳入同时满足以下条件的比较对象：
 
 - 能通过 `make setup` 安装；
-- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 31/31 个样本；
+- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 32/32 个样本；
 - 能产生可映射到 `packer`、`obfuscation`、`environment`、`native` 的类别输出；
 - 失败时不把“缺环境/缺外部工具”记为 0 分。
 
@@ -56,8 +56,8 @@ ZIP Strings 是仓库内的最小浅层基线：只读取 APK ZIP 文件名和 p
 
 Benchmark 使用两个数据源合并评分：
 
-- 19 个合成 APK；
-- 覆盖 clean baseline、环境检测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader ELF 符号样本、Class.forName 反射、模拟器文件痕迹、IMEI 设备标识探测、JNI `Java_*` 导出符号、signature integrity/self-check、root/rooted-device artifact probe、综合加固样本；
+- 20 个合成 APK；
+- 覆盖 clean baseline、环境检测、Java Debug API 反调试、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader ELF 符号样本、Class.forName 反射、模拟器文件痕迹、IMEI 设备标识探测、JNI `Java_*` 导出符号、signature integrity/self-check、root/rooted-device artifact probe、综合加固样本；
 - 每个样本包含 expected findings 和当前检测器报告；
 - 合成 DEX 包含标准 checksum、signature 和 map list，保证 Androguard DEX baseline 可解析。
 - 12 个外部现成 APK，来自 DroidBench、F-Droid、PIVAA；`manifest.json` 为每个外部样本记录粗粒度 `expected_categories` 和 `label_basis`，纳入同一 Precision/Recall/F1 评分表。
@@ -102,18 +102,18 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 31/31 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 31/31 | 1.000 | 0.200 | 0.333 | 0.254 |
-| Androguard DEX | 31/31 | 0.783 | 0.450 | 0.571 | 0.499 |
-| ZIP Strings | 31/31 | 0.818 | 0.675 | 0.740 | 0.729 |
+| HardenInspector | 32/32 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 32/32 | 1.000 | 0.195 | 0.327 | 0.247 |
+| Androguard DEX | 32/32 | 0.792 | 0.463 | 0.585 | 0.505 |
+| ZIP Strings | 32/32 | 0.824 | 0.683 | 0.747 | 0.733 |
 
-测试状态：`.venv/bin/python -m pytest -q` 为 54 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 58 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
 - `packer`：HardenInspector TP 10 / FN 0，APKiD TP 3，Androguard DEX TP 7，ZIP Strings TP 9。
 - `obfuscation`：HardenInspector TP 8 / FN 0，APKiD TP 0，Androguard DEX TP 4，ZIP Strings TP 4。
-- `environment`：HardenInspector TP 13 / FN 0，APKiD TP 5，Androguard DEX TP 7，ZIP Strings TP 9。
+- `environment`：HardenInspector TP 14 / FN 0，APKiD TP 5，Androguard DEX TP 8，ZIP Strings TP 10。
 - `native`：HardenInspector TP 9 / FN 0，APKiD TP 0，Androguard DEX TP 0，ZIP Strings TP 5。
 
 ## 结果解释
@@ -128,7 +128,7 @@ HardenInspector 的优势来自中期报告路线中的多源结构化证据：M
 
 ## 外部 APK 统计
 
-为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 31 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
+为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 32 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |

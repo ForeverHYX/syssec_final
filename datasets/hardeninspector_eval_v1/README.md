@@ -11,6 +11,7 @@ The samples correspond to the dataset categories described in the midterm report
 
 - F-Droid-style clean baseline
 - self-written environment-detection APK
+- Java Debug API anti-debug sample
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK

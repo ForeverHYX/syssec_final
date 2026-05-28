@@ -89,3 +89,11 @@ def test_rules_document_covers_dataset_findings():
 
     for finding_id in sorted(finding_ids):
         assert f"### `{finding_id}`" in rules_text
+
+
+def test_rules_document_describes_java_debug_api_probe():
+    rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
+
+    assert "### `environment.debugger_probe`" in rules_text
+    assert "Landroid/os/Debug;" in rules_text
+    assert "waitingForDebugger" in rules_text

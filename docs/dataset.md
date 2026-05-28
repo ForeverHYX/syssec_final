@@ -44,6 +44,7 @@ datasets/hardeninspector_eval_v1/
 | --- | --- | --- | --- |
 | `fdroid_clean_baseline` | F-Droid baseline | 合成正常包名、可读类名、无反分析字符串 | 验证低误报基线 |
 | `self_written_environment_checks` | 自写环境检测 APK | 写入 emulator/debugger 相关字符串 | 验证环境检测规则 |
+| `java_debug_api_probe` | Java Debug API anti-debug sample | `Landroid/os/Debug;` + `waitingForDebugger` | 验证 Java 层反调试 API 识别 |
 | `r8_identifier_obfuscation` | ProGuard/R8 controlled obfuscation | 使用短类名 `La/a;` 等 | 验证标识符混淆规则 |
 | `obfuscapk_reflection_dynamic` | Obfuscapk-style controlled obfuscation | 写入反射和动态加载字符串 | 验证反射/动态加载规则 |
 | `packer_stub_payload` | packer-protected sample | 壳库名、StubApp、高熵 payload、动态加载 | 验证加壳规则 |
@@ -89,7 +90,7 @@ datasets/hardeninspector_eval_v1/
 
 单元测试会在临时目录重新构造数据集，验证：
 
-- 19 个样本全部生成；
+- 20 个样本全部生成；
 - `labels.json` 和每个报告存在；
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。
@@ -103,4 +104,4 @@ datasets/hardeninspector_eval_v1/
 - 1 个 F-Droid 真实开源 APK；
 - 1 个 PIVAA 漏洞测试 APK。
 
-外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 31 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。
+外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 32 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。

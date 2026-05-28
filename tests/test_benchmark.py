@@ -59,8 +59,8 @@ def test_hardeninspector_benchmark_reaches_dataset_oracle(tmp_path):
     assert result["metrics"]["micro"]["precision"] == 1.0
     assert result["metrics"]["micro"]["recall"] == 1.0
     assert result["metrics"]["micro"]["f1"] == 1.0
-    assert result["coverage"]["samples_total"] == 19
-    assert result["coverage"]["samples_with_results"] == 19
+    assert result["coverage"]["samples_total"] == 20
+    assert result["coverage"]["samples_with_results"] == 20
     assert all(sample["runtime_ms"] is None for sample in result["samples"])
 
 
@@ -96,8 +96,8 @@ def test_zip_string_baseline_runs_without_external_dependencies(tmp_path):
     result = evaluate_predictions(dataset, "zip_string_baseline", None)
 
     assert result["tool"] == "zip_string_baseline"
-    assert result["coverage"]["samples_total"] == 19
-    assert result["coverage"]["samples_with_results"] == 19
+    assert result["coverage"]["samples_total"] == 20
+    assert result["coverage"]["samples_with_results"] == 20
     assert result["metrics"]["micro"]["recall"] > 0
 
 
@@ -121,6 +121,17 @@ def test_zip_string_baseline_maps_root_artifacts_to_environment(tmp_path):
     by_id = {sample["id"]: sample for sample in result["samples"]}
 
     assert by_id["root_artifact_probe"]["predicted_categories"] == ["environment"]
+
+
+def test_zip_string_baseline_maps_java_debug_api_to_environment(tmp_path):
+    dataset_dir = tmp_path / "dataset"
+    build_dataset(dataset_dir)
+    dataset = load_dataset(dataset_dir)
+
+    result = evaluate_predictions(dataset, "zip_string_baseline", None)
+    by_id = {sample["id"]: sample for sample in result["samples"]}
+
+    assert by_id["java_debug_api_probe"]["predicted_categories"] == ["environment"]
 
 
 def test_external_corpus_reports_distribution_without_oracle_metrics(tmp_path):
@@ -215,6 +226,6 @@ def test_run_benchmark_can_score_external_corpus_samples(tmp_path):
 
     assert manifest["dataset_version"] == "hardeninspector_eval_v1+external_test"
     assert payload["scored_external_corpus"] == "external_test"
-    assert tool_result["coverage"] == {"samples_total": 20, "samples_with_results": 20}
+    assert tool_result["coverage"] == {"samples_total": 21, "samples_with_results": 21}
     assert "external_dynamic_loading" in sample_ids
     assert tool_result["metrics"]["micro"]["recall"] == 1.0

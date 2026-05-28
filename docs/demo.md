@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-54 passed
+58 passed
 ```
 
 ## 2. 生成演示 APK
@@ -72,7 +72,7 @@ http://127.0.0.1:8000/
 
 1. **加壳证据链**：壳库名、StubApp、动态加载 API、高熵 payload 共同说明 APK 可能存在运行时释放或加载隐藏代码的行为。
 2. **混淆证据链**：短类名比例和反射调用说明静态语义被削弱，但检测器不会直接声称其为恶意。
-3. **环境检测证据链**：system property、debugger、Frida/Xposed/process maps 等证据说明应用可能主动探测分析环境。
+3. **环境检测证据链**：system property、Java Debug API、debugger、Frida/Xposed/process maps 等证据说明应用可能主动探测分析环境。
 
 ## 6. 相对中期报告的调整
 

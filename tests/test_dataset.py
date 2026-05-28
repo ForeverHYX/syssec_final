@@ -32,6 +32,7 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "fdroid_clean_baseline",
         "frida_xposed_probe",
         "high_entropy_payload_only",
+        "java_debug_api_probe",
         "native_jni_bridge_only",
         "native_jni_export_only",
         "native_ptrace_loader",
@@ -43,7 +44,7 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "self_written_environment_checks",
         "signature_integrity_check",
     }
-    assert manifest["sample_count"] == 19
+    assert manifest["sample_count"] == 20
     assert (dataset_dir / "README.md").exists()
 
     for sample in labels["samples"]:
@@ -73,6 +74,8 @@ def test_dataset_documents_practical_source_substitutions(tmp_path):
     assert by_id["class_forname_reflection"]["expected_findings"] == ["obfuscation.reflection"]
     assert by_id["emulator_imei_probe"]["expected_findings"] == ["environment.telephony_identifier_probe"]
     assert by_id["native_jni_export_only"]["expected_findings"] == ["native.jni_export"]
+    assert by_id["java_debug_api_probe"]["expected_findings"] == ["environment.debugger_probe"]
+    assert "waitingForDebugger" in by_id["java_debug_api_probe"]["construction"]
     assert by_id["signature_integrity_check"]["expected_findings"] == ["environment.integrity_check"]
     assert by_id["root_artifact_probe"]["expected_findings"] == ["environment.root_artifact_probe"]
 

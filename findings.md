@@ -185,3 +185,11 @@ The dataset now includes `root_artifact_probe.apk`, and the Web demo exposes it 
 The final exhibit now has a regression test tying dataset-triggered finding IDs to `docs/rules.md` sections. This catches a common presentation risk: adding a detector rule and sample while forgetting to document the rule in the material used for defense.
 
 The test intentionally reads committed dataset labels rather than hard-coding a duplicate list in the test. That keeps the guard aligned with the exhibit artifacts that are actually presented.
+
+## Java Debug API Environment Detection
+
+Java-layer anti-debug checks are now explicit environment evidence rather than being represented only by generic strings or Native `ptrace` symbols. The detector recognizes `android.os.Debug` / `Landroid/os/Debug;` only when paired with concrete debugger-status APIs such as `isDebuggerConnected` or `waitingForDebugger`.
+
+That pairing matters for false-positive control: ordinary strings such as `debug`, `debuggable`, `debug logging enabled`, or app-owned debug-log helper names do not trigger `environment.debugger_probe` by themselves.
+
+The dataset now includes `java_debug_api_probe.apk`, and the Web demo exposes it as a Java-layer anti-debug sample. After regeneration, the combined scoring set is 32 samples: 20 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.327, 0.585, and 0.747 Micro F1 respectively.

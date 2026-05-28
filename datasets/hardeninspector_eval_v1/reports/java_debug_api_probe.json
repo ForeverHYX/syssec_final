@@ -1,0 +1,46 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/java_debug_api_probe.apk",
+    "sha256": "fc99540d19cf442ade15103904318b8a818953e4dc0abdb6c972fee48e66a1f1"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references debugger status APIs, Java Debug APIs, ptrace, or TracerPid process-status checks.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Landroid/os/Debug;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "android.os.Debug"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "waitingForDebugger"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Ledu/syssec/debugapi/MainActivity;->waitingForDebugger"
+        }
+      ],
+      "id": "environment.debugger_probe",
+      "severity": "medium",
+      "title": "Debugger detection indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

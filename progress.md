@@ -244,3 +244,15 @@
 - Added `test_rules_document_covers_dataset_findings`, which reads committed `datasets/hardeninspector_eval_v1/labels.json` and requires every `actual_findings` ID to have a matching `### \`rule.id\`` section in `docs/rules.md`.
 - The focused test passed immediately because the current docs already describe all dataset-triggered rules; the value is future regression protection.
 - Updated final-facing README/docs/report/slides/Web demo test-count text from 53 to 54.
+
+## 2026-05-28 Java Debug API Environment Detection
+
+- Started Phase 30 to split Java-layer anti-debug API evidence from the existing Native `ptrace` and generic debugger-string coverage.
+- TDD RED: added detector coverage for `Landroid/os/Debug;` + `waitingForDebugger`, plus negative coverage for ordinary debug logging strings. The Java Debug API test failed because `environment.debugger_probe` did not cover `waitingForDebugger`.
+- TDD RED: extended dataset, benchmark, Web demo, and final-artifact tests to require `java_debug_api_probe`, Java-layer anti-debug showcase metadata, ZIP Strings environment mapping, and rules documentation mentioning `Landroid/os/Debug;` / `waitingForDebugger`.
+- TDD GREEN: implemented Java Debug API matching in `environment.debugger_probe` with a class+method evidence requirement, preserving the existing strong debugger signals while avoiding broad `debug` string matches.
+- Added `java_debug_api_probe.apk`, regenerated `datasets/hardeninspector_eval_v1/`, and regenerated combined benchmark/external-corpus artifacts. Current combined scoring set is 32 samples: 20 synthetic + 12 external. Micro F1 values are HardenInspector 1.000, APKiD 0.327, Androguard DEX 0.585, ZIP Strings 0.747.
+- Updated README, rules/dataset/benchmark/external/demo/environment/final-deliverable docs, defense/live-demo docs, final summary, completion audit, task plan, and slides to reflect the Java Debug API sample, 32 scored APKs, 58 tests, and current metrics.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 58 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, stale-count scan, final-facing wording scan, and `git diff --check` were clean.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 58 tests, fresh combined benchmark kept all four tools at 32/32 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Local Web demo smoke test passed on port 8765: the homepage showed 32 scored APKs, 20 + 12 samples, and 58 tests; `/api/scan?id=java_debug_api_probe` returned `environment.debugger_probe`; `/api/metrics` returned the current 32/32 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.

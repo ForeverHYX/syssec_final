@@ -33,7 +33,7 @@
     {
       "category": "environment",
       "confidence": "high",
-      "description": "APK references debugger status APIs, ptrace, or TracerPid process-status checks.",
+      "description": "APK references debugger status APIs, Java Debug APIs, ptrace, or TracerPid process-status checks.",
       "evidence": [
         {
           "kind": "dex-string",

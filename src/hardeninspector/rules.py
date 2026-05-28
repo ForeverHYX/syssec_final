@@ -186,6 +186,17 @@ DEBUGGER_PATTERNS = [
     "ptrace",
 ]
 
+JAVA_DEBUG_CLASS_PATTERNS = [
+    "Landroid/os/Debug;",
+    "android/os/Debug",
+    "android.os.Debug",
+]
+
+JAVA_DEBUG_METHOD_PATTERNS = [
+    "isDebuggerConnected",
+    "waitingForDebugger",
+]
+
 INSTRUMENTATION_PATTERNS = [
     "frida",
     "xposed",
@@ -499,11 +510,25 @@ def _root_artifact_probe(features: ApkFeatures) -> Finding | None:
 
 
 def _debugger_probe(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item
+        for item in features.string_evidence
+        if item.kind in {"manifest-string", "dex-string", "dex-const-string"}
+    ]
     evidence = _string_matches(
-        features.string_evidence,
+        string_evidence,
         DEBUGGER_PATTERNS,
-        kinds={"manifest-string", "dex-string", "dex-const-string"},
     )
+    debug_class_evidence = _string_matches(string_evidence, JAVA_DEBUG_CLASS_PATTERNS)
+    debug_method_string_evidence = _string_matches(string_evidence, JAVA_DEBUG_METHOD_PATTERNS)
+    debug_method_evidence: list[Evidence] = []
+    for method in features.methods + features.invoked_methods:
+        if method.name in JAVA_DEBUG_METHOD_PATTERNS:
+            debug_method_evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+    if debug_class_evidence and (debug_method_string_evidence or debug_method_evidence):
+        evidence.extend(debug_class_evidence)
+        evidence.extend(debug_method_string_evidence)
+        evidence.extend(debug_method_evidence)
     for method in features.methods + features.invoked_methods:
         if method.name == "isDebuggerConnected":
             evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
@@ -515,7 +540,7 @@ def _debugger_probe(features: ApkFeatures) -> Finding | None:
         severity="medium",
         confidence="high",
         title="Debugger detection indicators",
-        description="APK references debugger status APIs, ptrace, or TracerPid process-status checks.",
+        description="APK references debugger status APIs, Java Debug APIs, ptrace, or TracerPid process-status checks.",
         evidence=_dedupe_evidence(evidence)[:10],
     )
 

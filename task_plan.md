@@ -297,6 +297,17 @@ Status: complete
 - Synchronize final-facing test counts to 54 and recompile the Beamer deck.
 - Verify local and fresh venv tests, slides, final wording scans, and Web demo smoke before committing.
 
+### Phase 30: Java Debug API environment detection
+
+Status: complete
+
+- Add detector regression coverage for Java-layer `android.os.Debug` / `waitingForDebugger` anti-debug evidence.
+- Add negative coverage so ordinary debug logging strings do not trigger `environment.debugger_probe`.
+- Add `java_debug_api_probe.apk` to the synthetic oracle dataset and Web demo catalog.
+- Extend the ZIP Strings shallow baseline keywords so the comparison table exposes the Java Debug API signal.
+- Regenerate dataset, benchmark, external-corpus reports, README/docs/final summary, and slides with 20 synthetic + 12 external samples, 32/32 benchmark coverage, 58 tests, and 22 slides.
+- Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

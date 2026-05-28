@@ -37,6 +37,7 @@ def test_demo_catalog_points_to_existing_curated_samples():
     assert {
         "fdroid_clean_baseline",
         "combined_hardened_showcase",
+        "java_debug_api_probe",
         "signature_integrity_check",
         "root_artifact_probe",
         "pivaa",
@@ -51,6 +52,7 @@ def test_demo_catalog_points_to_existing_curated_samples():
         assert sample["showcase_role"]
 
     assert by_id["combined_hardened_showcase"]["showcase_role"] == "All-category evidence chain"
+    assert by_id["java_debug_api_probe"]["showcase_role"] == "Java-layer anti-debug API probe"
     assert by_id["signature_integrity_check"]["showcase_role"] == "Anti-tamper integrity evidence"
     assert by_id["root_artifact_probe"]["showcase_role"] == "Rooted-device environment probe"
     assert by_id["fdroid_editor"]["dataset_kind"] == "External corpus"
@@ -110,8 +112,8 @@ def test_render_index_html_contains_demo_api_surface():
     assert "Synthetic Oracle" in html
     assert "External APK Corpus" in html
     assert "HardenInspector Micro F1" in html
-    assert "31 scored APKs" in html
-    assert "54 regression tests" in html
+    assert "32 scored APKs" in html
+    assert "58 regression tests" in html
     assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html

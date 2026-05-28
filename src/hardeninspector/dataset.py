@@ -84,6 +84,31 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="java_debug_api_probe",
+        apk_name="java_debug_api_probe.apk",
+        source_plan="Java Debug API anti-debug sample",
+        construction=(
+            "synthetic Java-layer anti-debug sample combining `Landroid/os/Debug;` with "
+            "`waitingForDebugger` evidence, so debugger API checks are covered separately "
+            "from Native ptrace symbols"
+        ),
+        expected_findings=["environment.debugger_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.debugapi", "edu.syssec.debugapi.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/debugapi/MainActivity;",
+                "Ledu/syssec/debugapi/DebugApiProbe;",
+                "Landroid/os/Debug;",
+            ],
+            method_names=["<clinit>", "checkDebugger", "waitingForDebugger"],
+            dex_strings=[
+                "Landroid/os/Debug;",
+                "waitingForDebugger",
+                "android.os.Debug",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="r8_identifier_obfuscation",
         apk_name="r8_identifier_obfuscation.apk",
         source_plan="ProGuard/R8 controlled obfuscation",
@@ -590,6 +615,7 @@ The samples correspond to the dataset categories described in the midterm report
 
 - F-Droid-style clean baseline
 - self-written environment-detection APK
+- Java Debug API anti-debug sample
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK

@@ -28,7 +28,7 @@ http://127.0.0.1:8000/
 
 先展示页面结构：
 
-- 顶部 `Exhibit Map`：说明项目动机、证据链、数据集结构、31 个评分 APK、54 个测试和 HardenInspector Micro F1；
+- 顶部 `Exhibit Map`：说明项目动机、证据链、数据集结构、32 个评分 APK、58 个测试和 HardenInspector Micro F1；
 - 左侧 curated samples；
 - `Upload APK` 和 `Scan Upload`；
 - 右侧 summary、finding、Evidence 表；
@@ -52,7 +52,7 @@ http://127.0.0.1:8000/
 
 1. `packer`：壳库名、StubApp、高熵 payload、动态加载；
 2. `obfuscation`：短标识符和 reflection evidence；
-3. `environment`：system property、debugger、instrumentation 相关证据；
+3. `environment`：system property、Java Debug API、debugger、instrumentation 相关证据；
 4. `native`：JNI 入口或导出符号。
 
 每一类都点开 Evidence 表，说明 location 和 value 是可复查证据，不是黑盒分数。
@@ -62,6 +62,7 @@ http://127.0.0.1:8000/
 建议二选一：
 
 - `Signature integrity check`：展示 PackageManager 签名 API 与 `MessageDigest/SHA-256` 组合形成的反篡改 evidence；
+- `Java Debug API probe`：展示 `android.os.Debug` / `waitingForDebugger` 组成的 Java 层反调试 evidence；
 - `Root artifact probe`：展示 `su` 路径、Superuser/Magisk 包名和 `test-keys` 组成的 root 环境 evidence；
 - `Native ptrace and loader signals`：展示 ELF 符号表证据，说明 Native 不只是字符串扫描；
 - `Emulator IMEI probe`：展示 telephony/device-id emulator probe。
@@ -91,10 +92,10 @@ datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk
 
 | Tool | Coverage | Micro F1 |
 | --- | ---: | ---: |
-| HardenInspector | 31/31 | 1.000 |
-| APKiD | 31/31 | 0.333 |
-| Androguard DEX | 31/31 | 0.571 |
-| ZIP Strings | 31/31 | 0.740 |
+| HardenInspector | 32/32 | 1.000 |
+| APKiD | 32/32 | 0.327 |
+| Androguard DEX | 32/32 | 0.585 |
+| ZIP Strings | 32/32 | 0.747 |
 
 说明 `droidbench_reflection_5` 标签审计：它的可见反射证据是 support-library-only，所以不再作为应用混淆 oracle。这样避免把浅层字符串误报奖励成正确结果。
 
@@ -113,4 +114,4 @@ make external-corpus
 
 最后一句：
 
-> 这个项目的核心价值是可复现的静态 evidence chain：每条结论都能回到 APK 里的 Manifest、DEX、Native 或资源证据，并且通过 19 个合成 oracle APK、12 个外部现成 APK 和 54 个自动化测试持续验证。
+> 这个项目的核心价值是可复现的静态 evidence chain：每条结论都能回到 APK 里的 Manifest、DEX、Native 或资源证据，并且通过 20 个合成 oracle APK、12 个外部现成 APK 和 58 个自动化测试持续验证。

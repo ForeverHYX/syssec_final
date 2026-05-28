@@ -314,6 +314,52 @@ def test_detector_reports_root_artifact_probe(tmp_path):
     assert any(item.value == "com.topjohnwu.magisk" for item in finding.evidence)
 
 
+def test_detector_reports_java_debug_api_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "java-debug-api.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.debugapi", "edu.syssec.debugapi.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/debugapi/MainActivity;",
+                "Ledu/syssec/debugapi/DebugApiProbe;",
+            ],
+            method_names=["<clinit>", "checkDebugger", "waitingForDebugger"],
+            dex_strings=[
+                "Landroid/os/Debug;",
+                "waitingForDebugger",
+                "android.os.Debug",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.debugger_probe")
+
+    assert finding.category == "environment"
+    assert any(item.value == "waitingForDebugger" for item in finding.evidence)
+    assert any(item.value == "Landroid/os/Debug;" for item in finding.evidence)
+
+
+def test_debug_logging_strings_are_not_debugger_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "debug-logging.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.debuglog", "edu.syssec.debuglog.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/debuglog/MainActivity;",
+                "Ledu/syssec/debuglog/DebugLogger;",
+            ],
+            method_names=["<clinit>", "writeDebugLog"],
+            dex_strings=["debug", "debuggable", "debug logging enabled", "waiting room"],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.debugger_probe" not in finding_ids
+
+
 def test_regular_words_containing_su_are_not_root_probe(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "regular-strings.apk",

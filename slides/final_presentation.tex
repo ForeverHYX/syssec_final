@@ -386,10 +386,10 @@
       \toprule
       Tool & Samples & Precision & Recall & Micro F1 \\
       \midrule
-      HardenInspector & 29/29 & 0.974 & 0.974 & 0.974 \\
-      APKiD & 29/29 & 1.000 & 0.211 & 0.348 \\
-      Androguard DEX & 29/29 & 0.800 & 0.421 & 0.552 \\
-      ZIP Strings & 29/29 & 0.862 & 0.658 & 0.746 \\
+      HardenInspector & 29/29 & 1.000 & 0.974 & 0.987 \\
+      APKiD & 29/29 & 1.000 & 0.205 & 0.340 \\
+      Androguard DEX & 29/29 & 0.800 & 0.410 & 0.542 \\
+      ZIP Strings & 29/29 & 0.862 & 0.641 & 0.735 \\
       \bottomrule
     \end{tabular}
   \end{table}
@@ -409,14 +409,14 @@
     \node[anchor=east,font=\scriptsize] at (0,3) {ZIP Strings};
     \node[anchor=east,font=\scriptsize] at (0,2) {Androguard DEX};
     \node[anchor=east,font=\scriptsize] at (0,1) {APKiD};
-    \fill[structure.fg!85] (0,3.72) rectangle (0.974,4.28);
-    \fill[gray!65] (0,2.72) rectangle (0.746,3.28);
-    \fill[PineGreen!75] (0,1.72) rectangle (0.552,2.28);
-    \fill[Orange!80] (0,0.72) rectangle (0.348,1.28);
-    \node[anchor=west,font=\scriptsize] at (0.995,4) {0.974};
-    \node[anchor=west,font=\scriptsize] at (0.77,3) {0.746};
-    \node[anchor=west,font=\scriptsize] at (0.58,2) {0.552};
-    \node[anchor=west,font=\scriptsize] at (0.37,1) {0.348};
+    \fill[structure.fg!85] (0,3.72) rectangle (0.987,4.28);
+    \fill[gray!65] (0,2.72) rectangle (0.735,3.28);
+    \fill[PineGreen!75] (0,1.72) rectangle (0.542,2.28);
+    \fill[Orange!80] (0,0.72) rectangle (0.340,1.28);
+    \node[anchor=west,font=\scriptsize] at (1.005,4) {0.987};
+    \node[anchor=west,font=\scriptsize] at (0.76,3) {0.735};
+    \node[anchor=west,font=\scriptsize] at (0.57,2) {0.542};
+    \node[anchor=west,font=\scriptsize] at (0.36,1) {0.340};
   \end{tikzpicture}
 
   \vspace{0.5em}
@@ -433,9 +433,9 @@
       \toprule
       检查项 & 结果 \\
       \midrule
-      自动化测试 & 38 个测试通过 \\
+      自动化测试 & 39 个测试通过 \\
       合成数据集 & \texttt{make dataset} 生成 17 个带标签 APK \\
-      评分统计 & 四工具均为 29/29；Micro F1：HI 0.974 / APKiD 0.348 / Androguard 0.552 / ZIP 0.746 \\
+      评分统计 & 四工具均为 29/29；Micro F1：HI 0.987 / APKiD 0.340 / Androguard 0.542 / ZIP 0.735 \\
       外部 APK 语料 & 12 个现成 APK 已纳入评分；单独统计四工具均为 12/12 \\
       外部语料误报观察 & F-Droid 真实 APK 当前无 HardenInspector finding \\
       汇报稿 & ZJU Beamer 可编译；PDF/aux/log 已忽略 \\
@@ -469,7 +469,7 @@
     \end{column}
   \end{columns}
   \vspace{0.7em}
-  本地验证：38 个测试通过；combined benchmark 为 29/29 coverage；external corpus 单独统计为 12/12 coverage。
+  本地验证：39 个测试通过；combined benchmark 为 29/29 coverage；external corpus 单独统计为 12/12 coverage。
 \end{frame}
 
 \begin{frame}{项目交付}

@@ -71,10 +71,10 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 0.974 | 0.974 | 0.974 | 0.971 |
-| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
-| Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
-| ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
+| HardenInspector | 29/29 | 1.000 | 0.974 | 0.987 | 0.985 |
+| APKiD | 29/29 | 1.000 | 0.205 | 0.340 | 0.272 |
+| Androguard DEX | 29/29 | 0.800 | 0.410 | 0.542 | 0.478 |
+| ZIP Strings | 29/29 | 0.862 | 0.641 | 0.735 | 0.731 |
 
 重要观察：
 

@@ -8,10 +8,10 @@ Scored external corpus: `external_apk_corpus_v1`
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 0.974 | 0.974 | 0.974 | 0.971 |
-| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
-| Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
-| ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
+| HardenInspector | 29/29 | 1.000 | 0.974 | 0.987 | 0.985 |
+| APKiD | 29/29 | 1.000 | 0.205 | 0.340 | 0.272 |
+| Androguard DEX | 29/29 | 0.800 | 0.410 | 0.542 | 0.478 |
+| ZIP Strings | 29/29 | 0.862 | 0.641 | 0.735 | 0.731 |
 
 ## Per-category F1
 
@@ -22,7 +22,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | packer | 10 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | obfuscation | 8 | 0 | 1 | 1.000 | 0.889 | 0.941 |
 | environment | 11 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| native | 8 | 1 | 0 | 0.889 | 1.000 | 0.941 |
+| native | 9 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 
 ### APKiD
 
@@ -31,7 +31,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | packer | 3 | 0 | 7 | 1.000 | 0.300 | 0.462 |
 | obfuscation | 0 | 0 | 9 | 0.000 | 0.000 | 0.000 |
 | environment | 5 | 0 | 6 | 1.000 | 0.455 | 0.625 |
-| native | 0 | 0 | 8 | 0.000 | 0.000 | 0.000 |
+| native | 0 | 0 | 9 | 0.000 | 0.000 | 0.000 |
 
 ### Androguard DEX
 
@@ -40,7 +40,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | packer | 7 | 0 | 3 | 1.000 | 0.700 | 0.824 |
 | obfuscation | 5 | 4 | 4 | 0.556 | 0.556 | 0.556 |
 | environment | 4 | 0 | 7 | 1.000 | 0.364 | 0.533 |
-| native | 0 | 0 | 8 | 0.000 | 0.000 | 0.000 |
+| native | 0 | 0 | 9 | 0.000 | 0.000 | 0.000 |
 
 ### ZIP Strings
 
@@ -49,7 +49,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | packer | 9 | 0 | 1 | 1.000 | 0.900 | 0.947 |
 | obfuscation | 5 | 4 | 4 | 0.556 | 0.556 | 0.556 |
 | environment | 6 | 0 | 5 | 1.000 | 0.545 | 0.706 |
-| native | 5 | 0 | 3 | 1.000 | 0.625 | 0.769 |
+| native | 5 | 0 | 4 | 1.000 | 0.556 | 0.714 |
 
 ## Comparator Scope Notes
 

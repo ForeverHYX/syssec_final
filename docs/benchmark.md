@@ -102,19 +102,19 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 0.974 | 0.974 | 0.974 | 0.971 |
-| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
-| Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
-| ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
+| HardenInspector | 29/29 | 1.000 | 0.974 | 0.987 | 0.985 |
+| APKiD | 29/29 | 1.000 | 0.205 | 0.340 | 0.272 |
+| Androguard DEX | 29/29 | 0.800 | 0.410 | 0.542 | 0.478 |
+| ZIP Strings | 29/29 | 0.862 | 0.641 | 0.735 | 0.731 |
 
-测试状态：`.venv/bin/python -m pytest -q` 为 38 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 39 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
 - `packer`：HardenInspector TP 10 / FN 0，APKiD TP 3，Androguard DEX TP 7，ZIP Strings TP 9。
 - `obfuscation`：HardenInspector TP 8 / FN 1，APKiD TP 0，Androguard DEX TP 5，ZIP Strings TP 5。
 - `environment`：HardenInspector TP 11 / FN 0，APKiD TP 5，Androguard DEX TP 4，ZIP Strings TP 6。
-- `native`：HardenInspector TP 8 / FN 0，APKiD TP 0，Androguard DEX TP 0，ZIP Strings TP 5。
+- `native`：HardenInspector TP 9 / FN 0，APKiD TP 0，Androguard DEX TP 0，ZIP Strings TP 5。
 
 ## 结果解释
 

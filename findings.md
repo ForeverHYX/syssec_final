@@ -114,4 +114,14 @@ Implemented rule hardening:
 - Filtered support-library/platform reflection owners for `android/support`, `androidx`, Kotlin, Google Material/Common, and platform descriptors.
 - Preserved `Class.forName` detection when it is not only support-library reflection context.
 
-Current combined benchmark remains 29 samples with all tools at 29/29 coverage. HardenInspector Micro F1 is now 0.974; obfuscation precision improved to 1.000 with one documented recall loss on `droidbench_reflection_5`, whose visible evidence is dominated by support-library reflection. External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3.
+Current combined benchmark remains 29 samples with all tools at 29/29 coverage. HardenInspector Micro F1 is now 0.987; obfuscation precision improved to 1.000 with one documented recall loss on `droidbench_reflection_5`, whose visible evidence is dominated by support-library reflection. External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3.
+
+## External Native Label Audit
+
+The remaining Native-category mismatch after reflection hardening was not a detector false positive. `droidbench_bytecode_tamper_1` contains `lib/arm64-v8a/libmyjni.so` with exported `Java_edu_wayne_cs_NativeInterface_jniTest`, plus native `dlopen`/`dlsym` and `/proc/self/maps` evidence. Its previous external-corpus `expected_categories` covered environment and packer but omitted native.
+
+Implemented label-audit guardrail:
+
+- Added a regression test that scans committed external APKs and requires any scored sample with visible `Java_*` JNI exports to include `native`.
+- Updated the BytecodeTamper label basis to record the exported JNI bridge.
+- Rebuilt the combined benchmark. HardenInspector now has zero false positives across the four categories; the only remaining category error is the intentional `droidbench_reflection_5` obfuscation miss caused by support-library reflection filtering.

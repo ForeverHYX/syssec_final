@@ -42,9 +42,9 @@ make slides
 
 | 项目 | 结果 |
 | --- | --- |
-| 自动化测试 | `38 passed` |
+| 自动化测试 | `39 passed` |
 | 合并评分数据集 | 17 个 synthetic APK + 12 个外部 APK，四个默认评分工具均为 29/29 coverage |
-| Combined benchmark Micro F1 | HardenInspector 0.974；APKiD 0.348；Androguard DEX 0.552；ZIP Strings 0.746 |
+| Combined benchmark Micro F1 | HardenInspector 0.987；APKiD 0.340；Androguard DEX 0.542；ZIP Strings 0.735 |
 | 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
 | 外部语料 HardenInspector 分布 | Any 10/12；packer=4；obfuscation=2；environment=5；native=3；F-Droid 样本无 finding |
 | Slides | ZJU Beamer 可通过 `make slides` 编译为 21 页，PDF/aux/log 等构建产物已忽略 |

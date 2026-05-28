@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from hardeninspector.dataset import DATASET_VERSION, build_dataset
+from hardeninspector.features import extract_features
 from hardeninspector.synthetic import SyntheticApkSpec, build_synthetic_apk
 from hardeninspector.util import sha256_hex
 
@@ -101,3 +102,22 @@ def test_external_apk_corpus_manifest_matches_committed_files():
         assert set(sample["expected_categories"]).issubset({"packer", "obfuscation", "environment", "native"})
         assert "label_basis" in sample
         assert sha256_hex(apk_path.read_bytes()) == sample["sha256"]
+
+
+def test_external_jni_export_samples_are_labeled_native():
+    corpus = ROOT / "datasets" / "external_apk_corpus_v1"
+    manifest = json.loads((corpus / "manifest.json").read_text(encoding="utf-8"))
+
+    for sample in manifest["samples"]:
+        features = extract_features(corpus / sample["apk_path"])
+        has_jni_export = any(
+            symbol.name.startswith("Java_")
+            for symbols in features.native_symbols.values()
+            for symbol in symbols
+        ) or any(
+            value.startswith("Java_")
+            for strings in features.native_strings.values()
+            for value in strings
+        )
+        if has_jni_export:
+            assert "native" in sample["expected_categories"], sample["id"]

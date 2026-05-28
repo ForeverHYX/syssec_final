@@ -95,9 +95,10 @@
       "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
       "expected_categories": [
         "environment",
+        "native",
         "packer"
       ],
-      "label_basis": "DroidBench SelfModification sample; bytecode tamper/instrumentation checks are scored as environment/instrumentation-detection signals, and native dlopen/dlsym loading evidence is scored as a runtime-loading/packer signal."
+      "label_basis": "DroidBench SelfModification sample; bytecode tamper/instrumentation checks are scored as environment/instrumentation-detection signals, native dlopen/dlsym loading evidence is scored as a runtime-loading/packer signal, and the exported Java_* JNI bridge is scored as a native signal."
     },
     {
       "id": "droidbench_native_id_function",

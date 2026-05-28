@@ -196,6 +196,17 @@ Status: complete locally; push pending explicit approval
 - Verify locally and in fresh venv.
 - Commit locally; push after explicit GitHub upload approval.
 
+### Phase 20: External corpus native label audit
+
+Status: complete locally; push pending explicit approval
+
+- Inspect the remaining Native mismatch in `droidbench_bytecode_tamper_1`.
+- Add a regression test requiring scored external samples with visible `Java_*` JNI exports to include the `native` expected category.
+- Update the sample `label_basis` to document its JNI bridge evidence.
+- Regenerate benchmark/external-corpus reports, README, docs, final summary, and slides.
+- Verify locally and in fresh venv.
+- Commit locally; push after explicit GitHub upload approval.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

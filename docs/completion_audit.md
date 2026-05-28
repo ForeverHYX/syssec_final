@@ -29,20 +29,20 @@
 结果：
 
 ```text
-38 passed
+39 passed
 ```
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m pytest -q
 ```
 
-结果：fresh venv 中 38 个测试通过。
+结果：fresh venv 中 39 个测试通过。
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output /tmp/hardeninspector-benchmark-check --tools hardeninspector apkid androguard_dex zip_string_baseline
 ```
 
-结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 29/29 coverage，Micro F1 分别为 0.974、0.348、0.552、0.746。
+结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 29/29 coverage，Micro F1 分别为 0.987、0.340、0.542、0.735。
 
 ```bash
 .venv/bin/python -m hardeninspector --help
@@ -73,7 +73,7 @@ make benchmark
 make external-corpus
 ```
 
-结果：重新生成 `reports/benchmark/`，合成 + 外部共 29 个评分样本；HardenInspector Micro F1 为 0.974，APKiD 为 0.348，Androguard DEX 为 0.552，ZIP Strings 为 0.746；所有评分工具 coverage 都是 29/29。
+结果：重新生成 `reports/benchmark/`，合成 + 外部共 29 个评分样本；HardenInspector Micro F1 为 0.987，APKiD 为 0.340，Androguard DEX 为 0.542，ZIP Strings 为 0.735；所有评分工具 coverage 都是 29/29。
 
 `make external-corpus` 重新生成 `reports/external_corpus/`；四个工具均为 12/12 外部 APK coverage。HardenInspector 在 12 个外部 APK 中 10 个报告至少一个类别，分布为 packer=4、obfuscation=2、environment=5、native=3；F-Droid 真实 APK `fdroid_editor` 无 finding。
 

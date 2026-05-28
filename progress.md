@@ -139,9 +139,18 @@
 - TDD RED: added detector tests for support-library reflection scaffolding and application-owned reflection dispatch. The support-library case failed as expected under the old rule.
 - TDD GREEN: split reflection string evidence into strong literals and contextual literals, added support-library/platform owner filters, and required generic `java/lang/reflect/Method` evidence to have application-owned reflection context.
 - Full local pytest passed with 38 tests.
-- Regenerated dataset reports, benchmark artifacts, and external-corpus artifacts. Current combined scoring set remains 29 samples: 17 synthetic + 12 external. Micro F1 values: HardenInspector 0.974, APKiD 0.348, Androguard DEX 0.552, ZIP Strings 0.746.
+- Regenerated dataset reports, benchmark artifacts, and external-corpus artifacts. Current combined scoring set remains 29 samples: 17 synthetic + 12 external. Micro F1 values: HardenInspector 0.987, APKiD 0.340, Androguard DEX 0.542, ZIP Strings 0.735.
 - External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3; `fdroid_editor` remains clean with no finding.
 - Documented the tradeoff: `droidbench_reflection_5` is now a labeled obfuscation false negative because the visible bytecode evidence is support-library reflection scaffolding, while the former DroidBench Native/Emulator false positives are removed.
 - Recompiled slides with `make slides`; `pdfinfo` reports 21 pages and LaTeX log scan found no Overfull/Underfull/Warning/Error/Undefined/Missing matches.
-- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 38 tests, fresh combined benchmark kept all four tools at 29/29 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 39 tests, fresh combined benchmark kept all four tools at 29/29 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
 - Repository hygiene check passed: `git diff --check` had no output. Local branch remains ahead of `origin/main`; GitHub push is pending explicit user approval.
+
+## 2026-05-28 External Native Label Audit
+
+- Inspected the remaining `droidbench_bytecode_tamper_1` Native mismatch and confirmed the APK exports `Java_edu_wayne_cs_NativeInterface_jniTest` from `libmyjni.so`; the previous external-corpus expected label omitted a visible native signal.
+- TDD RED: added a corpus consistency test requiring any scored external APK with `Java_*` JNI exports to include `native`; it failed on `droidbench_bytecode_tamper_1`.
+- TDD GREEN: added `native` to that sample's `expected_categories` and updated `label_basis` to document the JNI bridge.
+- Regenerated benchmark and external-corpus reports. Current combined Micro F1 values: HardenInspector 0.987, APKiD 0.340, Androguard DEX 0.542, ZIP Strings 0.735.
+- Final local verification passed: `.venv/bin/python -m pytest -q` reported 39 tests; `make slides` compiled 21 pages; LaTeX log scan and `git diff --check` had no findings.
+- Fresh venv verification passed with the same 39-test result, 29/29 combined benchmark coverage, and 12/12 external-corpus coverage.

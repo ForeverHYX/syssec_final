@@ -47,7 +47,7 @@ make all
 
 | 命令 | 结果 |
 | --- | --- |
-| `.venv/bin/python -m pytest -q` | 38 个测试通过 |
+| `.venv/bin/python -m pytest -q` | 39 个测试通过 |
 | `make dataset` | 生成 17 个合成 oracle APK |
 | `make benchmark` | 合成 + 外部共 29 个评分样本；四个默认评分工具均为 29/29 coverage |
 | `make external-corpus` | 单独外部统计中四个工具均为 12/12 coverage |

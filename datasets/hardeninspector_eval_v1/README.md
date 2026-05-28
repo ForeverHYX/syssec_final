@@ -13,6 +13,7 @@ The samples correspond to the dataset categories described in the midterm report
 - self-written environment-detection APK
 - Java Debug API anti-debug sample
 - ADB/developer-settings environment sample
+- installer-source environment sample
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK

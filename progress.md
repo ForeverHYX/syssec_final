@@ -75,7 +75,7 @@
 - Implemented a DEX opcode profile in `src/hardeninspector/dex.py` with instruction count, control-flow count, density, and if/goto/switch/throw/invoke/const-string counts.
 - Added `obfuscation.control_flow_density` in `src/hardeninspector/rules.py` so dense branch/jump bytecode becomes an evidence-backed finding instead of only a future-work note.
 - Added a committed `control_flow_flattening.apk` dataset sample and regenerated labels/reports; the dataset now contains 11 APKs.
-- Regenerated benchmark artifacts; default scored tools all have 11/11 coverage. Micro F1: HardenInspector 1.000, APKiD 0.476, Androguard DEX 0.769, ZIP Strings 0.933.
+- Regenerated benchmark artifacts; default scored tools all have 11/11 coverage. Micro F1: HardenInspector 1.000, APKiD 0.488, Androguard DEX 0.769, ZIP Strings 0.933.
 - Updated README, docs, final summary, benchmark docs, and final deliverable docs for the 11-sample dataset and the new control-flow rule.
 - Reworked the ZJU Beamer deck to 18 pages with a new "成果一页看懂" slide, a LaTeX/TikZ opcode-profile slide, updated 11-sample dataset table, updated benchmark numbers, and a "局限与已优化项" slide.
 - Added deterministic ZIP metadata for generated APKs and a regression test proving the same synthetic spec emits identical APK bytes.
@@ -268,3 +268,15 @@
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 63 tests; `make dataset`, `make benchmark`, and `make external-corpus` regenerated committed artifacts; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, stale-count scan, final-facing wording scan, and `git diff --check` were clean.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 63 tests, fresh combined benchmark kept all four tools at 33/33 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
 - Local Web demo smoke test passed on port 8765: the homepage showed 33 scored APKs, 21 + 12 samples, and 63 tests; `/api/scan?id=adb_developer_settings_probe` returned `environment.adb_settings_probe`; `/api/metrics` returned the current 33/33 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.
+
+## 2026-05-28 Installer Source Environment Detection
+
+- Started Phase 32 to cover apps checking install source or side-load state through PackageManager installer-source APIs.
+- TDD RED: added detector coverage for `getInstallerPackageName` / `getInstallSourceInfo` combined with installer package and side-load values, plus negative coverage for ordinary `getPackageInfo` / `versionName` metadata lookup.
+- TDD RED: extended dataset, benchmark, Web demo, and final-artifact tests to require `installer_source_probe`, installer-source showcase metadata, ZIP Strings environment mapping, and rules documentation.
+- TDD GREEN: implemented `environment.installer_source_probe`, added `installer_source_probe.apk`, added Web demo catalog metadata, and extended shallow benchmark keywords for installer-source evidence.
+- Regenerated the synthetic dataset, combined benchmark, and external-corpus artifacts. Current combined scoring set is 34 samples: 22 synthetic and 12 external. Micro F1 values are HardenInspector 1.000, APKiD 0.314, Androguard DEX 0.609, and ZIP Strings 0.759.
+- Updated README, rules/dataset/benchmark/demo/environment/final-deliverable docs, defense/live-demo docs, final summary, completion audit, and slides to reflect the new sample, 34 scored APKs, and 67 tests.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 67 tests; `make dataset`, `make benchmark`, and `make external-corpus` regenerated committed artifacts; `make slides` compiled 22 pages; `pdfinfo` reported 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 67 tests, fresh combined benchmark kept all four tools at 34/34 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Local Web demo smoke test passed on port 8765: the homepage showed 34 scored APKs, 22 + 12 samples, and 67 tests; `/api/scan?id=installer_source_probe` returned `environment.installer_source_probe`; `/api/metrics` returned current 34/34 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.

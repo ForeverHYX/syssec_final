@@ -54,7 +54,7 @@ make external-corpus
 make benchmark
 ```
 
-`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 33 个评分样本。
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 34 个评分样本。
 
 ## 当前统计
 
@@ -71,10 +71,10 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 33/33 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 33/33 | 1.000 | 0.190 | 0.320 | 0.240 |
-| Androguard DEX | 33/33 | 0.800 | 0.476 | 0.597 | 0.511 |
-| ZIP Strings | 33/33 | 0.829 | 0.690 | 0.753 | 0.737 |
+| HardenInspector | 34/34 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 34/34 | 1.000 | 0.186 | 0.314 | 0.234 |
+| Androguard DEX | 34/34 | 0.800 | 0.488 | 0.609 | 0.516 |
+| ZIP Strings | 34/34 | 0.829 | 0.698 | 0.759 | 0.740 |
 
 重要观察：
 

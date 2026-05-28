@@ -1,0 +1,76 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/installer_source_probe.apk",
+    "sha256": "fd991f61b8861ee412d1af44e67d31f63618c37c0dcee54a0aa791d64c71dcdc"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "medium",
+      "description": "APK checks installer-source APIs together with Play Store, package-installer, unknown-source, or adb-install indicators, a static signal for sideload or analysis-environment checks.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Landroid/content/pm/InstallSourceInfo;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "getInstallSourceInfo"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "getInstallingPackageName"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "getInstallerPackageName"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Ledu/syssec/installsource/MainActivity;->getInstallSourceInfo"
+        },
+        {
+          "kind": "method",
+          "location": "DEX method table",
+          "value": "Ledu/syssec/installsource/MainActivity;->getInstallingPackageName"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "com.android.vending"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "com.android.packageinstaller"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "unknown source"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "adb install"
+        }
+      ],
+      "id": "environment.installer_source_probe",
+      "severity": "medium",
+      "title": "Installer-source or sideload probe"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

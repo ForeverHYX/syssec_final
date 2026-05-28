@@ -64,6 +64,13 @@ ZIP_BASELINE_KEYWORDS = {
         "ADB_ENABLED",
         "adb_enabled",
         "development_settings_enabled",
+        "getInstallerPackageName",
+        "getInstallSourceInfo",
+        "getInstallingPackageName",
+        "com.android.vending",
+        "com.android.packageinstaller",
+        "unknown source",
+        "adb install",
     ],
     "native": ["JNI_OnLoad"],
 }

@@ -48,7 +48,7 @@ The ZJU Beamer deck uses generated imagery only for the complex APK cutaway illu
 
 The previous limitation around opcode/control-flow statistics has been partially optimized without attempting full CFG recovery. `dex.py` now exposes an opcode profile with instruction count, control-flow count, density, and if/goto/switch/throw counts. `rules.py` turns dense branch/jump patterns into `obfuscation.control_flow_density` findings with DEX-location evidence.
 
-The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. At the 11-sample phase, scored benchmark coverage remained 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values were 1.000, 0.476, 0.769, and 0.933 respectively. The slide deck explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
+The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. At the 11-sample phase, scored benchmark coverage remained 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values were 1.000, 0.488, 0.769, and 0.933 respectively. The slide deck explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
 
 Synthetic APK generation now fixes ZIP entry timestamps and permissions. Running `make dataset` twice keeps APK SHA-256 values stable, so the committed dataset is reproducible instead of changing due only to archive metadata.
 
@@ -201,3 +201,11 @@ ADB/developer-options checks are now represented as an explicit environment sign
 The pairing is important for false-positive control: ordinary `adb` help text, backup messages, URLs, or comments do not trigger the finding unless the APK also shows Android Settings API access. Evidence is preserved with both the API descriptor and the setting key so the presenter can explain why the signal is an environment probe rather than a generic string match.
 
 The dataset now includes `adb_developer_settings_probe.apk`, and the Web demo exposes it as an ADB/developer-settings sample. After regeneration, the combined scoring set is 33 samples: 21 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.320, 0.597, and 0.753 Micro F1 respectively.
+
+## Installer Source Environment Detection
+
+Installer-source and side-load checks are now represented as an explicit environment signal. The new `environment.installer_source_probe` rule requires install-source APIs, such as `getInstallerPackageName`, `getInstallSourceInfo`, or `InstallSourceInfo`, together with concrete installer or side-load values such as `com.android.vending`, package-installer names, `unknown source`, or `adb install`.
+
+The pairing matters for false-positive control: ordinary PackageManager metadata lookups for `getPackageInfo` or `versionName` do not trigger this rule unless installer-source API evidence and a source value both appear. Evidence is preserved with API and source value entries so the presenter can explain the signal as an environment or distribution-channel check.
+
+The dataset now includes `installer_source_probe.apk`, and the Web demo exposes it as an installer-source environment sample. After regeneration, the combined scoring set is 34 samples: 22 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.314, 0.609, and 0.759 Micro F1 respectively.

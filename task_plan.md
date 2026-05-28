@@ -320,6 +320,18 @@ Status: complete
 - Synchronize README, rules/dataset/benchmark/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides.
 - Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording/stale-count scans, and Web demo smoke before committing.
 
+### Phase 32: Installer-source environment detection
+
+Status: complete
+
+- Add detector regression coverage for installer-source APIs such as `getInstallerPackageName` and `getInstallSourceInfo` combined with installer/sideload values.
+- Add negative coverage so ordinary PackageManager version metadata lookups do not trigger the environment finding.
+- Add `installer_source_probe.apk` to the synthetic oracle dataset and Web demo catalog.
+- Extend shallow benchmark environment keywords so comparator rows expose the installer-source signal.
+- Regenerate dataset, benchmark, and external-corpus reports with 22 synthetic + 12 external samples, 34/34 benchmark coverage, and 67 tests.
+- Synchronize README, rules/dataset/benchmark/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides.
+- Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording/stale-count scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

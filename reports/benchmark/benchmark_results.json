@@ -29,30 +29,30 @@
           "fn": 0,
           "fp": 0,
           "tn": 18,
-          "tp": 15
+          "tp": 16
         },
         "native": {
           "fn": 0,
           "fp": 0,
-          "tn": 24,
+          "tn": 25,
           "tp": 9
         },
         "obfuscation": {
           "fn": 0,
           "fp": 0,
-          "tn": 25,
+          "tn": 26,
           "tp": 8
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 23,
+          "tn": 24,
           "tp": 10
         }
       },
       "coverage": {
-        "samples_total": 33,
-        "samples_with_results": 33
+        "samples_total": 34,
+        "samples_with_results": 34
       },
       "metrics": {
         "by_category": {
@@ -137,6 +137,21 @@
             "environment.adb_settings_probe"
           ],
           "id": "adb_developer_settings_probe",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.installer_source_probe"
+          ],
+          "id": "installer_source_probe",
           "notes": null,
           "predicted_categories": [
             "environment"
@@ -635,7 +650,7 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 10,
+          "fn": 11,
           "fp": 0,
           "tn": 18,
           "tp": 5
@@ -643,32 +658,32 @@
         "native": {
           "fn": 9,
           "fp": 0,
-          "tn": 24,
+          "tn": 25,
           "tp": 0
         },
         "obfuscation": {
           "fn": 8,
           "fp": 0,
-          "tn": 25,
+          "tn": 26,
           "tp": 0
         },
         "packer": {
           "fn": 7,
           "fp": 0,
-          "tn": 23,
+          "tn": 24,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 33,
-        "samples_with_results": 33
+        "samples_total": 34,
+        "samples_with_results": 34
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.5,
+            "f1": 0.47619047619047616,
             "precision": 1.0,
-            "recall": 0.3333333333333333
+            "recall": 0.3125
           },
           "native": {
             "f1": 0.0,
@@ -687,14 +702,14 @@
           }
         },
         "macro": {
-          "f1": 0.24038461538461536,
+          "f1": 0.23443223443223443,
           "precision": 0.5,
-          "recall": 0.15833333333333333
+          "recall": 0.153125
         },
         "micro": {
-          "f1": 0.32,
+          "f1": 0.3137254901960785,
           "precision": 1.0,
-          "recall": 0.19047619047619047
+          "recall": 0.18604651162790697
         }
       },
       "samples": [
@@ -739,6 +754,17 @@
           ],
           "finding_ids": [],
           "id": "adb_developer_settings_probe",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "installer_source_probe",
           "notes": null,
           "predicted_categories": [],
           "runtime_ms": null,
@@ -1119,37 +1145,37 @@
           "fn": 6,
           "fp": 0,
           "tn": 18,
-          "tp": 9
+          "tp": 10
         },
         "native": {
           "fn": 9,
           "fp": 0,
-          "tn": 24,
+          "tn": 25,
           "tp": 0
         },
         "obfuscation": {
           "fn": 4,
           "fp": 5,
-          "tn": 20,
+          "tn": 21,
           "tp": 4
         },
         "packer": {
           "fn": 3,
           "fp": 0,
-          "tn": 23,
+          "tn": 24,
           "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 33,
-        "samples_with_results": 33
+        "samples_total": 34,
+        "samples_with_results": 34
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.7499999999999999,
+            "f1": 0.7692307692307693,
             "precision": 1.0,
-            "recall": 0.6
+            "recall": 0.625
           },
           "native": {
             "f1": 0.0,
@@ -1168,14 +1194,14 @@
           }
         },
         "macro": {
-          "f1": 0.5110294117647058,
+          "f1": 0.5158371040723981,
           "precision": 0.6111111111111112,
-          "recall": 0.44999999999999996
+          "recall": 0.45625
         },
         "micro": {
-          "f1": 0.5970149253731344,
-          "precision": 0.8,
-          "recall": 0.47619047619047616
+          "f1": 0.608695652173913,
+          "precision": 0.8076923076923077,
+          "recall": 0.4883720930232558
         }
       },
       "samples": [
@@ -1226,6 +1252,21 @@
             "androguard.environment.ADB_ENABLED"
           ],
           "id": "adb_developer_settings_probe",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "androguard.environment.getInstallerPackageName"
+          ],
+          "id": "installer_source_probe",
           "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [
             "environment"
@@ -1660,37 +1701,37 @@
           "fn": 4,
           "fp": 1,
           "tn": 17,
-          "tp": 11
+          "tp": 12
         },
         "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 24,
+          "tn": 25,
           "tp": 5
         },
         "obfuscation": {
           "fn": 4,
           "fp": 5,
-          "tn": 20,
+          "tn": 21,
           "tp": 4
         },
         "packer": {
           "fn": 1,
           "fp": 0,
-          "tn": 23,
+          "tn": 24,
           "tp": 9
         }
       },
       "coverage": {
-        "samples_total": 33,
-        "samples_with_results": 33
+        "samples_total": 34,
+        "samples_with_results": 34
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.8148148148148148,
-            "precision": 0.9166666666666666,
-            "recall": 0.7333333333333333
+            "f1": 0.8275862068965517,
+            "precision": 0.9230769230769231,
+            "recall": 0.75
           },
           "native": {
             "f1": 0.7142857142857143,
@@ -1709,14 +1750,14 @@
           }
         },
         "macro": {
-          "f1": 0.7367642963618196,
-          "precision": 0.8402777777777778,
-          "recall": 0.6722222222222223
+          "f1": 0.7399571443822538,
+          "precision": 0.8418803418803419,
+          "recall": 0.6763888888888889
         },
         "micro": {
-          "f1": 0.7532467532467533,
-          "precision": 0.8285714285714286,
-          "recall": 0.6904761904761905
+          "f1": 0.759493670886076,
+          "precision": 0.8333333333333334,
+          "recall": 0.6976744186046512
         }
       },
       "samples": [
@@ -1767,6 +1808,21 @@
             "zip_string.environment.ADB_ENABLED"
           ],
           "id": "adb_developer_settings_probe",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.environment.getInstallerPackageName"
+          ],
+          "id": "installer_source_probe",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
           "predicted_categories": [
             "environment"

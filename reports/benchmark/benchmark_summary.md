@@ -8,10 +8,10 @@ Scored external corpus: `external_apk_corpus_v1`
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 33/33 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 33/33 | 1.000 | 0.190 | 0.320 | 0.240 |
-| Androguard DEX | 33/33 | 0.800 | 0.476 | 0.597 | 0.511 |
-| ZIP Strings | 33/33 | 0.829 | 0.690 | 0.753 | 0.737 |
+| HardenInspector | 34/34 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 34/34 | 1.000 | 0.186 | 0.314 | 0.234 |
+| Androguard DEX | 34/34 | 0.808 | 0.488 | 0.609 | 0.516 |
+| ZIP Strings | 34/34 | 0.833 | 0.698 | 0.759 | 0.740 |
 
 ## Per-category F1
 
@@ -21,7 +21,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 10 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | obfuscation | 8 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| environment | 15 | 0 | 0 | 1.000 | 1.000 | 1.000 |
+| environment | 16 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | native | 9 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 
 ### APKiD
@@ -30,7 +30,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 3 | 0 | 7 | 1.000 | 0.300 | 0.462 |
 | obfuscation | 0 | 0 | 8 | 0.000 | 0.000 | 0.000 |
-| environment | 5 | 0 | 10 | 1.000 | 0.333 | 0.500 |
+| environment | 5 | 0 | 11 | 1.000 | 0.312 | 0.476 |
 | native | 0 | 0 | 9 | 0.000 | 0.000 | 0.000 |
 
 ### Androguard DEX
@@ -39,7 +39,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 7 | 0 | 3 | 1.000 | 0.700 | 0.824 |
 | obfuscation | 4 | 5 | 4 | 0.444 | 0.500 | 0.471 |
-| environment | 9 | 0 | 6 | 1.000 | 0.600 | 0.750 |
+| environment | 10 | 0 | 6 | 1.000 | 0.625 | 0.769 |
 | native | 0 | 0 | 9 | 0.000 | 0.000 | 0.000 |
 
 ### ZIP Strings
@@ -48,7 +48,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 9 | 0 | 1 | 1.000 | 0.900 | 0.947 |
 | obfuscation | 4 | 5 | 4 | 0.444 | 0.500 | 0.471 |
-| environment | 11 | 1 | 4 | 0.917 | 0.733 | 0.815 |
+| environment | 12 | 1 | 4 | 0.923 | 0.750 | 0.828 |
 | native | 5 | 0 | 4 | 1.000 | 0.556 | 0.714 |
 
 ## Comparator Scope Notes

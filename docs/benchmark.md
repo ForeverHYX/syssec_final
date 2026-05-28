@@ -7,7 +7,7 @@
 默认 benchmark 只纳入同时满足以下条件的比较对象：
 
 - 能通过 `make setup` 安装；
-- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 33/33 个样本；
+- 能通过 `make benchmark` 在本仓库合并评分数据集上完成 34/34 个样本；
 - 能产生可映射到 `packer`、`obfuscation`、`environment`、`native` 的类别输出；
 - 失败时不把“缺环境/缺外部工具”记为 0 分。
 
@@ -56,8 +56,8 @@ ZIP Strings 是仓库内的最小浅层基线：只读取 APK ZIP 文件名和 p
 
 Benchmark 使用两个数据源合并评分：
 
-- 21 个合成 APK；
-- 覆盖 clean baseline、环境检测、Java Debug API 反调试、ADB/developer-settings 系统设置探测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader ELF 符号样本、Class.forName 反射、模拟器文件痕迹、IMEI 设备标识探测、JNI `Java_*` 导出符号、signature integrity/self-check、root/rooted-device artifact probe、综合加固样本；
+- 22 个合成 APK；
+- 覆盖 clean baseline、环境检测、Java Debug API 反调试、ADB/developer-settings 系统设置探测、installer-source/sideload 安装来源探测、R8 风格标识符混淆、Obfuscapk 风格反射/动态加载、两类 packer stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader ELF 符号样本、Class.forName 反射、模拟器文件痕迹、IMEI 设备标识探测、JNI `Java_*` 导出符号、signature integrity/self-check、root/rooted-device artifact probe、综合加固样本；
 - 每个样本包含 expected findings 和当前检测器报告；
 - 合成 DEX 包含标准 checksum、signature 和 map list，保证 Androguard DEX baseline 可解析。
 - 12 个外部现成 APK，来自 DroidBench、F-Droid、PIVAA；`manifest.json` 为每个外部样本记录粗粒度 `expected_categories` 和 `label_basis`，纳入同一 Precision/Recall/F1 评分表。
@@ -102,18 +102,18 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 33/33 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 33/33 | 1.000 | 0.190 | 0.320 | 0.240 |
-| Androguard DEX | 33/33 | 0.800 | 0.476 | 0.597 | 0.511 |
-| ZIP Strings | 33/33 | 0.829 | 0.690 | 0.753 | 0.737 |
+| HardenInspector | 34/34 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 34/34 | 1.000 | 0.186 | 0.314 | 0.234 |
+| Androguard DEX | 34/34 | 0.800 | 0.488 | 0.609 | 0.516 |
+| ZIP Strings | 34/34 | 0.829 | 0.698 | 0.759 | 0.740 |
 
-测试状态：`.venv/bin/python -m pytest -q` 为 63 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 67 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
 - `packer`：HardenInspector TP 10 / FN 0，APKiD TP 3，Androguard DEX TP 7，ZIP Strings TP 9。
 - `obfuscation`：HardenInspector TP 8 / FN 0，APKiD TP 0，Androguard DEX TP 4，ZIP Strings TP 4。
-- `environment`：HardenInspector TP 15 / FN 0，APKiD TP 5，Androguard DEX TP 9，ZIP Strings TP 11。
+- `environment`：HardenInspector TP 16 / FN 0，APKiD TP 5，Androguard DEX TP 10，ZIP Strings TP 12。
 - `native`：HardenInspector TP 9 / FN 0，APKiD TP 0，Androguard DEX TP 0，ZIP Strings TP 5。
 
 ## 结果解释

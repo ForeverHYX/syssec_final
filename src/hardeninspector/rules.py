@@ -192,6 +192,24 @@ ADB_SETTINGS_KEY_PATTERNS = [
     "development_settings_enabled",
 ]
 
+INSTALLER_SOURCE_API_PATTERNS = [
+    "getInstallerPackageName",
+    "getInstallSourceInfo",
+    "Landroid/content/pm/InstallSourceInfo;",
+    "android/content/pm/InstallSourceInfo",
+    "getInstallingPackageName",
+    "getInitiatingPackageName",
+    "getOriginatingPackageName",
+]
+
+INSTALLER_SOURCE_VALUE_PATTERNS = [
+    "com.android.vending",
+    "com.android.packageinstaller",
+    "com.google.android.packageinstaller",
+    "unknown source",
+    "adb install",
+]
+
 DEBUGGER_PATTERNS = [
     "isDebuggerConnected",
     "/proc/self/status",
@@ -248,6 +266,7 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _integrity_check,
         _root_artifact_probe,
         _adb_settings_probe,
+        _installer_source_probe,
         _debugger_probe,
         _instrumentation_probe,
         _native_debugger_symbol,
@@ -549,6 +568,43 @@ def _adb_settings_probe(features: ApkFeatures) -> Finding | None:
         description=(
             "APK references Android Settings APIs together with ADB/developer-options keys, "
             "a static signal for checking whether the device is in an analysis-friendly state."
+        ),
+        evidence=evidence[:10],
+    )
+
+
+def _installer_source_probe(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item
+        for item in features.string_evidence
+        if item.kind in {"manifest-string", "dex-string", "dex-const-string"}
+    ]
+    api_evidence = _string_matches(string_evidence, INSTALLER_SOURCE_API_PATTERNS)
+    value_evidence = _string_matches(string_evidence, INSTALLER_SOURCE_VALUE_PATTERNS)
+    method_evidence: list[Evidence] = []
+    for method in features.methods + features.invoked_methods:
+        if method.name in {
+            "getInstallerPackageName",
+            "getInstallSourceInfo",
+            "getInstallingPackageName",
+            "getInitiatingPackageName",
+            "getOriginatingPackageName",
+        }:
+            method_evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+
+    if not ((api_evidence or method_evidence) and value_evidence):
+        return None
+
+    evidence = _dedupe_evidence([*api_evidence, *method_evidence, *value_evidence])
+    return Finding(
+        id="environment.installer_source_probe",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="Installer-source or sideload probe",
+        description=(
+            "APK checks installer-source APIs together with Play Store, package-installer, "
+            "unknown-source, or adb-install indicators, a static signal for sideload or analysis-environment checks."
         ),
         evidence=evidence[:10],
     )

@@ -114,6 +114,16 @@ DEMO_SAMPLES = (
         expected_categories=("environment",),
     ),
     DemoSample(
+        id="installer_source_probe",
+        title="Installer-source probe",
+        source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Installer-source environment probe",
+        apk_path=Path("datasets/hardeninspector_eval_v1/apks/installer_source_probe.apk"),
+        description="Environment sample checking install-source APIs and sideload or package-installer indicators.",
+        expected_categories=("environment",),
+    ),
+    DemoSample(
         id="signature_integrity_check",
         title="Signature integrity check",
         source="Synthetic oracle",
@@ -636,10 +646,10 @@ def render_index_html() -> str:
           <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
         </div>
         <div class="stat-grid">
-          <div class="stat-tile"><strong>33</strong><span class="muted">33 scored APKs</span></div>
-          <div class="stat-tile"><strong>21 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>34</strong><span class="muted">34 scored APKs</span></div>
+          <div class="stat-tile"><strong>22 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>63</strong><span class="muted">63 regression tests</span></div>
+          <div class="stat-tile"><strong>67</strong><span class="muted">67 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">

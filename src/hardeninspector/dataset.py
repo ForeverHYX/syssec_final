@@ -136,6 +136,42 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="installer_source_probe",
+        apk_name="installer_source_probe.apk",
+        source_plan="installer-source environment sample",
+        construction=(
+            "synthetic environment-detection sample combining `getInstallSourceInfo` / "
+            "`getInstallerPackageName` APIs with installer package and sideload indicators"
+        ),
+        expected_findings=["environment.installer_source_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.installsource", "edu.syssec.installsource.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/installsource/MainActivity;",
+                "Ledu/syssec/installsource/InstallSourceProbe;",
+                "Landroid/content/pm/PackageManager;",
+                "Landroid/content/pm/InstallSourceInfo;",
+            ],
+            method_names=[
+                "<clinit>",
+                "checkInstallSource",
+                "getInstallSourceInfo",
+                "getInstallingPackageName",
+            ],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "Landroid/content/pm/InstallSourceInfo;",
+                "getInstallerPackageName",
+                "getInstallSourceInfo",
+                "getInstallingPackageName",
+                "com.android.vending",
+                "com.android.packageinstaller",
+                "unknown source",
+                "adb install",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="r8_identifier_obfuscation",
         apk_name="r8_identifier_obfuscation.apk",
         source_plan="ProGuard/R8 controlled obfuscation",
@@ -644,6 +680,7 @@ The samples correspond to the dataset categories described in the midterm report
 - self-written environment-detection APK
 - Java Debug API anti-debug sample
 - ADB/developer-settings environment sample
+- installer-source environment sample
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK

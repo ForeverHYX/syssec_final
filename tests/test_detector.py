@@ -408,6 +408,70 @@ def test_adb_word_alone_is_not_adb_settings_probe(tmp_path):
     assert "environment.adb_settings_probe" not in finding_ids
 
 
+def test_detector_reports_installer_source_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "installer-source.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.installsource", "edu.syssec.installsource.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/installsource/MainActivity;",
+                "Ledu/syssec/installsource/InstallSourceProbe;",
+                "Landroid/content/pm/PackageManager;",
+                "Landroid/content/pm/InstallSourceInfo;",
+            ],
+            method_names=[
+                "<clinit>",
+                "checkInstallSource",
+                "getInstallSourceInfo",
+                "getInstallingPackageName",
+            ],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "Landroid/content/pm/InstallSourceInfo;",
+                "getInstallerPackageName",
+                "getInstallSourceInfo",
+                "getInstallingPackageName",
+                "com.android.vending",
+                "com.android.packageinstaller",
+                "unknown source",
+                "adb install",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.installer_source_probe")
+
+    assert finding.category == "environment"
+    assert any(item.value == "getInstallSourceInfo" for item in finding.evidence)
+    assert any(item.value == "com.android.vending" for item in finding.evidence)
+
+
+def test_package_manager_version_lookup_is_not_installer_source_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "package-version.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.version", "edu.syssec.version.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/version/MainActivity;",
+                "Landroid/content/pm/PackageManager;",
+            ],
+            method_names=["<clinit>", "loadVersion", "getPackageInfo"],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "getPackageInfo",
+                "versionName",
+                "installer help text",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.installer_source_probe" not in finding_ids
+
+
 def test_regular_words_containing_su_are_not_root_probe(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "regular-strings.apk",

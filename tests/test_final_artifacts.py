@@ -107,6 +107,14 @@ def test_rules_document_describes_adb_settings_probe():
     assert "development_settings_enabled" in rules_text
 
 
+def test_rules_document_describes_installer_source_probe():
+    rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
+
+    assert "### `environment.installer_source_probe`" in rules_text
+    assert "getInstallerPackageName" in rules_text
+    assert "getInstallSourceInfo" in rules_text
+
+
 def test_final_materials_include_adb_settings_showcase():
     readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
     dataset_text = (ROOT / "docs" / "dataset.md").read_text(encoding="utf-8")

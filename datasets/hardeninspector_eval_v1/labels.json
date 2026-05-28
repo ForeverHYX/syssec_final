@@ -78,6 +78,25 @@
     },
     {
       "actual_findings": [
+        "environment.installer_source_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/installer_source_probe.apk",
+      "construction": "synthetic environment-detection sample combining `getInstallSourceInfo` / `getInstallerPackageName` APIs with installer package and sideload indicators",
+      "expected_findings": [
+        "environment.installer_source_probe"
+      ],
+      "id": "installer_source_probe",
+      "report_path": "reports/installer_source_probe.json",
+      "source_plan": "installer-source environment sample"
+    },
+    {
+      "actual_findings": [
         "obfuscation.short_identifiers"
       ],
       "actual_summary": {

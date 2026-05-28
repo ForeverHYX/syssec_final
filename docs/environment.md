@@ -48,9 +48,9 @@ make all
 
 | 命令 | 结果 |
 | --- | --- |
-| `.venv/bin/python -m pytest -q` | 63 个测试通过 |
-| `make dataset` | 生成 21 个合成 oracle APK |
-| `make benchmark` | 合成 + 外部共 33 个评分样本；四个默认评分工具均为 33/33 coverage |
+| `.venv/bin/python -m pytest -q` | 67 个测试通过 |
+| `make dataset` | 生成 22 个合成 oracle APK |
+| `make benchmark` | 合成 + 外部共 34 个评分样本；四个默认评分工具均为 34/34 coverage |
 | `make external-corpus` | 单独外部统计中四个工具均为 12/12 coverage |
 | `make demo-web` | 启动本地网页展示，默认监听 `http://127.0.0.1:8000/`，支持预置样本和本地 APK 上传扫描 |
 | `make slides` | ZJU Beamer 可编译为 22 页，构建产物由 `.gitignore` 忽略 |

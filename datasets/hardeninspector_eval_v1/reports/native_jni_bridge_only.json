@@ -7,6 +7,21 @@
   "findings": [
     {
       "category": "native",
+      "confidence": "high",
+      "description": "Native library exports Java_* JNI bridge symbols, indicating direct Java-to-native method bindings.",
+      "evidence": [
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libnativebridge.so",
+          "value": "Java_com_example_nativebridge_call"
+        }
+      ],
+      "id": "native.jni_export",
+      "severity": "low",
+      "title": "Exported JNI native method symbols"
+    },
+    {
+      "category": "native",
       "confidence": "medium",
       "description": "Native library exports or embeds JNI entrypoint strings, indicating Java-to-native execution paths.",
       "evidence": [
@@ -24,7 +39,7 @@
   "schema_version": 1,
   "summary": {
     "environment": 0,
-    "native": 1,
+    "native": 2,
     "obfuscation": 0,
     "packer": 0
   }

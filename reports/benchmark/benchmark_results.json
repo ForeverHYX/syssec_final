@@ -26,50 +26,50 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 2,
-          "fp": 0,
-          "tn": 16,
-          "tp": 7
-        },
-        "native": {
-          "fn": 2,
+          "fn": 0,
           "fp": 0,
           "tn": 18,
-          "tp": 5
+          "tp": 11
+        },
+        "native": {
+          "fn": 0,
+          "fp": 1,
+          "tn": 20,
+          "tp": 8
         },
         "obfuscation": {
-          "fn": 1,
+          "fn": 0,
           "fp": 4,
-          "tn": 13,
-          "tp": 7
+          "tn": 16,
+          "tp": 9
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 15,
+          "tn": 19,
           "tp": 10
         }
       },
       "coverage": {
-        "samples_total": 25,
-        "samples_with_results": 25
+        "samples_total": 29,
+        "samples_with_results": 29
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.8750000000000001,
+            "f1": 1.0,
             "precision": 1.0,
-            "recall": 0.7777777777777778
+            "recall": 1.0
           },
           "native": {
-            "f1": 0.8333333333333333,
-            "precision": 1.0,
-            "recall": 0.7142857142857143
+            "f1": 0.9411764705882353,
+            "precision": 0.8888888888888888,
+            "recall": 1.0
           },
           "obfuscation": {
-            "f1": 0.7368421052631579,
-            "precision": 0.6363636363636364,
-            "recall": 0.875
+            "f1": 0.8181818181818181,
+            "precision": 0.6923076923076923,
+            "recall": 1.0
           },
           "packer": {
             "f1": 1.0,
@@ -78,14 +78,14 @@
           }
         },
         "macro": {
-          "f1": 0.8612938596491229,
-          "precision": 0.9090909090909091,
-          "recall": 0.841765873015873
+          "f1": 0.9398395721925134,
+          "precision": 0.8952991452991452,
+          "recall": 1.0
         },
         "micro": {
-          "f1": 0.8656716417910447,
-          "precision": 0.8787878787878788,
-          "recall": 0.8529411764705882
+          "f1": 0.9382716049382717,
+          "precision": 0.8837209302325582,
+          "recall": 1.0
         }
       },
       "samples": [
@@ -194,6 +194,7 @@
             "native"
           ],
           "finding_ids": [
+            "native.jni_export",
             "native.jni_entrypoint"
           ],
           "id": "native_jni_bridge_only",
@@ -287,6 +288,67 @@
         },
         {
           "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "class_forname_reflection",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.system_properties",
+            "environment.emulator_artifacts"
+          ],
+          "id": "emulator_file_artifacts",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.telephony_identifier_probe"
+          ],
+          "id": "emulator_imei_probe",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [
+            "native.jni_export"
+          ],
+          "id": "native_jni_export_only",
+          "notes": null,
+          "predicted_categories": [
+            "native"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "environment",
             "native",
             "obfuscation",
@@ -319,10 +381,14 @@
           "expected_categories": [
             "obfuscation"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
           "id": "droidbench_reflection_1",
           "notes": null,
-          "predicted_categories": [],
+          "predicted_categories": [
+            "obfuscation"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -379,7 +445,8 @@
           ],
           "finding_ids": [
             "obfuscation.reflection",
-            "environment.system_properties"
+            "environment.system_properties",
+            "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": null,
@@ -395,11 +462,13 @@
             "environment"
           ],
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_file_1",
           "notes": null,
           "predicted_categories": [
+            "environment",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -409,10 +478,14 @@
           "expected_categories": [
             "environment"
           ],
-          "finding_ids": [],
+          "finding_ids": [
+            "environment.telephony_identifier_probe"
+          ],
           "id": "droidbench_emulator_imei_1",
           "notes": null,
-          "predicted_categories": [],
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -423,12 +496,14 @@
           ],
           "finding_ids": [
             "environment.instrumentation_probe",
-            "packer.native_dynamic_loader"
+            "packer.native_dynamic_loader",
+            "native.jni_export"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": null,
           "predicted_categories": [
             "environment",
+            "native",
             "packer"
           ],
           "runtime_ms": null,
@@ -439,11 +514,13 @@
             "native"
           ],
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "native.jni_export"
           ],
           "id": "droidbench_native_id_function",
           "notes": null,
           "predicted_categories": [
+            "native",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -454,11 +531,13 @@
             "native"
           ],
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "native.jni_export"
           ],
           "id": "droidbench_source_in_native_code",
           "notes": null,
           "predicted_categories": [
+            "native",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -507,40 +586,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 5,
-          "fp": 0,
-          "tn": 16,
-          "tp": 4
-        },
-        "native": {
-          "fn": 7,
+          "fn": 6,
           "fp": 0,
           "tn": 18,
+          "tp": 5
+        },
+        "native": {
+          "fn": 8,
+          "fp": 0,
+          "tn": 21,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 8,
+          "fn": 9,
           "fp": 0,
-          "tn": 17,
+          "tn": 20,
           "tp": 0
         },
         "packer": {
           "fn": 7,
           "fp": 0,
-          "tn": 15,
+          "tn": 19,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 25,
-        "samples_with_results": 25
+        "samples_total": 29,
+        "samples_with_results": 29
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.6153846153846153,
+            "f1": 0.625,
             "precision": 1.0,
-            "recall": 0.4444444444444444
+            "recall": 0.45454545454545453
           },
           "native": {
             "f1": 0.0,
@@ -559,14 +638,14 @@
           }
         },
         "macro": {
-          "f1": 0.2692307692307692,
+          "f1": 0.27163461538461536,
           "precision": 0.5,
-          "recall": 0.18611111111111112
+          "recall": 0.18863636363636363
         },
         "micro": {
-          "f1": 0.34146341463414637,
+          "f1": 0.34782608695652173,
           "precision": 1.0,
-          "recall": 0.20588235294117646
+          "recall": 0.21052631578947367
         }
       },
       "samples": [
@@ -712,6 +791,54 @@
           ],
           "finding_ids": [],
           "id": "native_ptrace_loader",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "class_forname_reflection",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "emulator_file_artifacts",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "apkid.anti_vm.device ID check"
+          ],
+          "id": "emulator_imei_probe",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "native_jni_export_only",
           "notes": null,
           "predicted_categories": [],
           "runtime_ms": null,
@@ -897,40 +1024,40 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 5,
-          "fp": 0,
-          "tn": 16,
-          "tp": 4
-        },
-        "native": {
           "fn": 7,
           "fp": 0,
           "tn": 18,
+          "tp": 4
+        },
+        "native": {
+          "fn": 8,
+          "fp": 0,
+          "tn": 21,
           "tp": 0
         },
         "obfuscation": {
-          "fn": 3,
+          "fn": 4,
           "fp": 4,
-          "tn": 13,
+          "tn": 16,
           "tp": 5
         },
         "packer": {
           "fn": 3,
           "fp": 0,
-          "tn": 15,
+          "tn": 19,
           "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 25,
-        "samples_with_results": 25
+        "samples_total": 29,
+        "samples_with_results": 29
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.6153846153846153,
+            "f1": 0.5333333333333333,
             "precision": 1.0,
-            "recall": 0.4444444444444444
+            "recall": 0.36363636363636365
           },
           "native": {
             "f1": 0.0,
@@ -938,9 +1065,9 @@
             "recall": 0.0
           },
           "obfuscation": {
-            "f1": 0.5882352941176471,
+            "f1": 0.5555555555555556,
             "precision": 0.5555555555555556,
-            "recall": 0.625
+            "recall": 0.5555555555555556
           },
           "packer": {
             "f1": 0.8235294117647058,
@@ -949,14 +1076,14 @@
           }
         },
         "macro": {
-          "f1": 0.5067873303167421,
+          "f1": 0.47810457516339866,
           "precision": 0.6388888888888888,
-          "recall": 0.4423611111111111
+          "recall": 0.4047979797979798
         },
         "micro": {
-          "f1": 0.5925925925925927,
+          "f1": 0.5517241379310345,
           "precision": 0.8,
-          "recall": 0.47058823529411764
+          "recall": 0.42105263157894735
         }
       },
       "samples": [
@@ -1118,6 +1245,50 @@
           ],
           "finding_ids": [],
           "id": "native_ptrace_loader",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "class_forname_reflection",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "emulator_file_artifacts",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "emulator_imei_probe",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "native_jni_export_only",
           "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [],
           "runtime_ms": null,
@@ -1333,50 +1504,50 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 3,
+          "fn": 5,
           "fp": 0,
-          "tn": 16,
+          "tn": 18,
           "tp": 6
         },
         "native": {
-          "fn": 2,
+          "fn": 3,
           "fp": 0,
-          "tn": 18,
+          "tn": 21,
           "tp": 5
         },
         "obfuscation": {
-          "fn": 3,
+          "fn": 4,
           "fp": 4,
-          "tn": 13,
+          "tn": 16,
           "tp": 5
         },
         "packer": {
           "fn": 1,
           "fp": 0,
-          "tn": 15,
+          "tn": 19,
           "tp": 9
         }
       },
       "coverage": {
-        "samples_total": 25,
-        "samples_with_results": 25
+        "samples_total": 29,
+        "samples_with_results": 29
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.8,
+            "f1": 0.7058823529411764,
             "precision": 1.0,
-            "recall": 0.6666666666666666
+            "recall": 0.5454545454545454
           },
           "native": {
-            "f1": 0.8333333333333333,
+            "f1": 0.7692307692307693,
             "precision": 1.0,
-            "recall": 0.7142857142857143
+            "recall": 0.625
           },
           "obfuscation": {
-            "f1": 0.5882352941176471,
+            "f1": 0.5555555555555556,
             "precision": 0.5555555555555556,
-            "recall": 0.625
+            "recall": 0.5555555555555556
           },
           "packer": {
             "f1": 0.9473684210526316,
@@ -1385,14 +1556,14 @@
           }
         },
         "macro": {
-          "f1": 0.792234262125903,
+          "f1": 0.7445092746950333,
           "precision": 0.8888888888888888,
-          "recall": 0.7264880952380952
+          "recall": 0.6565025252525253
         },
         "micro": {
-          "f1": 0.7936507936507937,
+          "f1": 0.746268656716418,
           "precision": 0.8620689655172413,
-          "recall": 0.7352941176470589
+          "recall": 0.6578947368421053
         }
       },
       "samples": [
@@ -1570,6 +1741,50 @@
             "native",
             "packer"
           ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "obfuscation"
+          ],
+          "finding_ids": [],
+          "id": "class_forname_reflection",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "emulator_file_artifacts",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "emulator_imei_probe",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "native"
+          ],
+          "finding_ids": [],
+          "id": "native_jni_export_only",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
         },

@@ -10,9 +10,9 @@
 | 参考中期报告实现期末展品 | `docs/references/mid_term.pdf` 已归档；`docs/architecture.md` 和 `docs/implementation_scope.md` 对应 HardenInspector 设计 |
 | 检测代码混淆、加壳、环境检测 | `src/hardeninspector/rules.py` 覆盖 packer、obfuscation、environment、native 规则；`src/hardeninspector/native.py` 补充 ELF 符号表证据 |
 | 输出证据链 | `src/hardeninspector/report.py` 的 JSON/text report 为每条 finding 输出 evidence |
-| 构造报告中提到的数据集 | `datasets/hardeninspector_eval_v1/` 包含 13 个 APK、`labels.json` 和 per-sample reports |
+| 构造报告中提到的数据集 | `datasets/hardeninspector_eval_v1/` 包含 17 个 APK、`labels.json` 和 per-sample reports |
 | 纳入外部现成 APK/测试集 | `datasets/external_apk_corpus_v1/` 包含 12 个 DroidBench/F-Droid/PIVAA APK，`reports/external_corpus/` 包含覆盖率和 finding 分布统计 |
-| 公平 benchmark 对比 | 默认评分表包含 13 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 25/25 coverage；DroidLysis/MobSF 不进入评分表 |
+| 公平 benchmark 对比 | 默认评分表包含 17 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 29/29 coverage；DroidLysis/MobSF 不进入评分表 |
 | 提供完善中文文档 | `docs/usage.md`、`docs/architecture.md`、`docs/rules.md`、`docs/dataset.md`、`docs/demo.md`、`docs/implementation_scope.md`、`docs/final_deliverable.md` |
 | 产出中文总结报告 | `reports/final_summary.md` |
 | 产出期末 Beamer | `slides/final_presentation.tex` 使用 ZJU Beamer Template，标题为项目名，作者为洪奕迅、蒋城昊、项康，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图 |
@@ -29,20 +29,20 @@
 结果：
 
 ```text
-31 passed in 0.16s
+36 passed in 0.18s
 ```
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m pytest -q
 ```
 
-结果：fresh venv 中 31 个测试通过。
+结果：fresh venv 中 36 个测试通过。
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output /tmp/hardeninspector-benchmark-check --tools hardeninspector apkid androguard_dex zip_string_baseline
 ```
 
-结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 25/25 coverage，Micro F1 分别为 0.866、0.341、0.593、0.794。
+结果：fresh venv benchmark 生成 `/tmp/hardeninspector-benchmark-check/benchmark_results.json`；HardenInspector、APKiD、Androguard DEX、ZIP Strings 均为 29/29 coverage，Micro F1 分别为 0.938、0.348、0.552、0.746。
 
 ```bash
 .venv/bin/python -m hardeninspector --help
@@ -73,16 +73,16 @@ make benchmark
 make external-corpus
 ```
 
-结果：重新生成 `reports/benchmark/`，合成 + 外部共 25 个评分样本；HardenInspector Micro F1 为 0.866，APKiD 为 0.341，Androguard DEX 为 0.593，ZIP Strings 为 0.794；所有评分工具 coverage 都是 25/25。
+结果：重新生成 `reports/benchmark/`，合成 + 外部共 29 个评分样本；HardenInspector Micro F1 为 0.938，APKiD 为 0.348，Androguard DEX 为 0.552，ZIP Strings 为 0.746；所有评分工具 coverage 都是 29/29。
 
-`make external-corpus` 重新生成 `reports/external_corpus/`；四个工具均为 12/12 外部 APK coverage。HardenInspector 在 12 个外部 APK 中 9 个报告至少一个类别，分布为 packer=4、obfuscation=6、environment=3、native=0；F-Droid 真实 APK `fdroid_editor` 无 finding。
+`make external-corpus` 重新生成 `reports/external_corpus/`；四个工具均为 12/12 外部 APK coverage。HardenInspector 在 12 个外部 APK 中 11 个报告至少一个类别，分布为 packer=4、obfuscation=7、environment=5、native=3；F-Droid 真实 APK `fdroid_editor` 无 finding。
 
 ```bash
 make slides
 pdfinfo slides/final_presentation.pdf
 ```
 
-结果：ZJU Beamer 编译通过，PDF 为 20 页；LaTeX 日志没有 `Overfull`、`Warning` 或 `Error` 命中；已视觉检查成果页、APK 拆解示意、总体架构、控制流统计、数据集矩阵、外部 APK 语料、测试结果复核、benchmark 公平口径、Micro F1 图页和局限页。
+结果：ZJU Beamer 编译通过，PDF 为 21 页；LaTeX 日志没有 `Overfull`、`Warning` 或 `Error` 命中；已视觉检查成果页、APK 拆解示意、总体架构、控制流统计、数据集矩阵、外部 APK 语料、测试结果复核、benchmark 公平口径、Micro F1 图页和局限页。
 
 ```bash
 git status --short --ignored slides

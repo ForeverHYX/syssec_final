@@ -110,3 +110,128 @@ def test_detector_reports_native_structural_symbol_findings(tmp_path):
     native_debug = next(finding for finding in report.findings if finding.id == "environment.native_debugger_symbol")
     assert native_debug.evidence[0].kind == "elf-symbol"
     assert native_debug.evidence[0].location == "lib/arm64-v8a/libnativeprobe.so:.dynsym"
+
+
+def test_detector_reports_class_forname_reflection(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "class-forname.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.forname", "com.example.forname.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/forname/MainActivity;",
+                "Lcom/example/forname/ReflectiveFactory;",
+            ],
+            method_names=["<clinit>", "load"],
+            dex_strings=["Ljava/lang/Class;", "forName", "com.example.HiddenImpl"],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "obfuscation.reflection")
+
+    assert finding.category == "obfuscation"
+    assert any(item.value == "forName" for item in finding.evidence)
+    assert all(item.kind in {"dex-string", "dex-const-string", "method"} for item in finding.evidence)
+
+
+def test_detector_reports_emulator_file_artifacts(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "emulator-files.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.emufile", "edu.syssec.emufile.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/emufile/MainActivity;",
+                "Ledu/syssec/emufile/ArtifactProbe;",
+            ],
+            method_names=["<clinit>", "checkFiles"],
+            dex_strings=[
+                "/proc/ioports",
+                "/sys/devices/virtual/misc/android_adb",
+                "goldfish",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.emulator_artifacts")
+
+    assert finding.category == "environment"
+    assert any(item.value == "/proc/ioports" for item in finding.evidence)
+
+
+def test_detector_reports_telephony_identifier_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "imei-probe.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.imei", "edu.syssec.imei.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/imei/MainActivity;",
+                "Ledu/syssec/imei/TelephonyProbe;",
+            ],
+            method_names=["<clinit>", "checkImei"],
+            dex_strings=[
+                "Landroid/telephony/TelephonyManager;",
+                "getDeviceId",
+                "imei",
+                "000000000000000",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.telephony_identifier_probe")
+
+    assert finding.category == "environment"
+    assert any(item.value == "000000000000000" for item in finding.evidence)
+
+
+def test_telephony_sink_phone_number_is_not_emulator_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "telephony-source.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.telephony", "edu.syssec.telephony.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/telephony/MainActivity;",
+                "Ledu/syssec/telephony/SourceSinkExample;",
+            ],
+            method_names=["<clinit>", "send"],
+            dex_strings=[
+                "Landroid/telephony/TelephonyManager;",
+                "getDeviceId",
+                "imei",
+                "+49 123",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.telephony_identifier_probe" not in finding_ids
+
+
+def test_detector_reports_native_jni_export_symbols(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "jni-export.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.jniexport", "com.example.jniexport.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/jniexport/MainActivity;",
+                "Lcom/example/jniexport/NativeBridge;",
+            ],
+            method_names=["<clinit>", "callNative"],
+            dex_strings=["native export sample"],
+            native_libraries={
+                "lib/arm64-v8a/libnativeexport.so": build_elf_shared_object(
+                    ["Java_com_example_jniexport_NativeBridge_callNative"]
+                ),
+            },
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "native.jni_export")
+
+    assert finding.category == "native"
+    assert finding.evidence[0].kind == "elf-symbol"
+    assert finding.evidence[0].value == "Java_com_example_jniexport_NativeBridge_callNative"

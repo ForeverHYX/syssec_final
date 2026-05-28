@@ -24,10 +24,14 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "bangcle_stub_payload",
         "combined_hardened_showcase",
         "control_flow_flattening",
+        "class_forname_reflection",
+        "emulator_file_artifacts",
+        "emulator_imei_probe",
         "fdroid_clean_baseline",
         "frida_xposed_probe",
         "high_entropy_payload_only",
         "native_jni_bridge_only",
+        "native_jni_export_only",
         "native_ptrace_loader",
         "obfuscapk_reflection_dynamic",
         "packer_stub_payload",
@@ -35,7 +39,7 @@ def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
         "r8_identifier_obfuscation",
         "self_written_environment_checks",
     }
-    assert manifest["sample_count"] == 13
+    assert manifest["sample_count"] == 17
     assert (dataset_dir / "README.md").exists()
 
     for sample in labels["samples"]:
@@ -62,6 +66,9 @@ def test_dataset_documents_practical_source_substitutions(tmp_path):
     assert by_id["packer_stub_payload"]["source_plan"] == "packer-protected sample"
     assert by_id["high_entropy_payload_only"]["expected_findings"] == ["packer.high_entropy_payload"]
     assert "ELF dynamic symbol" in by_id["native_ptrace_loader"]["construction"]
+    assert by_id["class_forname_reflection"]["expected_findings"] == ["obfuscation.reflection"]
+    assert by_id["emulator_imei_probe"]["expected_findings"] == ["environment.telephony_identifier_probe"]
+    assert by_id["native_jni_export_only"]["expected_findings"] == ["native.jni_export"]
 
 
 def test_synthetic_apk_generation_is_byte_reproducible(tmp_path):

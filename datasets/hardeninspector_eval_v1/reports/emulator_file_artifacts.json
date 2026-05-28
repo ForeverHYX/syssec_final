@@ -1,0 +1,56 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/emulator_file_artifacts.apk",
+    "sha256": "c68f5ccc62ccf1cfa5823b474c156ace552e528f44797023f67ecb89afb2ff1d"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "high",
+      "description": "APK references Android system properties commonly used for emulator or sandbox detection.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "goldfish"
+        }
+      ],
+      "id": "environment.system_properties",
+      "severity": "medium",
+      "title": "Emulator or device-fingerprint property checks"
+    },
+    {
+      "category": "environment",
+      "confidence": "medium",
+      "description": "APK references emulator-specific files, kernel paths, or virtual hardware identifiers.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/proc/ioports"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "/sys/devices/virtual/misc/android_adb"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "goldfish"
+        }
+      ],
+      "id": "environment.emulator_artifacts",
+      "severity": "medium",
+      "title": "Emulator file or hardware artifact checks"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 2,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

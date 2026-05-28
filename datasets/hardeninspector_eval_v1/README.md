@@ -21,6 +21,10 @@ The samples correspond to the dataset categories described in the midterm report
 - lightweight control-flow flattening sample
 - high-entropy payload-only sample
 - native ptrace/dlopen ELF-symbol sample
+- Class.forName reflection sample
+- emulator file-artifact sample
+- emulator IMEI probe sample
+- JNI Java_* export sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

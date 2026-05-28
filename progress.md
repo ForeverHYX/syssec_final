@@ -115,3 +115,20 @@
 - TDD GREEN: targeted native/detector/dataset tests passed with 5 tests; full pytest passed with 31 tests after synchronizing benchmark sample-count assertions.
 - Regenerated dataset, benchmark, external-corpus reports, and slides. Current combined scoring set is 25 samples: 13 synthetic + 12 external. Micro F1 values: HardenInspector 0.866, APKiD 0.341, Androguard DEX 0.593, ZIP Strings 0.794.
 - Verification passed locally and in `/tmp/hardeninspector-venv-check`: 31 tests passed, combined benchmark had 25/25 coverage for all four default tools, external corpus had 12/12 coverage, slides compiled to 20 pages, LaTeX log had no Overfull/Underfull/Warning/Error/Undefined/Missing matches, and `git diff --check` passed.
+
+## 2026-05-28 External Corpus Gap Tuning
+
+- Phase 17 commit `8d3e701` is local and `main` is ahead of `origin/main` by 1. Plain `git push origin main` failed in the network sandbox with DNS resolution failure; escalated push was rejected pending explicit user approval for uploading repository contents to GitHub.
+- Audited `reports/benchmark/benchmark_results.json`; remaining HardenInspector mismatches are DroidBench `Class.forName` reflection, emulator file/IMEI checks, and JNI native samples that expose `Java_*` symbols rather than `JNI_OnLoad`.
+- Started Phase 18 with TDD target: add rules for class-name reflection, emulator artifact/telephony probes, and JNI export symbols; then add synthetic regression samples.
+- TDD RED: added detector and dataset tests for `Class.forName`, emulator file artifacts, telephony IMEI probes, and JNI `Java_*` exports. Targeted pytest failed with missing findings and missing dataset samples as expected.
+- TDD GREEN: implemented `environment.emulator_artifacts`, `environment.telephony_identifier_probe`, `native.jni_export`, and stricter `Class.forName` reflection evidence. Added four synthetic samples; targeted detector/dataset/benchmark tests passed with 9 tests.
+- False-positive RED/GREEN: `+49 123` appeared in DroidBench as a taint-sink phone number, not an emulator identifier. Added a regression test proving ordinary `getDeviceId` + phone-number source/sink code does not trigger `environment.telephony_identifier_probe`, then removed `+49 123` from the emulator ID pattern list.
+- Evidence-noise RED/GREEN: a Manifest package containing `forname` was incorrectly included as `Class.forName` evidence. Added a regression assertion and restricted the `Class.forName` combination rule to DEX strings/const-strings.
+- Full local pytest passed with 36 tests.
+- Regenerated dataset, benchmark, and external-corpus reports. Current combined scoring set is 29 samples: 17 synthetic + 12 external. Micro F1 values: HardenInspector 0.938, APKiD 0.348, Androguard DEX 0.552, ZIP Strings 0.746.
+- External standalone stats now show HardenInspector Any 11/12 with packer=4, obfuscation=7, environment=5, native=3; `fdroid_editor` remains clean with no finding.
+- Recompiled slides after splitting the enlarged dataset matrix across two frames. `pdfinfo` reports 21 pages and the LaTeX log scan has no Overfull/Underfull/Warning/Error/Undefined/Missing matches.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 36 tests, fresh combined benchmark kept all four tools at 29/29 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Repository hygiene checks passed: `git diff --check` had no output; current README/docs/report/slides no longer contain stale 25-sample/31-test benchmark claims except historical progress/findings entries.
+- Marked Phase 18 complete in `task_plan.md`; GitHub push remains pending explicit upload approval because network escalation was rejected by the approval reviewer.

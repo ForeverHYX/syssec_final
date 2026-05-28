@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 25 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 29 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 
@@ -54,13 +54,13 @@ make external-corpus
 make benchmark
 ```
 
-`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 25 个评分样本。
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 29 个评分样本。
 
 ## 当前统计
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 12/12 | 9 | 4 | 6 | 3 | 0 |
+| HardenInspector | 12/12 | 11 | 4 | 7 | 5 | 3 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
 | ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
@@ -71,15 +71,15 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 25/25 | 0.879 | 0.853 | 0.866 | 0.861 |
-| APKiD | 25/25 | 1.000 | 0.206 | 0.341 | 0.269 |
-| Androguard DEX | 25/25 | 0.800 | 0.471 | 0.593 | 0.507 |
-| ZIP Strings | 25/25 | 0.862 | 0.735 | 0.794 | 0.792 |
+| HardenInspector | 29/29 | 0.884 | 1.000 | 0.938 | 0.940 |
+| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
+| Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
+| ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
 
 重要观察：
 
 - `fdroid_editor` 是真实开源 APK，当前 HardenInspector 无 finding，说明收紧后的控制流密度规则没有在该普通样本上误报。
-- DroidBench 的 reflection/dynamic-loading/emulator 场景能触发对应静态证据，说明检测器不仅能扫描合成 APK，也能处理公开现成测试 APK。
+- DroidBench 的 reflection/dynamic-loading/emulator/native 场景能触发对应静态证据；其中 `Class.forName`、IMEI/file-based emulator detection 和 JNI `Java_*` 符号来自外部语料调优后新增的规则。
 - PIVAA 同时触发 dynamic loading、reflection 和 instrumentation 字符串，适合作为安全测试 APK 的外部 smoke sample。
 
 ## 标签边界

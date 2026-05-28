@@ -1,0 +1,41 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/emulator_imei_probe.apk",
+    "sha256": "e90a91f11f8ea7beca415ee41068c9e3c9cd8ab3c1398c37f549a3276782e598"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "medium",
+      "description": "APK checks telephony device identifiers together with zero or placeholder IMEI values commonly used in emulator-detection examples.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Landroid/telephony/TelephonyManager;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "getDeviceId"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "000000000000000"
+        }
+      ],
+      "id": "environment.telephony_identifier_probe",
+      "severity": "medium",
+      "title": "Telephony identifier emulator probe"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "apk": {
+    "entry_count": 3,
+    "path": "datasets/hardeninspector_eval_v1/apks/native_jni_export_only.apk",
+    "sha256": "ffbc87f3d8a785de63d8f042888332d0a78dd15d0bc88e2bada10fa808019514"
+  },
+  "findings": [
+    {
+      "category": "native",
+      "confidence": "high",
+      "description": "Native library exports Java_* JNI bridge symbols, indicating direct Java-to-native method bindings.",
+      "evidence": [
+        {
+          "kind": "elf-symbol",
+          "location": "lib/arm64-v8a/libnativeexport.so:.dynsym",
+          "value": "Java_com_example_jniexport_NativeBridge_callNative"
+        },
+        {
+          "kind": "native-string",
+          "location": "lib/arm64-v8a/libnativeexport.so",
+          "value": "Java_com_example_jniexport_NativeBridge_callNative"
+        }
+      ],
+      "id": "native.jni_export",
+      "severity": "low",
+      "title": "Exported JNI native method symbols"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 1,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

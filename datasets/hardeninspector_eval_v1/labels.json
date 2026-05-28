@@ -134,11 +134,12 @@
     },
     {
       "actual_findings": [
+        "native.jni_export",
         "native.jni_entrypoint"
       ],
       "actual_summary": {
         "environment": 0,
-        "native": 1,
+        "native": 2,
         "obfuscation": 0,
         "packer": 0
       },
@@ -249,6 +250,84 @@
       "id": "native_ptrace_loader",
       "report_path": "reports/native_ptrace_loader.json",
       "source_plan": "native anti-debug and loader symbol sample"
+    },
+    {
+      "actual_findings": [
+        "obfuscation.reflection"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 0,
+        "obfuscation": 1,
+        "packer": 0
+      },
+      "apk_path": "apks/class_forname_reflection.apk",
+      "construction": "synthetic sample modeled after DroidBench Reflection: class-name based reflective loading uses `Ljava/lang/Class;` and `forName` evidence without Method.invoke strings",
+      "expected_findings": [
+        "obfuscation.reflection"
+      ],
+      "id": "class_forname_reflection",
+      "report_path": "reports/class_forname_reflection.json",
+      "source_plan": "Class.forName reflection sample"
+    },
+    {
+      "actual_findings": [
+        "environment.system_properties",
+        "environment.emulator_artifacts"
+      ],
+      "actual_summary": {
+        "environment": 2,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/emulator_file_artifacts.apk",
+      "construction": "synthetic sample modeled after DroidBench file-based emulator detection: DEX strings reference `/proc` and `/sys` virtual-device artifacts",
+      "expected_findings": [
+        "environment.system_properties",
+        "environment.emulator_artifacts"
+      ],
+      "id": "emulator_file_artifacts",
+      "report_path": "reports/emulator_file_artifacts.json",
+      "source_plan": "emulator file-artifact sample"
+    },
+    {
+      "actual_findings": [
+        "environment.telephony_identifier_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/emulator_imei_probe.apk",
+      "construction": "synthetic sample modeled after DroidBench IMEI-based emulator detection: TelephonyManager/getDeviceId is combined with zero-like device identifiers",
+      "expected_findings": [
+        "environment.telephony_identifier_probe"
+      ],
+      "id": "emulator_imei_probe",
+      "report_path": "reports/emulator_imei_probe.json",
+      "source_plan": "emulator IMEI probe sample"
+    },
+    {
+      "actual_findings": [
+        "native.jni_export"
+      ],
+      "actual_summary": {
+        "environment": 0,
+        "native": 1,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/native_jni_export_only.apk",
+      "construction": "synthetic APK whose native evidence is an exported `Java_*` JNI method symbol without `JNI_OnLoad`, matching older NDK/DroidBench-style native samples",
+      "expected_findings": [
+        "native.jni_export"
+      ],
+      "id": "native_jni_export_only",
+      "report_path": "reports/native_jni_export_only.json",
+      "source_plan": "JNI Java_* export sample"
     },
     {
       "actual_findings": [

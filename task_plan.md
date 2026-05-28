@@ -175,6 +175,17 @@ Status: complete
 - Regenerate dataset, benchmark, reports, docs, README, and slides.
 - Verify locally, commit, and push.
 
+### Phase 18: External corpus gap tuning
+
+Status: complete
+
+- Add coverage for `Class.forName` reflection indicators found in DroidBench.
+- Add environment rules for emulator file artifacts and telephony/IMEI probes.
+- Detect JNI `Java_*` exported native symbols in ELF libraries, not only `JNI_OnLoad`.
+- Add synthetic samples for these patterns so the benchmark does not rely only on external APKs for regression coverage.
+- Regenerate dataset, benchmark, reports, docs, README, and slides.
+- Verify locally, commit, and push.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

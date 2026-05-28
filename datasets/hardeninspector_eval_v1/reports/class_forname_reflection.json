@@ -1,0 +1,36 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/class_forname_reflection.apk",
+    "sha256": "4886108dff3cc7d368e43008fa25c040dbd7d2d7e4bc93d987fe7ef76382288c"
+  },
+  "findings": [
+    {
+      "category": "obfuscation",
+      "confidence": "medium",
+      "description": "APK references reflection APIs or invoke methods that can hide direct call targets.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Ljava/lang/Class;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "forName"
+        }
+      ],
+      "id": "obfuscation.reflection",
+      "severity": "medium",
+      "title": "Reflection usage indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 0,
+    "native": 0,
+    "obfuscation": 1,
+    "packer": 0
+  }
+}

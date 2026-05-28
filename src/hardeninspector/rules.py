@@ -74,6 +74,12 @@ REFLECTION_PATTERNS = [
     "Method.invoke",
 ]
 
+CLASS_FORNAME_PATTERNS = [
+    "Ljava/lang/Class;",
+    "java.lang.Class",
+    "java/lang/Class",
+]
+
 SYSTEM_PROPERTY_PATTERNS = [
     "ro.kernel.qemu",
     "ro.build.fingerprint",
@@ -82,6 +88,30 @@ SYSTEM_PROPERTY_PATTERNS = [
     "goldfish",
     "ranchu",
     "genymotion",
+]
+
+EMULATOR_ARTIFACT_PATTERNS = [
+    "/dev/qemu_pipe",
+    "/dev/socket/qemud",
+    "/proc/ioports",
+    "/proc/misc",
+    "/sys/qemu_trace",
+    "/sys/devices/virtual/misc/android_adb",
+    "goldfish",
+    "ranchu",
+    "android-build",
+]
+
+TELEPHONY_API_PATTERNS = [
+    "Landroid/telephony/TelephonyManager;",
+    "android/telephony/TelephonyManager",
+    "getDeviceId",
+]
+
+TELEPHONY_EMULATOR_ID_PATTERNS = [
+    "000000000000000",
+    "newImei",
+    "zeroPos",
 ]
 
 DEBUGGER_PATTERNS = [
@@ -124,10 +154,13 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _reflection_usage,
         _control_flow_density,
         _system_properties,
+        _emulator_artifacts,
+        _telephony_identifier_probe,
         _debugger_probe,
         _instrumentation_probe,
         _native_debugger_symbol,
         _native_dynamic_loader,
+        _native_jni_export,
         _jni_entrypoint,
     ):
         finding = rule(features)
@@ -228,8 +261,12 @@ def _short_identifiers(features: ApkFeatures) -> Finding | None:
 
 def _reflection_usage(features: ApkFeatures) -> Finding | None:
     evidence = _string_matches(features.string_evidence, REFLECTION_PATTERNS)
+    evidence.extend(_class_forname_evidence(features))
     for method in features.methods + features.invoked_methods:
-        if method.name == "invoke" or "reflect" in method.class_descriptor.lower():
+        if (
+            method.name in {"invoke", "forName", "getMethod", "getDeclaredMethod"}
+            or "reflect" in method.class_descriptor.lower()
+        ):
             evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
     if not evidence:
         return None
@@ -289,6 +326,52 @@ def _system_properties(features: ApkFeatures) -> Finding | None:
         confidence="high",
         title="Emulator or device-fingerprint property checks",
         description="APK references Android system properties commonly used for emulator or sandbox detection.",
+        evidence=evidence[:10],
+    )
+
+
+def _emulator_artifacts(features: ApkFeatures) -> Finding | None:
+    evidence = _string_matches(
+        features.string_evidence,
+        EMULATOR_ARTIFACT_PATTERNS,
+        kinds={"dex-string", "dex-const-string", "manifest-string"},
+    )
+    if not evidence:
+        return None
+    return Finding(
+        id="environment.emulator_artifacts",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="Emulator file or hardware artifact checks",
+        description="APK references emulator-specific files, kernel paths, or virtual hardware identifiers.",
+        evidence=evidence[:10],
+    )
+
+
+def _telephony_identifier_probe(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item for item in features.string_evidence if item.kind in {"dex-string", "dex-const-string", "manifest-string"}
+    ]
+    api_evidence = _string_matches(string_evidence, TELEPHONY_API_PATTERNS)
+    id_evidence = _string_matches(string_evidence, TELEPHONY_EMULATOR_ID_PATTERNS)
+    method_evidence: list[Evidence] = []
+    for method in features.methods + features.invoked_methods:
+        if method.name == "getDeviceId" or method.class_descriptor == "Landroid/telephony/TelephonyManager;":
+            method_evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+    if not (id_evidence and (api_evidence or method_evidence)):
+        return None
+    evidence = _dedupe_evidence([*api_evidence, *method_evidence, *id_evidence])
+    return Finding(
+        id="environment.telephony_identifier_probe",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="Telephony identifier emulator probe",
+        description=(
+            "APK checks telephony device identifiers together with zero or placeholder IMEI values "
+            "commonly used in emulator-detection examples."
+        ),
         evidence=evidence[:10],
     )
 
@@ -360,6 +443,29 @@ def _native_dynamic_loader(features: ApkFeatures) -> Finding | None:
     )
 
 
+def _native_jni_export(features: ApkFeatures) -> Finding | None:
+    evidence: list[Evidence] = []
+    for location, symbols in features.native_symbols.items():
+        for symbol in symbols:
+            if symbol.name.startswith("Java_"):
+                evidence.append(Evidence("elf-symbol", symbol.name, f"{location}:{symbol.table}"))
+    for location, strings in features.native_strings.items():
+        for value in strings:
+            if value.startswith("Java_"):
+                evidence.append(Evidence("native-string", value, location))
+    if not evidence:
+        return None
+    return Finding(
+        id="native.jni_export",
+        category="native",
+        severity="low",
+        confidence="high",
+        title="Exported JNI native method symbols",
+        description="Native library exports Java_* JNI bridge symbols, indicating direct Java-to-native method bindings.",
+        evidence=_dedupe_evidence(evidence)[:10],
+    )
+
+
 def _jni_entrypoint(features: ApkFeatures) -> Finding | None:
     evidence: list[Evidence] = []
     evidence.extend(_native_symbol_matches(features, ["JNI_OnLoad"]))
@@ -387,6 +493,17 @@ def _native_symbol_matches(features: ApkFeatures, names: list[str]) -> list[Evid
             if symbol.name.lower() in wanted:
                 evidence.append(Evidence("elf-symbol", wanted[symbol.name.lower()], f"{location}:{symbol.table}"))
     return _dedupe_evidence(evidence)
+
+
+def _class_forname_evidence(features: ApkFeatures) -> list[Evidence]:
+    string_evidence = [
+        item for item in features.string_evidence if item.kind in {"dex-string", "dex-const-string"}
+    ]
+    class_evidence = _string_matches(string_evidence, CLASS_FORNAME_PATTERNS)
+    forname_evidence = _string_matches(string_evidence, ["forName"])
+    if not (class_evidence and forname_evidence):
+        return []
+    return _dedupe_evidence([*class_evidence, *forname_evidence])
 
 
 def _string_matches(

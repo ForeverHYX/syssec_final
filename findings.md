@@ -86,3 +86,19 @@ Implemented slice results:
 - `packer.native_dynamic_loader` reports Native `dlopen`, `android_dlopen_ext`, `dlsym`, and `dladdr` as runtime-loader evidence.
 - `datasets/hardeninspector_eval_v1/` now contains 13 synthetic APKs, adding `high_entropy_payload_only` and `native_ptrace_loader`.
 - Combined benchmark is now 25 samples. HardenInspector Micro F1 is 0.866; ZIP Strings is 0.794, so the gap widened modestly after adding a non-string entropy-only sample and symbol-aware native evidence.
+
+## External Corpus Gap Tuning
+
+Current combined benchmark mismatches give the next improvement target:
+
+- `droidbench_reflection_1` is labeled obfuscation but has no finding. Its DEX strings include `Ljava/lang/Class;` and `forName`, so the reflection rule needs to cover class-name based reflective loading in addition to `Method.invoke`.
+- `droidbench_emulator_file_1` and `droidbench_emulator_imei_1` are labeled environment but miss emulator file/IMEI patterns. Their DEX strings expose `/proc`/`/sys` emulator-oriented paths, `TelephonyManager`, `getDeviceId`, `imei`, and zero-like device IDs.
+- `droidbench_native_id_function` and `droidbench_source_in_native_code` are labeled native but only trigger reflection. Their native libraries export JNI symbols such as `Java_mod_ndk_ActMain_cFuncJgetIMEI`; `native.jni_entrypoint` only covers `JNI_OnLoad`, so a dedicated JNI export rule is justified.
+
+Implemented tuning results:
+
+- Added `obfuscation.reflection` support for `Class.forName` evidence while preserving the existing reflection dispatch coverage.
+- Added `environment.emulator_artifacts` for file/hardware emulator traces and `environment.telephony_identifier_probe` for strong zero/replaced IMEI evidence. A regression test prevents treating DroidBench taint-sink phone numbers such as `+49 123` as emulator identifiers.
+- Added `native.jni_export` for ELF/string `Java_*` JNI exports, which fixes native coverage for older DroidBench/NDK-style samples that do not export `JNI_OnLoad`.
+- Added four synthetic samples: `class_forname_reflection`, `emulator_file_artifacts`, `emulator_imei_probe`, and `native_jni_export_only`.
+- Combined benchmark is now 29 samples. HardenInspector Micro F1 is 0.938 with 29/29 coverage and zero false negatives across the four scored categories; remaining errors are coarse-label false positives on external APKs.

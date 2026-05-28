@@ -332,6 +332,103 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="class_forname_reflection",
+        apk_name="class_forname_reflection.apk",
+        source_plan="Class.forName reflection sample",
+        construction=(
+            "synthetic sample modeled after DroidBench Reflection: class-name based reflective "
+            "loading uses `Ljava/lang/Class;` and `forName` evidence without Method.invoke strings"
+        ),
+        expected_findings=["obfuscation.reflection"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.forname", "com.example.forname.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/forname/MainActivity;",
+                "Lcom/example/forname/ReflectiveFactory;",
+                "Lcom/example/forname/HiddenImpl;",
+            ],
+            method_names=["<clinit>", "load"],
+            dex_strings=["Ljava/lang/Class;", "forName", "com.example.HiddenImpl"],
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="emulator_file_artifacts",
+        apk_name="emulator_file_artifacts.apk",
+        source_plan="emulator file-artifact sample",
+        construction=(
+            "synthetic sample modeled after DroidBench file-based emulator detection: "
+            "DEX strings reference `/proc` and `/sys` virtual-device artifacts"
+        ),
+        expected_findings=[
+            "environment.system_properties",
+            "environment.emulator_artifacts",
+        ],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.emufile", "edu.syssec.emufile.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/emufile/MainActivity;",
+                "Ledu/syssec/emufile/ArtifactProbe;",
+                "Ledu/syssec/emufile/FileProbe;",
+            ],
+            method_names=["<clinit>", "checkFiles"],
+            dex_strings=[
+                "/proc/ioports",
+                "/sys/devices/virtual/misc/android_adb",
+                "goldfish",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="emulator_imei_probe",
+        apk_name="emulator_imei_probe.apk",
+        source_plan="emulator IMEI probe sample",
+        construction=(
+            "synthetic sample modeled after DroidBench IMEI-based emulator detection: "
+            "TelephonyManager/getDeviceId is combined with zero-like device identifiers"
+        ),
+        expected_findings=["environment.telephony_identifier_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.imei", "edu.syssec.imei.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/imei/MainActivity;",
+                "Ledu/syssec/imei/TelephonyProbe;",
+                "Ledu/syssec/imei/DeviceIdProbe;",
+            ],
+            method_names=["<clinit>", "checkImei"],
+            dex_strings=[
+                "Landroid/telephony/TelephonyManager;",
+                "getDeviceId",
+                "imei",
+                "000000000000000",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
+        sample_id="native_jni_export_only",
+        apk_name="native_jni_export_only.apk",
+        source_plan="JNI Java_* export sample",
+        construction=(
+            "synthetic APK whose native evidence is an exported `Java_*` JNI method symbol "
+            "without `JNI_OnLoad`, matching older NDK/DroidBench-style native samples"
+        ),
+        expected_findings=["native.jni_export"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["com.example.jniexport", "com.example.jniexport.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/jniexport/MainActivity;",
+                "Lcom/example/jniexport/NativeBridge;",
+                "Lcom/example/jniexport/NativeFacade;",
+            ],
+            method_names=["<clinit>", "callNative"],
+            dex_strings=["native export sample"],
+            native_libraries={
+                "lib/arm64-v8a/libnativeexport.so": build_elf_shared_object(
+                    ["Java_com_example_jniexport_NativeBridge_callNative"]
+                ),
+            },
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="combined_hardened_showcase",
         apk_name="combined_hardened_showcase.apk",
         source_plan="combined hardened showcase",
@@ -449,6 +546,10 @@ The samples correspond to the dataset categories described in the midterm report
 - lightweight control-flow flattening sample
 - high-entropy payload-only sample
 - native ptrace/dlopen ELF-symbol sample
+- Class.forName reflection sample
+- emulator file-artifact sample
+- emulator IMEI probe sample
+- JNI Java_* export sample
 - combined hardening showcase
 
 The dataset intentionally avoids shipping real commercial or malicious APKs.

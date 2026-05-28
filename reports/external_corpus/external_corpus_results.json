@@ -20,9 +20,9 @@
   "tools": [
     {
       "category_counts": {
-        "environment": 3,
-        "native": 0,
-        "obfuscation": 6,
+        "environment": 5,
+        "native": 3,
+        "obfuscation": 7,
         "packer": 4
       },
       "coverage": {
@@ -32,10 +32,14 @@
       "samples": [
         {
           "apk_path": "apks/droidbench/reflection_1.apk",
-          "finding_ids": [],
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
           "id": "droidbench_reflection_1",
           "notes": null,
-          "predicted_categories": [],
+          "predicted_categories": [
+            "obfuscation"
+          ],
           "runtime_ms": null,
           "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
           "source": "DroidBench",
@@ -96,7 +100,8 @@
           "apk_path": "apks/droidbench/emulator_build_1.apk",
           "finding_ids": [
             "obfuscation.reflection",
-            "environment.system_properties"
+            "environment.system_properties",
+            "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": null,
@@ -113,11 +118,13 @@
         {
           "apk_path": "apks/droidbench/emulator_file_1.apk",
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_file_1",
           "notes": null,
           "predicted_categories": [
+            "environment",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -128,10 +135,14 @@
         },
         {
           "apk_path": "apks/droidbench/emulator_imei_1.apk",
-          "finding_ids": [],
+          "finding_ids": [
+            "environment.telephony_identifier_probe"
+          ],
           "id": "droidbench_emulator_imei_1",
           "notes": null,
-          "predicted_categories": [],
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
           "source": "DroidBench",
@@ -142,12 +153,14 @@
           "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
           "finding_ids": [
             "environment.instrumentation_probe",
-            "packer.native_dynamic_loader"
+            "packer.native_dynamic_loader",
+            "native.jni_export"
           ],
           "id": "droidbench_bytecode_tamper_1",
           "notes": null,
           "predicted_categories": [
             "environment",
+            "native",
             "packer"
           ],
           "runtime_ms": null,
@@ -159,11 +172,13 @@
         {
           "apk_path": "apks/droidbench/native_id_function.apk",
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "native.jni_export"
           ],
           "id": "droidbench_native_id_function",
           "notes": null,
           "predicted_categories": [
+            "native",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -175,11 +190,13 @@
         {
           "apk_path": "apks/droidbench/source_in_native_code.apk",
           "finding_ids": [
-            "obfuscation.reflection"
+            "obfuscation.reflection",
+            "native.jni_export"
           ],
           "id": "droidbench_source_in_native_code",
           "notes": null,
           "predicted_categories": [
+            "native",
             "obfuscation"
           ],
           "runtime_ms": null,
@@ -222,9 +239,9 @@
           "status": "ok"
         }
       ],
-      "samples_with_any_category": 9,
+      "samples_with_any_category": 11,
       "source_counts_with_any_category": {
-        "DroidBench": 8,
+        "DroidBench": 10,
         "PIVAA": 1
       },
       "tool": "hardeninspector"

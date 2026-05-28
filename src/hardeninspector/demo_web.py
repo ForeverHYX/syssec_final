@@ -94,6 +94,16 @@ DEMO_SAMPLES = (
         expected_categories=("environment",),
     ),
     DemoSample(
+        id="signature_integrity_check",
+        title="Signature integrity check",
+        source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Anti-tamper integrity evidence",
+        apk_path=Path("datasets/hardeninspector_eval_v1/apks/signature_integrity_check.apk"),
+        description="Self-integrity sample combining PackageManager signature APIs with digest evidence.",
+        expected_categories=("environment",),
+    ),
+    DemoSample(
         id="pivaa",
         title="PIVAA training APK",
         source="External corpus",
@@ -596,10 +606,10 @@ def render_index_html() -> str:
           <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
         </div>
         <div class="stat-grid">
-          <div class="stat-tile"><strong>29</strong><span class="muted">29 scored APKs</span></div>
-          <div class="stat-tile"><strong>17 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>30</strong><span class="muted">30 scored APKs</span></div>
+          <div class="stat-tile"><strong>18 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>47</strong><span class="muted">47 regression tests</span></div>
+          <div class="stat-tile"><strong>50</strong><span class="muted">50 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">

@@ -267,6 +267,17 @@ Status: complete
 - Add a final-presentation slide explaining how the Web demo shows the project motivation, evidence chain, dataset structure, benchmark/test status, curated samples, and upload scan.
 - Synchronize README, docs, summary report, completion audit, and planning logs with 47 tests and 22 slides.
 
+### Phase 27: Signature integrity/self-check detection
+
+Status: complete
+
+- Add detector coverage for PackageManager signature queries combined with Signature/digest evidence, producing `environment.integrity_check`.
+- Add negative coverage so ordinary PackageManager version metadata lookup does not trigger the integrity rule.
+- Add `signature_integrity_check.apk` to the synthetic oracle dataset and Web demo catalog.
+- Extend the ZIP Strings/Androguard-style shallow environment keywords enough to expose the new signature-integrity signal in benchmark comparisons.
+- Regenerate dataset, combined benchmark, external-corpus reports, README/docs/final summary, and slides with 18 synthetic + 12 external samples, 30/30 benchmark coverage, 50 tests, and 22 slides.
+- Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

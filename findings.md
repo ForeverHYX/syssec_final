@@ -163,3 +163,11 @@ The Web demo had functional scanning and upload support, but it did not yet visu
 The Web demo's image asset route returned correct data for browser-style `GET` requests, but `HEAD /assets/apk-cutaway.png` used the base handler's unsupported-method path. This is a small but real polish issue for smoke checks and browser/tool preflight probes. The handler now shares read-only routing between GET and HEAD and suppresses the body for HEAD while keeping content type and content length headers.
 
 The Beamer deck previously had no dedicated page explaining the Web demo even though the live page is now the clearest way to show the project's distinctive features. A new `现场 Web Demo` slide connects Exhibit Map, Evidence Chain, Dataset Story, Synthetic Oracle, External APK Corpus, curated scans, and Scan Upload into one final-class narrative.
+
+## Signature Integrity Detection
+
+Self-integrity and anti-tamper checks are a natural environment/anti-analysis signal for the course topic, but the detector previously did not distinguish them from ordinary PackageManager metadata reads. The new `environment.integrity_check` rule requires both signature API evidence and signature/digest material, such as `GET_SIGNATURES`, `Signature/toByteArray`, `MessageDigest`, `SHA-256`, or `checkSignature`.
+
+The negative test matters: a PackageManager `getPackageInfo` query used only for `versionName` is not treated as hardening evidence. This keeps the rule explainable and avoids turning every app metadata lookup into an anti-tamper finding.
+
+The dataset now includes `signature_integrity_check.apk`, and the Web demo exposes it as a curated anti-tamper sample. After regeneration, the combined scoring set is 30 samples: 18 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.340, 0.533, and 0.714 Micro F1 respectively.

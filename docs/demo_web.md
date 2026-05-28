@@ -28,8 +28,8 @@ http://127.0.0.1:8000/
 | --- | --- |
 | Exhibit Map | 解释项目为什么存在：检测 APK 加固证据，而不是判恶意 |
 | Evidence Chain | 强调 Manifest、DEX、Native 符号、资源和熵值如何汇总为 finding |
-| Dataset Story | 直观区分 17 个 Synthetic Oracle APK 与 12 个 External APK Corpus |
-| 指标摘要 | 展示 29 个评分 APK、47 个回归测试和 HardenInspector Micro F1 |
+| Dataset Story | 直观区分 18 个 Synthetic Oracle APK 与 12 个 External APK Corpus |
+| 指标摘要 | 展示 30 个评分 APK、50 个回归测试和 HardenInspector Micro F1 |
 | APK 拆解图 | 使用 `slides/figures/apk_static_analysis_cutaway.png` 作为视觉说明 |
 
 页面内置一组展示样本，每个样本都带有 dataset kind 和 showcase role，便于现场讲清楚“这个样本为什么在这里”：
@@ -38,6 +38,7 @@ http://127.0.0.1:8000/
 | --- | --- |
 | `fdroid_clean_baseline` | 合成 clean baseline，展示无 finding 的低噪声结果 |
 | `combined_hardened_showcase` | 综合展示 packer、obfuscation、environment、native 证据 |
+| `signature_integrity_check` | 展示 PackageManager signature API 与 digest 组合形成的反篡改/自完整性 evidence |
 | `native_ptrace_loader` | 展示 ELF 符号级 Native anti-debug / loader evidence |
 | `emulator_imei_probe` | 展示 emulator telephony/device-id probe |
 | `pivaa` | 外部现成 APK，用于证明真实 APK 也能扫描 |

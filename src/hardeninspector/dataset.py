@@ -404,6 +404,34 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="signature_integrity_check",
+        apk_name="signature_integrity_check.apk",
+        source_plan="self-written anti-tamper signature check sample",
+        construction=(
+            "synthetic sample modeling app self-integrity checks: PackageManager signature "
+            "lookup is combined with Signature/toByteArray and MessageDigest/SHA-256 evidence"
+        ),
+        expected_findings=["environment.integrity_check"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.integrity", "edu.syssec.integrity.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/integrity/MainActivity;",
+                "Ledu/syssec/integrity/SignatureVerifier;",
+                "Ledu/syssec/integrity/DigestChecker;",
+            ],
+            method_names=["<clinit>", "verifySignature"],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "getPackageInfo",
+                "GET_SIGNATURES",
+                "Landroid/content/pm/Signature;",
+                "MessageDigest",
+                "SHA-256",
+                "toByteArray",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="native_jni_export_only",
         apk_name="native_jni_export_only.apk",
         source_plan="JNI Java_* export sample",
@@ -549,6 +577,7 @@ The samples correspond to the dataset categories described in the midterm report
 - Class.forName reflection sample
 - emulator file-artifact sample
 - emulator IMEI probe sample
+- app signature integrity-check sample
 - JNI Java_* export sample
 - combined hardening showcase
 

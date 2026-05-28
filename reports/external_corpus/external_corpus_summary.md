@@ -11,7 +11,7 @@ External APKs have source metadata, checksums, and coarse expected_categories us
 | HardenInspector | 12/12 | 10 | 4 | 2 | 5 | 3 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
-| ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
+| ZIP Strings | 12/12 | 10 | 4 | 6 | 3 | 0 |
 
 ## HardenInspector Sample Results
 
@@ -28,4 +28,4 @@ External APKs have source metadata, checksums, and coarse expected_categories us
 | droidbench_native_id_function | DroidBench | Native | native | native.jni_export |
 | droidbench_source_in_native_code | DroidBench | Native | native | native.jni_export |
 | fdroid_editor | F-Droid | open-source real APK | - | - |
-| pivaa | PIVAA | intentionally vulnerable Android test APK | environment, obfuscation, packer | packer.high_entropy_payload, packer.dynamic_code_loading, obfuscation.reflection, environment.instrumentation_probe |
+| pivaa | PIVAA | intentionally vulnerable Android test APK | environment, obfuscation, packer | packer.high_entropy_payload, packer.dynamic_code_loading, obfuscation.reflection, environment.integrity_check, environment.instrumentation_probe |

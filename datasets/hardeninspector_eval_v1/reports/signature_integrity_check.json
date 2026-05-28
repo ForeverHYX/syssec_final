@@ -1,0 +1,61 @@
+{
+  "apk": {
+    "entry_count": 2,
+    "path": "datasets/hardeninspector_eval_v1/apks/signature_integrity_check.apk",
+    "sha256": "ccd3d45e14a95245c42a66e7d608f5d79f2612c1f44d6a85f3b45d6ec51972a8"
+  },
+  "findings": [
+    {
+      "category": "environment",
+      "confidence": "medium",
+      "description": "APK references package-signature APIs together with digest or signature material, a static signal for anti-tamper or self-integrity checks.",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Landroid/content/pm/PackageManager;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "getPackageInfo"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "GET_SIGNATURES"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "Landroid/content/pm/Signature;"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "MessageDigest"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "SHA-256"
+        },
+        {
+          "kind": "dex-string",
+          "location": "classes.dex:string",
+          "value": "toByteArray"
+        }
+      ],
+      "id": "environment.integrity_check",
+      "severity": "medium",
+      "title": "Application signature or integrity check indicators"
+    }
+  ],
+  "schema_version": 1,
+  "summary": {
+    "environment": 1,
+    "native": 0,
+    "obfuscation": 0,
+    "packer": 0
+  }
+}

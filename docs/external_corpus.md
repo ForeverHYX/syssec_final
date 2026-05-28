@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 29 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 30 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 
@@ -54,7 +54,7 @@ make external-corpus
 make benchmark
 ```
 
-`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 29 个评分样本。
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 30 个评分样本。
 
 ## 当前统计
 
@@ -63,7 +63,7 @@ make benchmark
 | HardenInspector | 12/12 | 10 | 4 | 2 | 5 | 3 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
-| ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
+| ZIP Strings | 12/12 | 10 | 4 | 6 | 3 | 0 |
 
 测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
 
@@ -71,16 +71,16 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
-| Androguard DEX | 29/29 | 0.750 | 0.395 | 0.517 | 0.457 |
-| ZIP Strings | 29/29 | 0.828 | 0.632 | 0.716 | 0.710 |
+| HardenInspector | 30/30 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 30/30 | 1.000 | 0.205 | 0.340 | 0.262 |
+| Androguard DEX | 30/30 | 0.762 | 0.410 | 0.533 | 0.471 |
+| ZIP Strings | 30/30 | 0.806 | 0.641 | 0.714 | 0.708 |
 
 重要观察：
 
 - `fdroid_editor` 是真实开源 APK，当前 HardenInspector 无 finding，说明收紧后的控制流密度规则没有在该普通样本上误报。
 - DroidBench 的 reflection/dynamic-loading/emulator/native 场景能触发对应静态证据；其中 `Class.forName`、IMEI/file-based emulator detection 和 JNI `Java_*` 符号来自外部语料调优后新增的规则。`droidbench_reflection_5` 当前不报 obfuscation，因为可见证据主要来自 support library 兼容层反射；标签审计后它不再作为应用混淆 oracle。
-- PIVAA 同时触发 dynamic loading、reflection 和 instrumentation 字符串，适合作为安全测试 APK 的外部 smoke sample。
+- PIVAA 同时触发 dynamic loading、reflection、signature integrity 和 instrumentation 字符串，适合作为安全测试 APK 的外部 smoke sample。
 
 ## 标签边界
 

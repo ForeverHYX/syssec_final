@@ -211,6 +211,7 @@
             "packer.high_entropy_payload",
             "packer.dynamic_code_loading",
             "obfuscation.reflection",
+            "environment.integrity_check",
             "environment.instrumentation_probe"
           ],
           "id": "pivaa",
@@ -620,7 +621,7 @@
     },
     {
       "category_counts": {
-        "environment": 2,
+        "environment": 3,
         "native": 0,
         "obfuscation": 6,
         "packer": 4
@@ -786,10 +787,14 @@
         },
         {
           "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
-          "finding_ids": [],
+          "finding_ids": [
+            "zip_string.environment.SHA-256"
+          ],
           "id": "fdroid_editor",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
-          "predicted_categories": [],
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
           "source": "F-Droid",
@@ -817,9 +822,10 @@
           "status": "ok"
         }
       ],
-      "samples_with_any_category": 9,
+      "samples_with_any_category": 10,
       "source_counts_with_any_category": {
         "DroidBench": 8,
+        "F-Droid": 1,
         "PIVAA": 1
       },
       "tool": "zip_string_baseline"

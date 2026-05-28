@@ -24,6 +24,7 @@ The samples correspond to the dataset categories described in the midterm report
 - Class.forName reflection sample
 - emulator file-artifact sample
 - emulator IMEI probe sample
+- app signature integrity-check sample
 - JNI Java_* export sample
 - combined hardening showcase
 

@@ -213,3 +213,15 @@
 - TDD GREEN: implemented shared read-only routing for GET/HEAD in `demo_web.py`, added body-suppressed HEAD responses, and added a final-presentation slide that explains how the Web demo shows project motivation, evidence chain, dataset structure, curated samples, upload scan, and benchmark/test status.
 - Recompiled slides; the deck is now 22 pages. Updated final-facing README/docs/report text to 47 tests / 22 pages.
 - Verification checkpoint: `.venv/bin/python -m pytest -q` passed with 47 tests; `git diff --check` passed; `make slides` compiled 22 pages; slide log scan found no Overfull/Underfull/Warning/Error/Undefined/Missing matches; focused final-facing wording scan for slides/report found no process wording. Local Web demo smoke test confirmed `HEAD /assets/apk-cutaway.png` returns 200 image/png, the HTML renders the exhibit overview, and `GET /api/scan?id=combined_hardened_showcase` returns the expected four-category report.
+
+## 2026-05-28 Signature Integrity Detection
+
+- Started Phase 27 to add a course-relevant anti-tamper/self-integrity signal that was still missing from the detector and exhibit set.
+- TDD RED: added detector coverage for PackageManager signature lookup plus `Signature/toByteArray` and `MessageDigest/SHA-256`; it failed because no integrity rule existed. Added negative coverage for PackageManager version metadata lookup, which remained clean.
+- TDD RED: extended the dataset tests to require `signature_integrity_check` with `environment.integrity_check`, and extended Web demo catalog tests to require the sample's anti-tamper showcase role.
+- TDD GREEN: implemented `environment.integrity_check`, added the synthetic sample, added it to the Web demo, and added shallow benchmark keywords for signature-integrity evidence.
+- Regenerated dataset, benchmark, and external-corpus artifacts. Current combined scoring set is 30 samples: 18 synthetic + 12 external. Micro F1 values: HardenInspector 1.000, APKiD 0.340, Androguard DEX 0.533, ZIP Strings 0.714.
+- Updated README, rules/dataset/benchmark/external/demo/environment/final-deliverable docs, defense/live-demo docs, final summary, completion audit, and Beamer source to reflect the new rule, sample, 30 scored APKs, 50 tests, and 22 slides.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 50 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 50 tests; fresh combined benchmark kept all four tools at 30/30 coverage with the same Micro F1 values; fresh external-corpus run kept all four tools at 12/12 coverage.
+- Local Web demo smoke test passed on port 8765: the homepage showed 30 scored APKs, 18 + 12 samples, and 50 tests; `/api/scan?id=signature_integrity_check` returned `environment.integrity_check`; `HEAD /assets/apk-cutaway.png` returned 200 image/png.

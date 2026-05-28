@@ -232,6 +232,60 @@ def test_detector_reports_telephony_identifier_probe(tmp_path):
     assert any(item.value == "000000000000000" for item in finding.evidence)
 
 
+def test_detector_reports_signature_integrity_check(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "signature-integrity.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.integrity", "edu.syssec.integrity.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/integrity/MainActivity;",
+                "Ledu/syssec/integrity/SignatureVerifier;",
+            ],
+            method_names=["<clinit>", "verifySignature"],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "getPackageInfo",
+                "GET_SIGNATURES",
+                "Landroid/content/pm/Signature;",
+                "MessageDigest",
+                "SHA-256",
+                "toByteArray",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.integrity_check")
+
+    assert finding.category == "environment"
+    assert any(item.value == "GET_SIGNATURES" for item in finding.evidence)
+    assert any(item.value == "MessageDigest" for item in finding.evidence)
+
+
+def test_package_manager_metadata_lookup_is_not_integrity_check(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "package-metadata.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.metadata", "edu.syssec.metadata.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/metadata/MainActivity;",
+                "Ledu/syssec/metadata/AboutScreen;",
+            ],
+            method_names=["<clinit>", "loadVersion", "getPackageInfo"],
+            dex_strings=[
+                "Landroid/content/pm/PackageManager;",
+                "getPackageInfo",
+                "versionName",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.integrity_check" not in finding_ids
+
+
 def test_telephony_sink_phone_number_is_not_emulator_probe(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "telephony-source.apk",

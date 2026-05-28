@@ -312,6 +312,25 @@
     },
     {
       "actual_findings": [
+        "environment.integrity_check"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/signature_integrity_check.apk",
+      "construction": "synthetic sample modeling app self-integrity checks: PackageManager signature lookup is combined with Signature/toByteArray and MessageDigest/SHA-256 evidence",
+      "expected_findings": [
+        "environment.integrity_check"
+      ],
+      "id": "signature_integrity_check",
+      "report_path": "reports/signature_integrity_check.json",
+      "source_plan": "self-written anti-tamper signature check sample"
+    },
+    {
+      "actual_findings": [
         "native.jni_export"
       ],
       "actual_summary": {

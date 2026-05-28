@@ -29,30 +29,30 @@
           "fn": 0,
           "fp": 0,
           "tn": 18,
-          "tp": 11
+          "tp": 12
         },
         "native": {
           "fn": 0,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 9
         },
         "obfuscation": {
           "fn": 0,
           "fp": 0,
-          "tn": 21,
+          "tn": 22,
           "tp": 8
         },
         "packer": {
           "fn": 0,
           "fp": 0,
-          "tn": 19,
+          "tn": 20,
           "tp": 10
         }
       },
       "coverage": {
-        "samples_total": 29,
-        "samples_with_results": 29
+        "samples_total": 30,
+        "samples_with_results": 30
       },
       "metrics": {
         "by_category": {
@@ -334,6 +334,21 @@
         },
         {
           "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "environment.integrity_check"
+          ],
+          "id": "signature_integrity_check",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "native"
           ],
           "finding_ids": [
@@ -549,6 +564,7 @@
             "packer.high_entropy_payload",
             "packer.dynamic_code_loading",
             "obfuscation.reflection",
+            "environment.integrity_check",
             "environment.instrumentation_probe"
           ],
           "id": "pivaa",
@@ -573,7 +589,7 @@
       ],
       "confusion_matrix": {
         "environment": {
-          "fn": 6,
+          "fn": 7,
           "fp": 0,
           "tn": 18,
           "tp": 5
@@ -581,32 +597,32 @@
         "native": {
           "fn": 9,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 0
         },
         "obfuscation": {
           "fn": 8,
           "fp": 0,
-          "tn": 21,
+          "tn": 22,
           "tp": 0
         },
         "packer": {
           "fn": 7,
           "fp": 0,
-          "tn": 19,
+          "tn": 20,
           "tp": 3
         }
       },
       "coverage": {
-        "samples_total": 29,
-        "samples_with_results": 29
+        "samples_total": 30,
+        "samples_with_results": 30
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.625,
+            "f1": 0.5882352941176471,
             "precision": 1.0,
-            "recall": 0.45454545454545453
+            "recall": 0.4166666666666667
           },
           "native": {
             "f1": 0.0,
@@ -625,14 +641,14 @@
           }
         },
         "macro": {
-          "f1": 0.27163461538461536,
+          "f1": 0.26244343891402716,
           "precision": 0.5,
-          "recall": 0.18863636363636363
+          "recall": 0.17916666666666667
         },
         "micro": {
-          "f1": 0.34782608695652173,
+          "f1": 0.3404255319148936,
           "precision": 1.0,
-          "recall": 0.21052631578947367
+          "recall": 0.20512820512820512
         }
       },
       "samples": [
@@ -817,6 +833,17 @@
           "predicted_categories": [
             "environment"
           ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [],
+          "id": "signature_integrity_check",
+          "notes": null,
+          "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -1013,37 +1040,37 @@
           "fn": 7,
           "fp": 0,
           "tn": 18,
-          "tp": 4
+          "tp": 5
         },
         "native": {
           "fn": 9,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 0
         },
         "obfuscation": {
           "fn": 4,
           "fp": 5,
-          "tn": 16,
+          "tn": 17,
           "tp": 4
         },
         "packer": {
           "fn": 3,
           "fp": 0,
-          "tn": 19,
+          "tn": 20,
           "tp": 7
         }
       },
       "coverage": {
-        "samples_total": 29,
-        "samples_with_results": 29
+        "samples_total": 30,
+        "samples_with_results": 30
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.5333333333333333,
+            "f1": 0.5882352941176471,
             "precision": 1.0,
-            "recall": 0.36363636363636365
+            "recall": 0.4166666666666667
           },
           "native": {
             "f1": 0.0,
@@ -1062,14 +1089,14 @@
           }
         },
         "macro": {
-          "f1": 0.4568627450980392,
+          "f1": 0.47058823529411764,
           "precision": 0.6111111111111112,
-          "recall": 0.3909090909090909
+          "recall": 0.4041666666666667
         },
         "micro": {
-          "f1": 0.5172413793103448,
-          "precision": 0.75,
-          "recall": 0.39473684210526316
+          "f1": 0.5333333333333333,
+          "precision": 0.7619047619047619,
+          "recall": 0.41025641025641024
         }
       },
       "samples": [
@@ -1266,6 +1293,21 @@
           "id": "emulator_imei_probe",
           "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
           "predicted_categories": [],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "androguard.environment.GET_SIGNATURES"
+          ],
+          "id": "signature_integrity_check",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -1490,39 +1532,39 @@
       "confusion_matrix": {
         "environment": {
           "fn": 5,
-          "fp": 0,
-          "tn": 18,
-          "tp": 6
+          "fp": 1,
+          "tn": 17,
+          "tp": 7
         },
         "native": {
           "fn": 4,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 5
         },
         "obfuscation": {
           "fn": 4,
           "fp": 5,
-          "tn": 16,
+          "tn": 17,
           "tp": 4
         },
         "packer": {
           "fn": 1,
           "fp": 0,
-          "tn": 19,
+          "tn": 20,
           "tp": 9
         }
       },
       "coverage": {
-        "samples_total": 29,
-        "samples_with_results": 29
+        "samples_total": 30,
+        "samples_with_results": 30
       },
       "metrics": {
         "by_category": {
           "environment": {
-            "f1": 0.7058823529411764,
-            "precision": 1.0,
-            "recall": 0.5454545454545454
+            "f1": 0.7000000000000001,
+            "precision": 0.875,
+            "recall": 0.5833333333333334
           },
           "native": {
             "f1": 0.7142857142857143,
@@ -1541,14 +1583,14 @@
           }
         },
         "macro": {
-          "f1": 0.7095311808934099,
-          "precision": 0.8611111111111112,
-          "recall": 0.6252525252525253
+          "f1": 0.7080605926581159,
+          "precision": 0.8298611111111112,
+          "recall": 0.6347222222222222
         },
         "micro": {
-          "f1": 0.716417910447761,
-          "precision": 0.8275862068965517,
-          "recall": 0.631578947368421
+          "f1": 0.7142857142857142,
+          "precision": 0.8064516129032258,
+          "recall": 0.6410256410256411
         }
       },
       "samples": [
@@ -1764,6 +1806,21 @@
         },
         {
           "expected_categories": [
+            "environment"
+          ],
+          "finding_ids": [
+            "zip_string.environment.GET_SIGNATURES"
+          ],
+          "id": "signature_integrity_check",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "status": "ok"
+        },
+        {
+          "expected_categories": [
             "native"
           ],
           "finding_ids": [],
@@ -1943,10 +2000,14 @@
         },
         {
           "expected_categories": [],
-          "finding_ids": [],
+          "finding_ids": [
+            "zip_string.environment.SHA-256"
+          ],
           "id": "fdroid_editor",
           "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
-          "predicted_categories": [],
+          "predicted_categories": [
+            "environment"
+          ],
           "runtime_ms": null,
           "status": "ok"
         },

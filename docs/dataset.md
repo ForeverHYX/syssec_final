@@ -32,6 +32,7 @@ datasets/hardeninspector_eval_v1/
     packer_stub_payload.apk
     reflection_only_dispatch.apk
     self_written_environment_checks.apk
+    signature_integrity_check.apk
   reports/
     *.json
 ```
@@ -56,6 +57,7 @@ datasets/hardeninspector_eval_v1/
 | `emulator_file_artifacts` | emulator file-artifact sample | 写入 `/proc`、`/sys`、`goldfish` 等模拟器文件/硬件痕迹 | 验证 file-based emulator detection |
 | `emulator_imei_probe` | emulator IMEI probe sample | `TelephonyManager/getDeviceId` + 零值 IMEI 证据 | 验证 telephony identifier probe |
 | `native_jni_export_only` | JNI Java_* export sample | ELF `.dynsym` 仅导出 `Java_*` JNI 方法，不含 `JNI_OnLoad` | 验证 JNI 导出符号识别 |
+| `signature_integrity_check` | app signature integrity-check sample | PackageManager 签名查询 + `Signature/toByteArray` + `MessageDigest/SHA-256` | 验证反篡改/自完整性检测识别 |
 | `combined_hardened_showcase` | 综合加固样本 | 合并三类加固证据 | 课程展示主样本 |
 
 ## 标签格式
@@ -85,7 +87,7 @@ datasets/hardeninspector_eval_v1/
 
 单元测试会在临时目录重新构造数据集，验证：
 
-- 17 个样本全部生成；
+- 18 个样本全部生成；
 - `labels.json` 和每个报告存在；
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。
@@ -99,4 +101,4 @@ datasets/hardeninspector_eval_v1/
 - 1 个 F-Droid 真实开源 APK；
 - 1 个 PIVAA 漏洞测试 APK。
 
-外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 29 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。
+外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 30 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。

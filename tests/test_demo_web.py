@@ -34,7 +34,12 @@ def test_demo_catalog_points_to_existing_curated_samples():
     catalog = build_demo_catalog(ROOT)
     by_id = {sample["id"]: sample for sample in catalog}
 
-    assert {"fdroid_clean_baseline", "combined_hardened_showcase", "pivaa"} <= by_id.keys()
+    assert {
+        "fdroid_clean_baseline",
+        "combined_hardened_showcase",
+        "signature_integrity_check",
+        "pivaa",
+    } <= by_id.keys()
     assert len(catalog) >= 5
     for sample in catalog:
         apk_path = Path(sample["apk_path"])
@@ -45,6 +50,7 @@ def test_demo_catalog_points_to_existing_curated_samples():
         assert sample["showcase_role"]
 
     assert by_id["combined_hardened_showcase"]["showcase_role"] == "All-category evidence chain"
+    assert by_id["signature_integrity_check"]["showcase_role"] == "Anti-tamper integrity evidence"
     assert by_id["fdroid_editor"]["dataset_kind"] == "External corpus"
 
 
@@ -102,8 +108,8 @@ def test_render_index_html_contains_demo_api_surface():
     assert "Synthetic Oracle" in html
     assert "External APK Corpus" in html
     assert "HardenInspector Micro F1" in html
-    assert "29 scored APKs" in html
-    assert "47 regression tests" in html
+    assert "30 scored APKs" in html
+    assert "50 regression tests" in html
     assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html

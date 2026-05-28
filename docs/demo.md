@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-47 passed
+50 passed
 ```
 
 ## 2. 生成演示 APK
@@ -64,7 +64,7 @@ make demo-web
 http://127.0.0.1:8000/
 ```
 
-网页会列出 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，也支持上传本地 `.apk` 临时扫描。点击 `Scan` 或 `Scan Upload` 后会展示四类 summary 计数、finding 列表和 evidence 表，并在下方展示 `reports/benchmark/benchmark_metrics.csv` 中的 micro/macro 对比指标。接口说明见 `docs/demo_web.md`。
+网页会列出 clean baseline、综合加固样本、signature integrity、Native/IMEI 专项样本和外部 APK，也支持上传本地 `.apk` 临时扫描。点击 `Scan` 或 `Scan Upload` 后会展示四类 summary 计数、finding 列表和 evidence 表，并在下方展示 `reports/benchmark/benchmark_metrics.csv` 中的 micro/macro 对比指标。接口说明见 `docs/demo_web.md`。
 
 ## 5. 展示重点
 

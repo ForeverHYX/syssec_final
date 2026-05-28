@@ -8,7 +8,7 @@
 - 可运行 CLI；
 - 本地 Web Demo：`src/hardeninspector/demo_web.py`、`make demo-web`、`docs/demo_web.md`；
 - JSON/文本报告输出；
-- 46 个自动化测试；
+- 50 个自动化测试；
 - 可复现评估数据集 `datasets/hardeninspector_eval_v1/`；
 - 外部现成 APK 语料 `datasets/external_apk_corpus_v1/`；
 - 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
@@ -27,9 +27,9 @@
 | 选择检测器方向 | CLI 对 APK 输出加固技术画像 |
 | 静态规则为核心 | `src/hardeninspector/rules.py` |
 | 输出证据链 | JSON/text report 中每条 finding 都有 evidence |
-| 构造小规模测试集 | `datasets/hardeninspector_eval_v1/` 包含 17 个 APK、labels 和报告 |
+| 构造小规模测试集 | `datasets/hardeninspector_eval_v1/` 包含 18 个 APK、labels 和报告 |
 | 纳入现成 APK/测试集 | `datasets/external_apk_corpus_v1/` 包含 DroidBench、F-Droid、PIVAA 的 12 个 APK，并生成 `reports/external_corpus/` |
-| 与开源实现对比并给出统计数据 | `reports/benchmark/benchmark_results.json`、`benchmark_metrics.csv`、`benchmark_summary.md`；默认评分工具均为 29/29 合并评分样本可运行，不再把 DroidLysis 不可用环境记为 0 分 |
+| 与开源实现对比并给出统计数据 | `reports/benchmark/benchmark_results.json`、`benchmark_metrics.csv`、`benchmark_summary.md`；默认评分工具均为 30/30 合并评分样本可运行，不再把 DroidLysis 不可用环境记为 0 分 |
 | 开箱即用环境 | `make setup`、`make demo-web`、`./scripts/setup_env.sh`、Dockerfile；fresh venv 验证通过 |
 | 总结报告和汇报材料 | `reports/final_summary.md`、ZJU Beamer `slides/final_presentation.tex`；标题为项目名，作者为中期报告组员，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图，`make slides` 编译通过 |
 | slides 构建产物管理 | `slides/final_presentation.pdf` 和 LaTeX 辅助文件均已加入 `.gitignore`，仅提交 `.tex`、模板 `.sty` 和模板图片资源 |
@@ -53,9 +53,9 @@ make slides
 
 | 检查项 | 结果 |
 | --- | --- |
-| 单元/集成测试 | 47 个测试通过 |
-| 合成数据集 | `make dataset` 生成 17 个带标签 APK |
-| Combined benchmark | 17 个 synthetic APK + 12 个外部 APK；四个工具均为 29/29 coverage；Micro F1 分别为 1.000、0.348、0.517、0.716 |
+| 单元/集成测试 | 50 个测试通过 |
+| 合成数据集 | `make dataset` 生成 18 个带标签 APK |
+| Combined benchmark | 18 个 synthetic APK + 12 个外部 APK；四个工具均为 30/30 coverage；Micro F1 分别为 1.000、0.340、0.533、0.714 |
 | 外部 APK 语料 | 12 个 DroidBench/F-Droid/PIVAA APK；已纳入评分，单独统计四个工具均为 12/12 coverage |
 | 外部语料 finding 分布 | HardenInspector Any 10/12；packer=4、obfuscation=2、environment=5、native=3；F-Droid 样本无 finding |
 | Slides | `make slides` 可编译 22 页 ZJU Beamer；PDF 和 LaTeX 辅助文件已加入 `.gitignore` |

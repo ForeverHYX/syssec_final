@@ -142,6 +142,26 @@ TELEPHONY_EMULATOR_ID_PATTERNS = [
     "zeroPos",
 ]
 
+INTEGRITY_API_PATTERNS = [
+    "Landroid/content/pm/PackageManager;",
+    "android/content/pm/PackageManager",
+    "getPackageInfo",
+    "GET_SIGNATURES",
+    "GET_SIGNING_CERTIFICATES",
+    "SigningInfo",
+    "getSigningCertificateHistory",
+]
+
+INTEGRITY_DIGEST_PATTERNS = [
+    "Landroid/content/pm/Signature;",
+    "android/content/pm/Signature",
+    "toByteArray",
+    "MessageDigest",
+    "SHA-1",
+    "SHA-256",
+    "checkSignature",
+]
+
 DEBUGGER_PATTERNS = [
     "isDebuggerConnected",
     "/proc/self/status",
@@ -184,6 +204,7 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _system_properties,
         _emulator_artifacts,
         _telephony_identifier_probe,
+        _integrity_check,
         _debugger_probe,
         _instrumentation_probe,
         _native_debugger_symbol,
@@ -394,6 +415,38 @@ def _telephony_identifier_probe(features: ApkFeatures) -> Finding | None:
         description=(
             "APK checks telephony device identifiers together with zero or placeholder IMEI values "
             "commonly used in emulator-detection examples."
+        ),
+        evidence=evidence[:10],
+    )
+
+
+def _integrity_check(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item for item in features.string_evidence if item.kind in {"dex-string", "dex-const-string"}
+    ]
+    api_evidence = _string_matches(string_evidence, INTEGRITY_API_PATTERNS)
+    digest_evidence = _string_matches(string_evidence, INTEGRITY_DIGEST_PATTERNS)
+    method_evidence: list[Evidence] = []
+    for method in features.methods + features.invoked_methods:
+        if method.name in {
+            "getSigningCertificateHistory",
+            "checkSignature",
+            "toByteArray",
+        }:
+            method_evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+
+    if not (api_evidence and (digest_evidence or method_evidence)):
+        return None
+    evidence = _dedupe_evidence([*api_evidence, *digest_evidence, *method_evidence])
+    return Finding(
+        id="environment.integrity_check",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="Application signature or integrity check indicators",
+        description=(
+            "APK references package-signature APIs together with digest or signature material, "
+            "a static signal for anti-tamper or self-integrity checks."
         ),
         evidence=evidence[:10],
     )

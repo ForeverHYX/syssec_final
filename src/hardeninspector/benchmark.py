@@ -48,6 +48,11 @@ ZIP_BASELINE_KEYWORDS = {
         "xposed",
         "substrate",
         "/proc/self/maps",
+        "GET_SIGNATURES",
+        "GET_SIGNING_CERTIFICATES",
+        "MessageDigest",
+        "SHA-256",
+        "checkSignature",
     ],
     "native": ["JNI_OnLoad"],
 }

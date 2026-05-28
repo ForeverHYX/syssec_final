@@ -8,7 +8,7 @@ Scored external corpus: `external_apk_corpus_v1`
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 0.884 | 1.000 | 0.938 | 0.940 |
+| HardenInspector | 29/29 | 0.974 | 0.974 | 0.974 | 0.971 |
 | APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
 | Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
 | ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
@@ -20,7 +20,7 @@ Scored external corpus: `external_apk_corpus_v1`
 | Category | TP | FP | FN | Precision | Recall | F1 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | packer | 10 | 0 | 0 | 1.000 | 1.000 | 1.000 |
-| obfuscation | 9 | 4 | 0 | 0.692 | 1.000 | 0.818 |
+| obfuscation | 8 | 0 | 1 | 1.000 | 0.889 | 0.941 |
 | environment | 11 | 0 | 0 | 1.000 | 1.000 | 1.000 |
 | native | 8 | 1 | 0 | 0.889 | 1.000 | 0.941 |
 

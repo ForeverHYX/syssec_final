@@ -134,6 +134,53 @@ def test_detector_reports_class_forname_reflection(tmp_path):
     assert all(item.kind in {"dex-string", "dex-const-string", "method"} for item in finding.evidence)
 
 
+def test_support_library_reflection_scaffold_is_not_obfuscation(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "support-reflection.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.supportonly", "com.example.supportonly.MainActivity"],
+            class_descriptors=[
+                "Landroid/support/v7/widget/SearchView$AutoCompleteTextViewReflector;",
+                "Ljava/lang/Class;",
+                "Ljava/lang/reflect/Method;",
+            ],
+            method_names=["<clinit>", "getDeclaredMethod", "invoke", "forName"],
+            dex_strings=[
+                "Ljava/lang/Class;",
+                "java/lang/reflect/Method",
+                "forName",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "obfuscation.reflection" not in finding_ids
+
+
+def test_app_owned_reflection_dispatch_remains_obfuscation(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "app-reflection.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.reflective", "com.example.reflective.MainActivity"],
+            class_descriptors=[
+                "Lcom/example/reflective/ReflectiveDispatcher;",
+                "Ljava/lang/Class;",
+                "Ljava/lang/reflect/Method;",
+            ],
+            method_names=["<clinit>", "getDeclaredMethod", "invoke"],
+            dex_strings=["java/lang/reflect/Method"],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "obfuscation.reflection")
+
+    assert finding.category == "obfuscation"
+    assert any("ReflectiveDispatcher" in item.value for item in finding.evidence)
+
+
 def test_detector_reports_emulator_file_artifacts(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "emulator-files.apk",

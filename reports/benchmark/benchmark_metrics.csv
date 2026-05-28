@@ -1,10 +1,10 @@
 tool,category,tp,fp,fn,tn,precision,recall,f1
 hardeninspector,packer,10,0,0,19,1.000000,1.000000,1.000000
-hardeninspector,obfuscation,9,4,0,16,0.692308,1.000000,0.818182
+hardeninspector,obfuscation,8,0,1,20,1.000000,0.888889,0.941176
 hardeninspector,environment,11,0,0,18,1.000000,1.000000,1.000000
 hardeninspector,native,8,1,0,20,0.888889,1.000000,0.941176
-hardeninspector,micro,,,,,0.883721,1.000000,0.938272
-hardeninspector,macro,,,,,0.895299,1.000000,0.939840
+hardeninspector,micro,,,,,0.973684,0.973684,0.973684
+hardeninspector,macro,,,,,0.972222,0.972222,0.970588
 apkid,packer,3,0,7,19,1.000000,0.300000,0.461538
 apkid,obfuscation,0,0,9,20,0.000000,0.000000,0.000000
 apkid,environment,5,0,6,18,1.000000,0.454545,0.625000

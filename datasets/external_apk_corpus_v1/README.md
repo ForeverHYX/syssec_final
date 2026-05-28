@@ -11,7 +11,7 @@ The corpus currently includes:
 - 1 intentionally vulnerable Android test APK: PIVAA.
 
 The manifest records coarse `expected_categories` and `label_basis` values so
-these APKs are included in the 23-sample combined benchmark. They are still also
+these APKs are included in the 29-sample combined benchmark. They are still also
 used for standalone scan coverage, finding distribution, and comparator-output
 statistics.
 

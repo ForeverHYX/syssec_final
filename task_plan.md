@@ -18,10 +18,10 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Preserve the midterm technical route and avoid copying open-source implementations | User clarification | Benchmark adapters only invoke/reference external tools; detector remains evidence-chain static rules |
 | Produce final summary report and LaTeX Beamer | User clarification | `reports/final_summary.md` and `slides/final_presentation.tex` |
 | Use ZJU Beamer template and include tables/illustrations | User clarification | ZJU template assets in `slides/`; deck title is `HardenInspector`, authors match the midterm report, and compiled output has tables plus TikZ figures |
-| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 16-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
+| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 21-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
-| Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote created/pushed, staged commits made |
-| Commit and push at milestones | User objective | Git history shows staged commits and remote branch is up to date |
+| Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; latest local commits are pending explicit push approval |
+| Commit and push at milestones | User objective | Git history shows staged commits; local branch is ahead of remote until the user explicitly approves uploading to GitHub |
 
 ## Phases
 
@@ -184,7 +184,17 @@ Status: complete
 - Detect JNI `Java_*` exported native symbols in ELF libraries, not only `JNI_OnLoad`.
 - Add synthetic samples for these patterns so the benchmark does not rely only on external APKs for regression coverage.
 - Regenerate dataset, benchmark, reports, docs, README, and slides.
-- Verify locally, commit, and push.
+- Verify locally and commit; push remains pending explicit GitHub upload approval.
+
+### Phase 19: Third-party reflection false-positive hardening
+
+Status: complete locally; push pending explicit approval
+
+- Add regression tests for Android support-library reflection scaffolding versus application-owned reflection dispatch.
+- Filter reflection findings from support-library/platform compatibility code while keeping strong `Method.invoke` and application-context reflection evidence.
+- Regenerate dataset reports, combined benchmark, external-corpus reports, README, docs, final summary, and slides.
+- Verify locally and in fresh venv.
+- Commit locally; push after explicit GitHub upload approval.
 
 ## Errors Encountered
 

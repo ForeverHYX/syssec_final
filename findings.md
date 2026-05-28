@@ -102,3 +102,16 @@ Implemented tuning results:
 - Added `native.jni_export` for ELF/string `Java_*` JNI exports, which fixes native coverage for older DroidBench/NDK-style samples that do not export `JNI_OnLoad`.
 - Added four synthetic samples: `class_forname_reflection`, `emulator_file_artifacts`, `emulator_imei_probe`, and `native_jni_export_only`.
 - Combined benchmark is now 29 samples. HardenInspector Micro F1 is 0.938 with 29/29 coverage and zero false negatives across the four scored categories; remaining errors are coarse-label false positives on external APKs.
+
+## Third-party Reflection False-positive Hardening
+
+Review of the remaining 29-sample benchmark errors showed that most obfuscation false positives came from Android support-library compatibility classes such as `SearchView$AutoCompleteTextViewReflector`, `ActionBarDrawerToggleHoneycomb`, `NotificationCompatJellybean`, and `PagerAdapter`. Those are framework/library implementation details, not application hardening evidence.
+
+Implemented rule hardening:
+
+- Added regression tests proving support-library reflection scaffolding does not trigger `obfuscation.reflection`, while application-owned `ReflectiveDispatcher` evidence still does.
+- Split reflection evidence into strong literals (`Method.invoke`) and contextual literals (`java.lang.reflect.Method` / `java/lang/reflect/Method`), where contextual literals now require application-owned reflection context.
+- Filtered support-library/platform reflection owners for `android/support`, `androidx`, Kotlin, Google Material/Common, and platform descriptors.
+- Preserved `Class.forName` detection when it is not only support-library reflection context.
+
+Current combined benchmark remains 29 samples with all tools at 29/29 coverage. HardenInspector Micro F1 is now 0.974; obfuscation precision improved to 1.000 with one documented recall loss on `droidbench_reflection_5`, whose visible evidence is dominated by support-library reflection. External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3.

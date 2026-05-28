@@ -60,7 +60,7 @@ make benchmark
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 12/12 | 11 | 4 | 7 | 5 | 3 |
+| HardenInspector | 12/12 | 10 | 4 | 2 | 5 | 3 |
 | APKiD | 12/12 | 2 | 0 | 0 | 2 | 0 |
 | Androguard DEX | 12/12 | 8 | 3 | 6 | 1 | 0 |
 | ZIP Strings | 12/12 | 9 | 4 | 6 | 2 | 0 |
@@ -71,7 +71,7 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 0.884 | 1.000 | 0.938 | 0.940 |
+| HardenInspector | 29/29 | 0.974 | 0.974 | 0.974 | 0.971 |
 | APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
 | Androguard DEX | 29/29 | 0.800 | 0.421 | 0.552 | 0.478 |
 | ZIP Strings | 29/29 | 0.862 | 0.658 | 0.746 | 0.745 |
@@ -79,7 +79,7 @@ make benchmark
 重要观察：
 
 - `fdroid_editor` 是真实开源 APK，当前 HardenInspector 无 finding，说明收紧后的控制流密度规则没有在该普通样本上误报。
-- DroidBench 的 reflection/dynamic-loading/emulator/native 场景能触发对应静态证据；其中 `Class.forName`、IMEI/file-based emulator detection 和 JNI `Java_*` 符号来自外部语料调优后新增的规则。
+- DroidBench 的 reflection/dynamic-loading/emulator/native 场景能触发对应静态证据；其中 `Class.forName`、IMEI/file-based emulator detection 和 JNI `Java_*` 符号来自外部语料调优后新增的规则。`droidbench_reflection_5` 当前不报 obfuscation，因为可见证据主要来自 support library 兼容层反射，规则优先降低真实 APK 误报。
 - PIVAA 同时触发 dynamic loading、reflection 和 instrumentation 字符串，适合作为安全测试 APK 的外部 smoke sample。
 
 ## 标签边界

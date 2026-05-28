@@ -132,3 +132,16 @@
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 36 tests, fresh combined benchmark kept all four tools at 29/29 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
 - Repository hygiene checks passed: `git diff --check` had no output; current README/docs/report/slides no longer contain stale 25-sample/31-test benchmark claims except historical progress/findings entries.
 - Marked Phase 18 complete in `task_plan.md`; GitHub push remains pending explicit upload approval because network escalation was rejected by the approval reviewer.
+
+## 2026-05-28 Third-party Reflection False-positive Hardening
+
+- Audited the remaining HardenInspector benchmark mismatches after Phase 18. Four obfuscation false positives traced to Android support-library/platform reflection evidence rather than application-owned hardening logic.
+- TDD RED: added detector tests for support-library reflection scaffolding and application-owned reflection dispatch. The support-library case failed as expected under the old rule.
+- TDD GREEN: split reflection string evidence into strong literals and contextual literals, added support-library/platform owner filters, and required generic `java/lang/reflect/Method` evidence to have application-owned reflection context.
+- Full local pytest passed with 38 tests.
+- Regenerated dataset reports, benchmark artifacts, and external-corpus artifacts. Current combined scoring set remains 29 samples: 17 synthetic + 12 external. Micro F1 values: HardenInspector 0.974, APKiD 0.348, Androguard DEX 0.552, ZIP Strings 0.746.
+- External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3; `fdroid_editor` remains clean with no finding.
+- Documented the tradeoff: `droidbench_reflection_5` is now a labeled obfuscation false negative because the visible bytecode evidence is support-library reflection scaffolding, while the former DroidBench Native/Emulator false positives are removed.
+- Recompiled slides with `make slides`; `pdfinfo` reports 21 pages and LaTeX log scan found no Overfull/Underfull/Warning/Error/Undefined/Missing matches.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 38 tests, fresh combined benchmark kept all four tools at 29/29 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Repository hygiene check passed: `git diff --check` had no output. Local branch remains ahead of `origin/main`; GitHub push is pending explicit user approval.

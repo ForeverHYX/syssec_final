@@ -68,9 +68,12 @@ DYNAMIC_LOADING_PATTERNS = [
     "loadDex",
 ]
 
-REFLECTION_PATTERNS = [
+CONTEXTUAL_REFLECTION_PATTERNS = [
     "java.lang.reflect.Method",
     "java/lang/reflect/Method",
+]
+
+STRONG_REFLECTION_PATTERNS = [
     "Method.invoke",
 ]
 
@@ -79,6 +82,31 @@ CLASS_FORNAME_PATTERNS = [
     "java.lang.Class",
     "java/lang/Class",
 ]
+
+REFLECTION_METHOD_NAMES = {
+    "invoke",
+    "forName",
+    "getMethod",
+    "getDeclaredMethod",
+    "setAccessible",
+    "newInstance",
+}
+
+LIBRARY_REFLECTION_OWNER_PREFIXES = (
+    "Landroid/support/",
+    "Landroidx/",
+    "Lcom/google/android/material/",
+    "Lcom/google/common/",
+    "Lkotlin/",
+    "Lkotlinx/",
+)
+
+PLATFORM_CLASS_PREFIXES = (
+    "Landroid/",
+    "Ljava/",
+    "Ljavax/",
+    "Ldalvik/",
+)
 
 SYSTEM_PROPERTY_PATTERNS = [
     "ro.kernel.qemu",
@@ -260,14 +288,9 @@ def _short_identifiers(features: ApkFeatures) -> Finding | None:
 
 
 def _reflection_usage(features: ApkFeatures) -> Finding | None:
-    evidence = _string_matches(features.string_evidence, REFLECTION_PATTERNS)
+    evidence = _reflection_string_evidence(features)
     evidence.extend(_class_forname_evidence(features))
-    for method in features.methods + features.invoked_methods:
-        if (
-            method.name in {"invoke", "forName", "getMethod", "getDeclaredMethod"}
-            or "reflect" in method.class_descriptor.lower()
-        ):
-            evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+    evidence.extend(_reflection_method_evidence(features))
     if not evidence:
         return None
     return Finding(
@@ -496,6 +519,8 @@ def _native_symbol_matches(features: ApkFeatures, names: list[str]) -> list[Evid
 
 
 def _class_forname_evidence(features: ApkFeatures) -> list[Evidence]:
+    if _is_library_only_reflection_context(features):
+        return []
     string_evidence = [
         item for item in features.string_evidence if item.kind in {"dex-string", "dex-const-string"}
     ]
@@ -504,6 +529,130 @@ def _class_forname_evidence(features: ApkFeatures) -> list[Evidence]:
     if not (class_evidence and forname_evidence):
         return []
     return _dedupe_evidence([*class_evidence, *forname_evidence])
+
+
+def _reflection_string_evidence(features: ApkFeatures) -> list[Evidence]:
+    if _is_library_only_reflection_context(features):
+        return []
+    evidence = _string_matches(features.string_evidence, STRONG_REFLECTION_PATTERNS)
+    if _has_application_reflection_context(features):
+        evidence.extend(_string_matches(features.string_evidence, CONTEXTUAL_REFLECTION_PATTERNS))
+    return _dedupe_evidence(evidence)
+
+
+def _reflection_method_evidence(features: ApkFeatures) -> list[Evidence]:
+    evidence: list[Evidence] = []
+    library_context = _has_library_reflection_context(features)
+
+    for method in features.methods:
+        if _is_application_reflection_method(method.class_descriptor, method.name):
+            evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+
+    for dex in features.dex_files:
+        for code_method in dex.code_methods:
+            owner = code_method.method.class_descriptor
+            if _is_library_reflection_owner(owner):
+                continue
+            for invoked in code_method.invoked_methods:
+                if not _is_reflection_api_method(invoked.class_descriptor, invoked.name):
+                    continue
+                if _is_platform_descriptor(owner) and library_context:
+                    continue
+                evidence.append(
+                    Evidence(
+                        "method",
+                        f"{code_method.method.class_descriptor}->{code_method.method.name} calls "
+                        f"{invoked.class_descriptor}->{invoked.name}",
+                        "DEX code",
+                    )
+                )
+
+    return _dedupe_evidence(evidence)
+
+
+def _is_library_only_reflection_context(features: ApkFeatures) -> bool:
+    return _has_library_reflection_context(features) and not _has_application_reflection_context(features)
+
+
+def _has_library_reflection_context(features: ApkFeatures) -> bool:
+    for method in features.methods:
+        if _is_library_reflection_owner(method.class_descriptor) and _is_reflection_like_method(
+            method.class_descriptor,
+            method.name,
+        ):
+            return True
+
+    for dex in features.dex_files:
+        for code_method in dex.code_methods:
+            if not _is_library_reflection_owner(code_method.method.class_descriptor):
+                continue
+            if any(
+                _is_reflection_api_method(method.class_descriptor, method.name)
+                for method in code_method.invoked_methods
+            ):
+                return True
+
+    return False
+
+
+def _has_application_reflection_context(features: ApkFeatures) -> bool:
+    for method in features.methods:
+        if _is_application_reflection_method(method.class_descriptor, method.name):
+            return True
+
+    for dex in features.dex_files:
+        for code_method in dex.code_methods:
+            owner = code_method.method.class_descriptor
+            if _is_library_reflection_owner(owner):
+                continue
+            if _is_application_descriptor(owner) and any(
+                _is_reflection_api_method(method.class_descriptor, method.name)
+                for method in code_method.invoked_methods
+            ):
+                return True
+
+    return False
+
+
+def _is_application_reflection_method(descriptor: str, method_name: str) -> bool:
+    return _is_application_descriptor(descriptor) and _is_reflection_like_method(descriptor, method_name)
+
+
+def _is_reflection_like_method(descriptor: str, method_name: str) -> bool:
+    lowered_descriptor = descriptor.lower()
+    lowered_method = method_name.lower()
+    return (
+        method_name in REFLECTION_METHOD_NAMES
+        or "reflect" in lowered_descriptor
+        or "reflect" in lowered_method
+    )
+
+
+def _is_reflection_api_method(descriptor: str, method_name: str) -> bool:
+    return (
+        descriptor == "Ljava/lang/Class;"
+        and method_name in {"forName", "getMethod", "getDeclaredMethod"}
+    ) or (
+        descriptor.startswith("Ljava/lang/reflect/")
+        and method_name in REFLECTION_METHOD_NAMES
+    )
+
+
+def _is_library_reflection_owner(descriptor: str) -> bool:
+    return descriptor.startswith(LIBRARY_REFLECTION_OWNER_PREFIXES)
+
+
+def _is_application_descriptor(descriptor: str) -> bool:
+    if not _is_class_descriptor(descriptor):
+        return False
+    if _is_platform_descriptor(descriptor) or _is_library_reflection_owner(descriptor):
+        return False
+    simple_name = _simple_class_name(descriptor)
+    return simple_name != "BuildConfig" and simple_name != "R" and not simple_name.startswith("R$")
+
+
+def _is_platform_descriptor(descriptor: str) -> bool:
+    return descriptor.startswith(PLATFORM_CLASS_PREFIXES)
 
 
 def _string_matches(

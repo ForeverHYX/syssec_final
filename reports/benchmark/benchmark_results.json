@@ -38,10 +38,10 @@
           "tp": 8
         },
         "obfuscation": {
-          "fn": 0,
-          "fp": 4,
-          "tn": 16,
-          "tp": 9
+          "fn": 1,
+          "fp": 0,
+          "tn": 20,
+          "tp": 8
         },
         "packer": {
           "fn": 0,
@@ -67,9 +67,9 @@
             "recall": 1.0
           },
           "obfuscation": {
-            "f1": 0.8181818181818181,
-            "precision": 0.6923076923076923,
-            "recall": 1.0
+            "f1": 0.9411764705882353,
+            "precision": 1.0,
+            "recall": 0.8888888888888888
           },
           "packer": {
             "f1": 1.0,
@@ -78,14 +78,14 @@
           }
         },
         "macro": {
-          "f1": 0.9398395721925134,
-          "precision": 0.8952991452991452,
-          "recall": 1.0
+          "f1": 0.9705882352941176,
+          "precision": 0.9722222222222222,
+          "recall": 0.9722222222222222
         },
         "micro": {
-          "f1": 0.9382716049382717,
-          "precision": 0.8837209302325582,
-          "recall": 1.0
+          "f1": 0.9736842105263158,
+          "precision": 0.9736842105263158,
+          "recall": 0.9736842105263158
         }
       },
       "samples": [
@@ -396,14 +396,10 @@
           "expected_categories": [
             "obfuscation"
           ],
-          "finding_ids": [
-            "obfuscation.reflection"
-          ],
+          "finding_ids": [],
           "id": "droidbench_reflection_5",
           "notes": null,
-          "predicted_categories": [
-            "obfuscation"
-          ],
+          "predicted_categories": [],
           "runtime_ms": null,
           "status": "ok"
         },
@@ -444,15 +440,13 @@
             "environment"
           ],
           "finding_ids": [
-            "obfuscation.reflection",
             "environment.system_properties",
             "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_build_1",
           "notes": null,
           "predicted_categories": [
-            "environment",
-            "obfuscation"
+            "environment"
           ],
           "runtime_ms": null,
           "status": "ok"
@@ -462,14 +456,12 @@
             "environment"
           ],
           "finding_ids": [
-            "obfuscation.reflection",
             "environment.emulator_artifacts"
           ],
           "id": "droidbench_emulator_file_1",
           "notes": null,
           "predicted_categories": [
-            "environment",
-            "obfuscation"
+            "environment"
           ],
           "runtime_ms": null,
           "status": "ok"
@@ -514,14 +506,12 @@
             "native"
           ],
           "finding_ids": [
-            "obfuscation.reflection",
             "native.jni_export"
           ],
           "id": "droidbench_native_id_function",
           "notes": null,
           "predicted_categories": [
-            "native",
-            "obfuscation"
+            "native"
           ],
           "runtime_ms": null,
           "status": "ok"
@@ -531,14 +521,12 @@
             "native"
           ],
           "finding_ids": [
-            "obfuscation.reflection",
             "native.jni_export"
           ],
           "id": "droidbench_source_in_native_code",
           "notes": null,
           "predicted_categories": [
-            "native",
-            "obfuscation"
+            "native"
           ],
           "runtime_ms": null,
           "status": "ok"

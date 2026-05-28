@@ -13,12 +13,12 @@
         {
           "kind": "dex-string",
           "location": "classes.dex:string",
-          "value": "java.lang.reflect.Method"
+          "value": "Method.invoke"
         },
         {
           "kind": "dex-string",
           "location": "classes.dex:string",
-          "value": "Method.invoke"
+          "value": "java.lang.reflect.Method"
         },
         {
           "kind": "method",

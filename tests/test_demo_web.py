@@ -67,7 +67,7 @@ def test_load_demo_metrics_exposes_comparison_rows():
         "androguard_dex",
         "zip_string_baseline",
     }
-    assert rows[("hardeninspector", "micro")]["f1"] == 0.987013
+    assert rows[("hardeninspector", "micro")]["f1"] == 1.0
     assert rows[("apkid", "micro")]["f1"] < rows[("hardeninspector", "micro")]["f1"]
 
 

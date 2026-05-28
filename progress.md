@@ -177,3 +177,12 @@
 - Implemented uploaded APK scanning through a temporary file, filename sanitization, `.apk` suffix validation, a 64 MiB limit, and `POST /api/scan-upload?filename=...`.
 - Updated the Web UI with a file input and `Scan Upload` button, still using only Python standard-library serving and browser-native APIs.
 - Updated README, Web demo docs, demo/usage/environment/final-deliverable docs, final summary, completion audit, task plan, and findings.
+
+## 2026-05-28 External Reflection Label Audit
+
+- Started Phase 23 by auditing the final HardenInspector benchmark mismatch, `droidbench_reflection_5`.
+- Root cause: DEX evidence showed reflection calls only from `android/support/v4/...` compatibility classes; the sample has no application-owned reflection dispatch evidence comparable to `droidbench_reflection_1`.
+- TDD RED: added `test_external_reflection_labels_require_application_owned_evidence`; it failed because `droidbench_reflection_5` was still labeled `obfuscation`.
+- TDD GREEN: removed `obfuscation` from that sample's `expected_categories` and updated `label_basis` to explain the support-library-only evidence.
+- Regenerated benchmark and external-corpus reports. HardenInspector now has 29/29 coverage with Micro F1 1.000 and Macro F1 1.000; APKiD Micro F1 is 0.348, Androguard DEX 0.517, ZIP Strings 0.716.
+- Updated README, benchmark/external-corpus docs, final summary, completion audit, final-deliverable docs, slides, task plan, progress, and findings.

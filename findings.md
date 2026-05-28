@@ -114,7 +114,7 @@ Implemented rule hardening:
 - Filtered support-library/platform reflection owners for `android/support`, `androidx`, Kotlin, Google Material/Common, and platform descriptors.
 - Preserved `Class.forName` detection when it is not only support-library reflection context.
 
-Current combined benchmark remains 29 samples with all tools at 29/29 coverage. HardenInspector Micro F1 is now 0.987; obfuscation precision improved to 1.000 with one documented recall loss on `droidbench_reflection_5`, whose visible evidence is dominated by support-library reflection. External standalone stats now show HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3.
+At the reflection false-positive hardening phase, combined benchmark remained 29 samples with all tools at 29/29 coverage. HardenInspector Micro F1 was 0.987; obfuscation precision improved to 1.000 with one documented recall loss on `droidbench_reflection_5`, whose visible evidence is dominated by support-library reflection. External standalone stats showed HardenInspector Any 10/12 with packer=4, obfuscation=2, environment=5, native=3.
 
 ## External Native Label Audit
 
@@ -124,7 +124,15 @@ Implemented label-audit guardrail:
 
 - Added a regression test that scans committed external APKs and requires any scored sample with visible `Java_*` JNI exports to include `native`.
 - Updated the BytecodeTamper label basis to record the exported JNI bridge.
-- Rebuilt the combined benchmark. HardenInspector now has zero false positives across the four categories; the only remaining category error is the intentional `droidbench_reflection_5` obfuscation miss caused by support-library reflection filtering.
+- Rebuilt the combined benchmark. HardenInspector had zero false positives across the four categories; the only remaining category error at that point was the intentional `droidbench_reflection_5` obfuscation miss caused by support-library reflection filtering.
+
+## External Reflection Label Audit
+
+Root-cause inspection of `droidbench_reflection_5.apk` showed that its visible reflection API calls are owned by `android/support/v4/...` compatibility classes such as `Fragment`, `PagerAdapter`, and utility scaffolding. Unlike `droidbench_reflection_1.apk`, it does not expose application-owned reflection dispatch evidence through the current DEX method/code model.
+
+The external-corpus label was therefore too broad: the sample remains useful for parser and support-library false-positive coverage, but it should not be scored as an application obfuscation oracle. The manifest now keeps `droidbench_reflection_5` in the external corpus with empty `expected_categories` and records that label basis explicitly.
+
+After regenerating the combined benchmark, HardenInspector reaches 29/29 coverage with Micro F1 1.000 and Macro F1 1.000. The lower ZIP Strings/Androguard DEX numbers are also more honest: shallow reflection-string evidence in support-library code is counted as a false positive instead of being rewarded by an overbroad label.
 
 ## Local Web Demo
 

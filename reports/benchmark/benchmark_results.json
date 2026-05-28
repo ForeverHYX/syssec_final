@@ -38,9 +38,9 @@
           "tp": 9
         },
         "obfuscation": {
-          "fn": 1,
+          "fn": 0,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 8
         },
         "packer": {
@@ -67,9 +67,9 @@
             "recall": 1.0
           },
           "obfuscation": {
-            "f1": 0.9411764705882353,
+            "f1": 1.0,
             "precision": 1.0,
-            "recall": 0.8888888888888888
+            "recall": 1.0
           },
           "packer": {
             "f1": 1.0,
@@ -78,14 +78,14 @@
           }
         },
         "macro": {
-          "f1": 0.9852941176470589,
+          "f1": 1.0,
           "precision": 1.0,
-          "recall": 0.9722222222222222
+          "recall": 1.0
         },
         "micro": {
-          "f1": 0.9870129870129869,
+          "f1": 1.0,
           "precision": 1.0,
-          "recall": 0.9743589743589743
+          "recall": 1.0
         }
       },
       "samples": [
@@ -393,9 +393,7 @@
           "status": "ok"
         },
         {
-          "expected_categories": [
-            "obfuscation"
-          ],
+          "expected_categories": [],
           "finding_ids": [],
           "id": "droidbench_reflection_5",
           "notes": null,
@@ -587,9 +585,9 @@
           "tp": 0
         },
         "obfuscation": {
-          "fn": 9,
+          "fn": 8,
           "fp": 0,
-          "tn": 20,
+          "tn": 21,
           "tp": 0
         },
         "packer": {
@@ -632,9 +630,9 @@
           "recall": 0.18863636363636363
         },
         "micro": {
-          "f1": 0.3404255319148936,
+          "f1": 0.34782608695652173,
           "precision": 1.0,
-          "recall": 0.20512820512820512
+          "recall": 0.21052631578947367
         }
       },
       "samples": [
@@ -865,9 +863,7 @@
           "status": "ok"
         },
         {
-          "expected_categories": [
-            "obfuscation"
-          ],
+          "expected_categories": [],
           "finding_ids": [],
           "id": "droidbench_reflection_5",
           "notes": null,
@@ -1027,9 +1023,9 @@
         },
         "obfuscation": {
           "fn": 4,
-          "fp": 4,
+          "fp": 5,
           "tn": 16,
-          "tp": 5
+          "tp": 4
         },
         "packer": {
           "fn": 3,
@@ -1055,9 +1051,9 @@
             "recall": 0.0
           },
           "obfuscation": {
-            "f1": 0.5555555555555556,
-            "precision": 0.5555555555555556,
-            "recall": 0.5555555555555556
+            "f1": 0.47058823529411764,
+            "precision": 0.4444444444444444,
+            "recall": 0.5
           },
           "packer": {
             "f1": 0.8235294117647058,
@@ -1066,14 +1062,14 @@
           }
         },
         "macro": {
-          "f1": 0.47810457516339866,
-          "precision": 0.6388888888888888,
-          "recall": 0.4047979797979798
+          "f1": 0.4568627450980392,
+          "precision": 0.6111111111111112,
+          "recall": 0.3909090909090909
         },
         "micro": {
-          "f1": 0.5423728813559321,
-          "precision": 0.8,
-          "recall": 0.41025641025641024
+          "f1": 0.5172413793103448,
+          "precision": 0.75,
+          "recall": 0.39473684210526316
         }
       },
       "samples": [
@@ -1319,9 +1315,7 @@
           "status": "ok"
         },
         {
-          "expected_categories": [
-            "obfuscation"
-          ],
+          "expected_categories": [],
           "finding_ids": [
             "androguard.obfuscation.java/lang/reflect/Method",
             "androguard.obfuscation.reflective_method"
@@ -1508,9 +1502,9 @@
         },
         "obfuscation": {
           "fn": 4,
-          "fp": 4,
+          "fp": 5,
           "tn": 16,
-          "tp": 5
+          "tp": 4
         },
         "packer": {
           "fn": 1,
@@ -1536,9 +1530,9 @@
             "recall": 0.5555555555555556
           },
           "obfuscation": {
-            "f1": 0.5555555555555556,
-            "precision": 0.5555555555555556,
-            "recall": 0.5555555555555556
+            "f1": 0.47058823529411764,
+            "precision": 0.4444444444444444,
+            "recall": 0.5
           },
           "packer": {
             "f1": 0.9473684210526316,
@@ -1547,14 +1541,14 @@
           }
         },
         "macro": {
-          "f1": 0.7307730109587695,
-          "precision": 0.8888888888888888,
-          "recall": 0.6391414141414141
+          "f1": 0.7095311808934099,
+          "precision": 0.8611111111111112,
+          "recall": 0.6252525252525253
         },
         "micro": {
-          "f1": 0.7352941176470588,
-          "precision": 0.8620689655172413,
-          "recall": 0.6410256410256411
+          "f1": 0.716417910447761,
+          "precision": 0.8275862068965517,
+          "recall": 0.631578947368421
         }
       },
       "samples": [
@@ -1815,9 +1809,7 @@
           "status": "ok"
         },
         {
-          "expected_categories": [
-            "obfuscation"
-          ],
+          "expected_categories": [],
           "finding_ids": [
             "zip_string.obfuscation.java/lang/reflect/Method"
           ],

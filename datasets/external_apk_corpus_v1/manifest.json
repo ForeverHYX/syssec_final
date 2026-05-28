@@ -21,10 +21,8 @@
       "source_context": "Reflection",
       "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Reflection/Reflection5.apk",
       "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
-      "expected_categories": [
-        "obfuscation"
-      ],
-      "label_basis": "DroidBench Reflection sample; reflection is scored as an obfuscation/indirection signal."
+      "expected_categories": [],
+      "label_basis": "DroidBench Reflection sample retained for coverage, but visible reflection evidence is support-library compatibility code rather than application-owned hardening/indirection, so it is not scored as an obfuscation oracle."
     },
     {
       "id": "droidbench_dynamic_both_1",

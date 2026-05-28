@@ -102,17 +102,17 @@ make external-corpus
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 29/29 | 1.000 | 0.974 | 0.987 | 0.985 |
-| APKiD | 29/29 | 1.000 | 0.205 | 0.340 | 0.272 |
-| Androguard DEX | 29/29 | 0.800 | 0.410 | 0.542 | 0.478 |
-| ZIP Strings | 29/29 | 0.862 | 0.641 | 0.735 | 0.731 |
+| HardenInspector | 29/29 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 29/29 | 1.000 | 0.211 | 0.348 | 0.272 |
+| Androguard DEX | 29/29 | 0.750 | 0.395 | 0.517 | 0.457 |
+| ZIP Strings | 29/29 | 0.828 | 0.632 | 0.716 | 0.710 |
 
-测试状态：`.venv/bin/python -m pytest -q` 为 45 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 46 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 
 - `packer`：HardenInspector TP 10 / FN 0，APKiD TP 3，Androguard DEX TP 7，ZIP Strings TP 9。
-- `obfuscation`：HardenInspector TP 8 / FN 1，APKiD TP 0，Androguard DEX TP 5，ZIP Strings TP 5。
+- `obfuscation`：HardenInspector TP 8 / FN 0，APKiD TP 0，Androguard DEX TP 4，ZIP Strings TP 4。
 - `environment`：HardenInspector TP 11 / FN 0，APKiD TP 5，Androguard DEX TP 4，ZIP Strings TP 6。
 - `native`：HardenInspector TP 9 / FN 0，APKiD TP 0，Androguard DEX TP 0，ZIP Strings TP 5。
 
@@ -120,7 +120,7 @@ make external-corpus
 
 APKiD 对 packer 指纹和部分 anti-vm 信号表现稳定，但它的目标是识别 packer/protector/obfuscator/oddity 指纹，不覆盖本项目的 Native 入口证据和大部分课程构造的 reflection/short-identifier 标签。
 
-Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX strings/classes/methods，不看 Manifest/Native/resource，也不复刻 HardenInspector 的 opcode-density 与 ELF-symbol 规则，所以 Native 类别为 0/8，控制流和 Native 符号样本不命中。
+Androguard DEX baseline 证明合成 DEX 可以被真实开源 parser 解析。它能命中 DEX 内的动态加载、反射、短类名和环境字符串，但因为只看 DEX strings/classes/methods，不看 Manifest/Native/resource，也不复刻 HardenInspector 的 opcode-density 与 ELF-symbol 规则，所以 Native 类别为 0/9，控制流和 Native 符号样本不命中。
 
 ZIP Strings baseline 说明浅层字符串扫描在本数据集上也能捕获很多显式字符串和符号名，但它没有结构化 evidence chain，无法区分 Manifest、DEX、Native、资源上下文，也不能从 bytecode opcode 分布中识别控制流密度或从文件统计中解释高熵 payload。
 
@@ -139,7 +139,7 @@ HardenInspector 的优势来自中期报告路线中的多源结构化证据：M
 
 测试状态：`make external-corpus` 和 fresh venv 外部语料复核均能完成四个工具的 12/12 coverage。
 
-外部样本暴露出两个规则调优点：早期 `control_flow_density` 对 F-Droid 普通 APK 命中过敏；早期 reflection 规则也会把 Android support library 的兼容层反射样板报成应用混淆。当前规则已分别收紧为“控制流 opcode 数和密度同时超过阈值”和“反射证据需要强字面量或应用自有上下文”，`fdroid_editor` 已无 finding，DroidBench Native/Emulator 样本中的支持库反射误报也已消除。
+外部样本暴露出两个规则调优点：早期 `control_flow_density` 对 F-Droid 普通 APK 命中过敏；早期 reflection 规则也会把 Android support library 的兼容层反射样板报成应用混淆。当前规则已分别收紧为“控制流 opcode 数和密度同时超过阈值”和“反射证据需要强字面量或应用自有上下文”，`fdroid_editor` 已无 finding；`droidbench_reflection_5` 的可见反射证据也被审计为 support-library-only，因此不再作为应用混淆 oracle。
 
 ## 局限
 

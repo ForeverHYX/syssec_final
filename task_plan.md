@@ -227,6 +227,17 @@ Status: complete
 - Expose `POST /api/scan-upload?filename=<name.apk>` and wire the page file input to it.
 - Update README, demo docs, usage/environment docs, final deliverable, final summary, completion audit, progress, and findings.
 
+### Phase 23: External reflection label audit
+
+Status: complete
+
+- Root-cause inspect the final HardenInspector benchmark mismatch, `droidbench_reflection_5`.
+- Confirm the visible reflection API calls are support-library compatibility code, not application-owned reflection dispatch.
+- Add a regression test requiring external reflection labels to follow application-owned evidence.
+- Remove `obfuscation` from `droidbench_reflection_5` expected categories and document the label basis.
+- Regenerate benchmark and external-corpus reports; HardenInspector reaches 29/29 coverage with Micro/Macro F1 1.000.
+- Update README, benchmark/external-corpus docs, final summary, completion audit, slides, progress, and findings.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

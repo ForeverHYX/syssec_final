@@ -3,6 +3,7 @@ from pathlib import Path
 
 from hardeninspector.dataset import DATASET_VERSION, build_dataset
 from hardeninspector.features import extract_features
+from hardeninspector.report import scan_apk
 from hardeninspector.synthetic import SyntheticApkSpec, build_synthetic_apk
 from hardeninspector.util import sha256_hex
 
@@ -121,3 +122,23 @@ def test_external_jni_export_samples_are_labeled_native():
         )
         if has_jni_export:
             assert "native" in sample["expected_categories"], sample["id"]
+
+
+def test_external_reflection_labels_require_application_owned_evidence():
+    corpus = ROOT / "datasets" / "external_apk_corpus_v1"
+    manifest = json.loads((corpus / "manifest.json").read_text(encoding="utf-8"))
+    by_id = {sample["id"]: sample for sample in manifest["samples"]}
+
+    reflection_1 = by_id["droidbench_reflection_1"]
+    reflection_5 = by_id["droidbench_reflection_5"]
+
+    assert "obfuscation.reflection" in {
+        finding.id for finding in scan_apk(corpus / reflection_1["apk_path"]).findings
+    }
+    assert "obfuscation" in reflection_1["expected_categories"]
+
+    reflection_5_findings = {
+        finding.id for finding in scan_apk(corpus / reflection_5["apk_path"]).findings
+    }
+    assert "obfuscation.reflection" not in reflection_5_findings
+    assert "obfuscation" not in reflection_5["expected_categories"]

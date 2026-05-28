@@ -169,3 +169,11 @@
 - Implemented `src/hardeninspector/demo_web.py` with only Python standard-library dependencies. It serves `/`, `/api/samples`, `/api/scan?id=<sample_id>`, and `/api/metrics`.
 - Added `make demo-web` and the `hardeninspector-demo-web` console script.
 - Added `docs/demo_web.md` and updated README, usage/demo/environment/final-deliverable docs, final summary, completion audit, and task plan.
+
+## 2026-05-28 Web Demo Upload Scan
+
+- Started Phase 22 to make the Web demo usable with arbitrary local APKs during the final exhibit, not only curated samples.
+- TDD RED: added tests requiring `scan_uploaded_apk`, uploaded APK summary output, non-APK rejection, oversized upload rejection, and `/api/scan-upload` visibility in the HTML. The targeted test run failed because `scan_uploaded_apk` did not exist yet.
+- Implemented uploaded APK scanning through a temporary file, filename sanitization, `.apk` suffix validation, a 64 MiB limit, and `POST /api/scan-upload?filename=...`.
+- Updated the Web UI with a file input and `Scan Upload` button, still using only Python standard-library serving and browser-native APIs.
+- Updated README, Web demo docs, demo/usage/environment/final-deliverable docs, final summary, completion audit, task plan, and findings.

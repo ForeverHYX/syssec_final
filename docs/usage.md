@@ -57,7 +57,7 @@ Summary: packer=4, obfuscation=2, environment=3, native=1
 make demo-web
 ```
 
-访问 `http://127.0.0.1:8000/` 后，可以在浏览器中选择已提交的合成/外部 APK 样本，查看 summary、finding evidence 和 benchmark 对比指标。详见 `docs/demo_web.md`。
+访问 `http://127.0.0.1:8000/` 后，可以在浏览器中选择已提交的合成/外部 APK 样本，也可以上传本地 `.apk` 临时扫描，查看 summary、finding evidence 和 benchmark 对比指标。详见 `docs/demo_web.md`。
 
 ## 5. 构造评估数据集
 

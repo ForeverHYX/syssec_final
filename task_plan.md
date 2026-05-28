@@ -22,7 +22,7 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; `main` is synchronized with `origin/main` |
 | Commit and push at milestones | User objective | Git history shows staged commits; latest local improvements are pushed to GitHub |
-| Provide an interactive demo page | User objective | `make demo-web` launches a local standard-library Web demo with sample scans and benchmark metrics |
+| Provide an interactive demo page | User objective | `make demo-web` launches a local standard-library Web demo with sample scans, APK upload scanning, and benchmark metrics |
 
 ## Phases
 
@@ -217,6 +217,15 @@ Status: complete
 - Expose `/api/samples`, `/api/scan`, and `/api/metrics` for live report and benchmark display.
 - Add tests for catalog integrity, scan output, metric parsing, HTML/API surface, and command exposure.
 - Update README, usage/demo/environment/final-deliverable docs, final summary, and completion audit.
+
+### Phase 22: Web demo uploaded APK scanning
+
+Status: complete
+
+- Add TDD coverage for scanning raw uploaded APK bytes and rejecting non-APK/oversized inputs.
+- Add `scan_uploaded_apk` with temporary-file scanning, filename sanitization, suffix validation, and a 64 MiB demo limit.
+- Expose `POST /api/scan-upload?filename=<name.apk>` and wire the page file input to it.
+- Update README, demo docs, usage/environment docs, final deliverable, final summary, completion audit, progress, and findings.
 
 ## Errors Encountered
 

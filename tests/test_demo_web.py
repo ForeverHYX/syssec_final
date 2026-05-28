@@ -1,9 +1,12 @@
 from pathlib import Path
 
+import pytest
+
 from hardeninspector.demo_web import (
     build_demo_catalog,
     load_demo_metrics,
     render_index_html,
+    scan_uploaded_apk,
     scan_demo_sample,
 )
 
@@ -34,6 +37,26 @@ def test_scan_demo_sample_returns_report_with_expected_signal():
     assert any(finding["evidence"] for finding in result["report"]["findings"])
 
 
+def test_scan_uploaded_apk_scans_raw_apk_bytes():
+    apk_path = ROOT / "datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk"
+
+    result = scan_uploaded_apk(apk_path.read_bytes(), "combined_hardened_showcase.apk")
+
+    assert result["sample"]["id"] == "uploaded"
+    assert result["sample"]["source"] == "Uploaded APK"
+    assert result["sample"]["size_bytes"] == apk_path.stat().st_size
+    assert result["report"]["summary"]["packer"] > 0
+    assert result["report"]["summary"]["environment"] > 0
+
+
+def test_scan_uploaded_apk_rejects_non_apk_and_oversized_inputs():
+    with pytest.raises(ValueError, match="APK file"):
+        scan_uploaded_apk(b"not an apk", "notes.txt")
+
+    with pytest.raises(ValueError, match="exceeds"):
+        scan_uploaded_apk(b"0123456789", "sample.apk", max_bytes=4)
+
+
 def test_load_demo_metrics_exposes_comparison_rows():
     metrics = load_demo_metrics(ROOT)
     rows = {(row["tool"], row["category"]): row for row in metrics["rows"]}
@@ -54,5 +77,7 @@ def test_render_index_html_contains_demo_api_surface():
     assert "HardenInspector Demo" in html
     assert "/api/samples" in html
     assert "/api/scan" in html
+    assert "/api/scan-upload" in html
     assert "/api/metrics" in html
+    assert "Upload APK" in html
     assert "Evidence" in html

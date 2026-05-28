@@ -8,7 +8,7 @@
 - 可运行 CLI；
 - 本地 Web Demo：`src/hardeninspector/demo_web.py`、`make demo-web`、`docs/demo_web.md`；
 - JSON/文本报告输出；
-- 43 个自动化测试；
+- 45 个自动化测试；
 - 可复现评估数据集 `datasets/hardeninspector_eval_v1/`；
 - 外部现成 APK 语料 `datasets/external_apk_corpus_v1/`；
 - 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
@@ -34,7 +34,7 @@
 | 总结报告和汇报材料 | `reports/final_summary.md`、ZJU Beamer `slides/final_presentation.tex`；标题为项目名，作者为中期报告组员，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图，`make slides` 编译通过 |
 | slides 构建产物管理 | `slides/final_presentation.pdf` 和 LaTeX 辅助文件均已加入 `.gitignore`，仅提交 `.tex`、模板 `.sty` 和模板图片资源 |
 | 记录现实调整 | `docs/implementation_scope.md` |
-| 课程展示可复现 | `docs/demo.md`、`docs/demo_web.md`、`examples/make_demo_apk.py` 和 `make demo-web` |
+| 课程展示可复现 | `docs/demo.md`、`docs/demo_web.md`、`examples/make_demo_apk.py` 和 `make demo-web`；Web demo 支持预置样本和本地 APK 上传扫描 |
 | GitHub 状态 | 远端已配置为 `git@github.com:ForeverHYX/syssec_final.git`；当前 `main` 已与 `origin/main` 同步 |
 
 ## 运行检查
@@ -53,7 +53,7 @@ make slides
 
 | 检查项 | 结果 |
 | --- | --- |
-| 单元/集成测试 | 43 个测试通过 |
+| 单元/集成测试 | 45 个测试通过 |
 | 合成数据集 | `make dataset` 生成 17 个带标签 APK |
 | Combined benchmark | 17 个 synthetic APK + 12 个外部 APK；四个工具均为 29/29 coverage；Micro F1 分别为 0.987、0.340、0.542、0.735 |
 | 外部 APK 语料 | 12 个 DroidBench/F-Droid/PIVAA APK；已纳入评分，单独统计四个工具均为 12/12 coverage |

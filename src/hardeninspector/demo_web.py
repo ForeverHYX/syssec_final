@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import tempfile
 from dataclasses import dataclass
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -21,6 +22,7 @@ from .report import scan_apk
 
 DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[2]
 BENCHMARK_METRICS_PATH = Path("reports/benchmark/benchmark_metrics.csv")
+MAX_UPLOAD_BYTES = 64 * 1024 * 1024
 
 
 @dataclass(frozen=True)
@@ -122,6 +124,43 @@ def scan_demo_sample(sample_id: str, repo_root: str | Path = DEFAULT_REPO_ROOT) 
     report = scan_apk(root / sample.apk_path).to_dict()
     return {
         "sample": sample.to_dict(root),
+        "report": report,
+    }
+
+
+def scan_uploaded_apk(
+    apk_bytes: bytes,
+    filename: str,
+    max_bytes: int = MAX_UPLOAD_BYTES,
+) -> dict[str, Any]:
+    safe_name = Path(filename or "uploaded.apk").name or "uploaded.apk"
+    if not safe_name.lower().endswith(".apk"):
+        raise ValueError("Upload must be an APK file")
+    if not apk_bytes:
+        raise ValueError("Uploaded APK is empty")
+    if len(apk_bytes) > max_bytes:
+        raise ValueError(f"Uploaded APK exceeds the {max_bytes // (1024 * 1024)} MiB demo limit")
+
+    with tempfile.TemporaryDirectory(prefix="hardeninspector-upload-") as tmp_dir:
+        apk_path = Path(tmp_dir) / safe_name
+        apk_path.write_bytes(apk_bytes)
+        try:
+            report = scan_apk(apk_path).to_dict()
+        except Exception as exc:
+            raise ValueError(f"Uploaded APK could not be scanned: {exc}") from exc
+
+    report["apk"]["path"] = f"uploaded:{safe_name}"
+    return {
+        "sample": {
+            "id": "uploaded",
+            "title": safe_name,
+            "source": "Uploaded APK",
+            "apk_path": f"uploaded:{safe_name}",
+            "relative_path": safe_name,
+            "description": "APK uploaded through the local demo page and scanned from a temporary file.",
+            "expected_categories": [],
+            "size_bytes": len(apk_bytes),
+        },
         "report": report,
     }
 
@@ -250,6 +289,25 @@ def render_index_html() -> str:
       gap: 8px;
       padding: 12px;
     }
+    .upload-box {
+      border-top: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .file-label {
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .file-input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 8px;
+      background: #fbfbf9;
+      color: var(--ink);
+    }
     .sample-button {
       border: 1px solid var(--line);
       background: #fbfbf9;
@@ -299,6 +357,20 @@ def render_index_html() -> str:
     .scan-button:disabled {
       opacity: .55;
       cursor: wait;
+    }
+    .secondary-button {
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      background: #f7fbf8;
+      color: var(--accent);
+      padding: 8px 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .secondary-button:disabled {
+      border-color: var(--line);
+      color: var(--muted);
+      cursor: default;
     }
     .content {
       padding: 16px;
@@ -423,7 +495,7 @@ def render_index_html() -> str:
         <p class="subtitle">Interactive local showcase for static Android hardening evidence.</p>
       </div>
       <div class="api">
-        API <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/metrics</code>
+        API <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/scan-upload</code><code>/api/metrics</code>
       </div>
     </div>
   </header>
@@ -434,6 +506,12 @@ def render_index_html() -> str:
         <span class="muted" id="sampleCount">Loading</span>
       </div>
       <div class="sample-list" id="sampleList"></div>
+      <div class="upload-box">
+        <label class="file-label" for="uploadFile">Upload APK</label>
+        <input class="file-input" id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
+        <button class="secondary-button" id="uploadButton" disabled>Scan Upload</button>
+        <div class="muted" id="uploadMeta">No file selected</div>
+      </div>
     </aside>
     <section>
       <div class="panel">
@@ -460,7 +538,7 @@ def render_index_html() -> str:
     </section>
   </main>
   <script>
-    const state = { samples: [], selected: null, scanning: false };
+    const state = { samples: [], selected: null, scanning: false, uploadFile: null };
     const categories = ["packer", "obfuscation", "environment", "native"];
 
     function escapeHtml(value) {
@@ -561,6 +639,33 @@ def render_index_html() -> str:
       }
     }
 
+    async function scanUpload() {
+      if (!state.uploadFile || state.scanning) return;
+      state.scanning = true;
+      const button = document.getElementById("uploadButton");
+      button.disabled = true;
+      button.textContent = "Scanning";
+      document.getElementById("selectedTitle").textContent = state.uploadFile.name;
+      document.getElementById("selectedMeta").textContent = `Uploaded APK · ${(state.uploadFile.size / 1024).toFixed(1)} KB`;
+      document.getElementById("scanContent").innerHTML = `<div class="empty">Scanning uploaded APK.</div>`;
+      try {
+        const response = await fetch(`/api/scan-upload?filename=${encodeURIComponent(state.uploadFile.name)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/vnd.android.package-archive" },
+          body: state.uploadFile
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Upload scan failed");
+        renderReport(result);
+      } catch (error) {
+        document.getElementById("scanContent").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+      } finally {
+        state.scanning = false;
+        button.disabled = false;
+        button.textContent = "Scan Upload";
+      }
+    }
+
     function renderMetrics(metrics) {
       const rows = (metrics.rows || []).filter(row => row.category === "micro" || row.category === "macro");
       const body = rows.map(row => `
@@ -593,6 +698,14 @@ def render_index_html() -> str:
     }
 
     document.getElementById("scanButton").addEventListener("click", scanSelected);
+    document.getElementById("uploadFile").addEventListener("change", event => {
+      state.uploadFile = event.target.files?.[0] || null;
+      document.getElementById("uploadButton").disabled = !state.uploadFile;
+      document.getElementById("uploadMeta").textContent = state.uploadFile
+        ? `${state.uploadFile.name} · ${(state.uploadFile.size / 1024).toFixed(1)} KB`
+        : "No file selected";
+    });
+    document.getElementById("uploadButton").addEventListener("click", scanUpload);
     init().catch(error => {
       document.getElementById("sampleList").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
     });
@@ -628,6 +741,34 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
                     self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND)
             except KeyError as exc:
                 self._send_json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+            except Exception as exc:  # pragma: no cover - defensive server boundary
+                self._send_json({"error": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+
+        def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+            parsed = urlparse(self.path)
+            if parsed.path != "/api/scan-upload":
+                self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND)
+                return
+
+            try:
+                content_length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                self._send_json({"error": "invalid content length"}, HTTPStatus.BAD_REQUEST)
+                return
+            if content_length > MAX_UPLOAD_BYTES:
+                self._send_json(
+                    {"error": f"Uploaded APK exceeds the {MAX_UPLOAD_BYTES // (1024 * 1024)} MiB demo limit"},
+                    HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                )
+                return
+
+            query = parse_qs(parsed.query)
+            filename = query.get("filename", ["uploaded.apk"])[0]
+            try:
+                body = self.rfile.read(content_length)
+                self._send_json(scan_uploaded_apk(body, filename))
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
             except Exception as exc:  # pragma: no cover - defensive server boundary
                 self._send_json({"error": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR)
 

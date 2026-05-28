@@ -131,3 +131,9 @@ Implemented label-audit guardrail:
 The final exhibit now has a browser-based demo in addition to the CLI. The implementation deliberately uses Python standard-library HTTP serving instead of Flask/Node so the showcase remains reproducible from the existing virtual environment and can run offline.
 
 The demo exposes curated synthetic and external samples: clean baseline, combined hardened showcase, native ptrace/loader, emulator IMEI probe, PIVAA, and F-Droid editor. This gives a better oral-exam flow than only showing terminal JSON: one click shows category summary, finding details, evidence tables, and the benchmark micro/macro comparison loaded from `reports/benchmark/benchmark_metrics.csv`.
+
+## Web Demo Upload Scan
+
+The browser demo now supports scanning an arbitrary local `.apk` selected by the presenter. The upload path posts raw APK bytes to the local server, writes them to a temporary directory, runs the same `scan_apk` pipeline as the CLI, then returns the normal JSON report shape. This improves live demonstration value while preserving the no-network, no-extra-framework constraint.
+
+The upload route intentionally rejects non-`.apk` filenames and files above 64 MiB. This keeps the demo predictable for classroom use and avoids turning the local showcase into an unconstrained file-ingestion service.

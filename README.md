@@ -43,7 +43,7 @@ make slides
 
 | 项目 | 结果 |
 | --- | --- |
-| 自动化测试 | `43 passed` |
+| 自动化测试 | `45 passed` |
 | 合并评分数据集 | 17 个 synthetic APK + 12 个外部 APK，四个默认评分工具均为 29/29 coverage |
 | Combined benchmark Micro F1 | HardenInspector 0.987；APKiD 0.340；Androguard DEX 0.542；ZIP Strings 0.735 |
 | 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
@@ -58,7 +58,7 @@ make slides
 make demo-web
 ```
 
-浏览器访问 `http://127.0.0.1:8000/`。页面可以选择 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，现场查看 summary、finding evidence 和 benchmark 对比指标。
+浏览器访问 `http://127.0.0.1:8000/`。页面可以选择 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，也可以上传本地 APK 临时扫描，现场查看 summary、finding evidence 和 benchmark 对比指标。
 
 生成可复现演示 APK：
 

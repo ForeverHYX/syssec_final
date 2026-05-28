@@ -33,16 +33,19 @@ http://127.0.0.1:8000/
 | `pivaa` | 外部现成 APK，用于证明真实 APK 也能扫描 |
 | `fdroid_editor` | F-Droid 真实 APK baseline，用于展示正常样本低误报 |
 
+页面还支持上传本地 `.apk` 文件。上传扫描只在本地服务进程中写入临时目录，扫描完成后临时文件自动删除；默认大小上限为 64 MiB。
+
 扫描后页面展示四类 summary 计数、finding 列表和 evidence 表。Benchmark 区域直接读取 `reports/benchmark/benchmark_metrics.csv`，展示 HardenInspector 与 APKiD、Androguard DEX、ZIP Strings 的 micro/macro Precision、Recall、F1。
 
 ## API
 
-页面使用三个本地接口：
+页面使用四个本地接口：
 
 | 接口 | 返回 |
 | --- | --- |
 | `/api/samples` | 可展示样本列表、路径、来源、说明和期望类别 |
 | `/api/scan?id=<sample_id>` | 指定样本的 HardenInspector JSON report |
+| `/api/scan-upload?filename=<name.apk>` | 上传 APK bytes 后返回 HardenInspector JSON report |
 | `/api/metrics` | `reports/benchmark/benchmark_metrics.csv` 解析后的指标行 |
 
-这些接口只读取仓库内已提交的 APK 和报告文件，不上传数据，也不需要联网。
+这些接口只读取仓库内已提交的 APK/报告文件或浏览器上传的本地 APK bytes，不向外部上传数据，也不需要联网。

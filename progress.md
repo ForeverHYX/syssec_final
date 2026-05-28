@@ -154,3 +154,10 @@
 - Regenerated benchmark and external-corpus reports. Current combined Micro F1 values: HardenInspector 0.987, APKiD 0.340, Androguard DEX 0.542, ZIP Strings 0.735.
 - Final local verification passed: `.venv/bin/python -m pytest -q` reported 39 tests; `make slides` compiled 21 pages; LaTeX log scan and `git diff --check` had no findings.
 - Fresh venv verification passed with the same 39-test result, 29/29 combined benchmark coverage, and 12/12 external-corpus coverage.
+
+## 2026-05-28 GitHub Push Completion
+
+- User explicitly approved the GitHub upload.
+- Ran `git push origin main`; GitHub accepted `main -> main`, updating the remote from `b853735` to `6c23939`.
+- Fresh post-push verification passed: local tests reported 39 passed, `make benchmark` regenerated 29/29 combined results with HardenInspector Micro F1 0.987, `make external-corpus` regenerated 12/12 external-corpus statistics, and `make slides` compiled 21 pages.
+- `git rev-parse HEAD origin/main` showed the same commit after the push before this final status-doc refresh.

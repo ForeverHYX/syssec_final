@@ -20,8 +20,8 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Use ZJU Beamer template and include tables/illustrations | User clarification | ZJU template assets in `slides/`; deck title is `HardenInspector`, authors match the midterm report, and compiled output has tables plus TikZ figures |
 | Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 21-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
-| Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; latest local commits are pending explicit push approval |
-| Commit and push at milestones | User objective | Git history shows staged commits; local branch is ahead of remote until the user explicitly approves uploading to GitHub |
+| Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; `main` is synchronized with `origin/main` |
+| Commit and push at milestones | User objective | Git history shows staged commits; latest local improvements are pushed to GitHub |
 
 ## Phases
 
@@ -167,13 +167,13 @@ Status: complete
 
 ### Phase 17: Native structural evidence and harder synthetic samples
 
-Status: complete locally; push pending explicit approval
+Status: complete
 
 - Add a lightweight ELF parser for Native symbol/import evidence.
 - Detect native anti-debug/dynamic-loader symbols as environment/native findings with evidence locations.
 - Add harder synthetic APK samples that rely on structural signals such as entropy and ELF symbols rather than obvious DEX strings.
 - Regenerate dataset, benchmark, reports, docs, README, and slides.
-- Verify locally and commit; push remains pending explicit GitHub upload approval.
+- Verify locally, commit, and push.
 
 ### Phase 18: External corpus gap tuning
 
@@ -184,28 +184,28 @@ Status: complete
 - Detect JNI `Java_*` exported native symbols in ELF libraries, not only `JNI_OnLoad`.
 - Add synthetic samples for these patterns so the benchmark does not rely only on external APKs for regression coverage.
 - Regenerate dataset, benchmark, reports, docs, README, and slides.
-- Verify locally and commit; push remains pending explicit GitHub upload approval.
+- Verify locally, commit, and push.
 
 ### Phase 19: Third-party reflection false-positive hardening
 
-Status: complete locally; push pending explicit approval
+Status: complete
 
 - Add regression tests for Android support-library reflection scaffolding versus application-owned reflection dispatch.
 - Filter reflection findings from support-library/platform compatibility code while keeping strong `Method.invoke` and application-context reflection evidence.
 - Regenerate dataset reports, combined benchmark, external-corpus reports, README, docs, final summary, and slides.
 - Verify locally and in fresh venv.
-- Commit locally; push after explicit GitHub upload approval.
+- Commit locally and push to GitHub.
 
 ### Phase 20: External corpus native label audit
 
-Status: complete locally; push pending explicit approval
+Status: complete
 
 - Inspect the remaining Native mismatch in `droidbench_bytecode_tamper_1`.
 - Add a regression test requiring scored external samples with visible `Java_*` JNI exports to include the `native` expected category.
 - Update the sample `label_basis` to document its JNI bridge evidence.
 - Regenerate benchmark/external-corpus reports, README, docs, final summary, and slides.
 - Verify locally and in fresh venv.
-- Commit locally; push after explicit GitHub upload approval.
+- Commit locally and push to GitHub.
 
 ## Errors Encountered
 

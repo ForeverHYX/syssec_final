@@ -1,7 +1,12 @@
 import json
+from pathlib import Path
 
 from hardeninspector.dataset import DATASET_VERSION, build_dataset
 from hardeninspector.synthetic import SyntheticApkSpec, build_synthetic_apk
+from hardeninspector.util import sha256_hex
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_build_dataset_creates_apks_labels_and_reports(tmp_path):
@@ -66,3 +71,19 @@ def test_synthetic_apk_generation_is_byte_reproducible(tmp_path):
     second = build_synthetic_apk(tmp_path / "second.apk", spec)
 
     assert first.read_bytes() == second.read_bytes()
+
+
+def test_external_apk_corpus_manifest_matches_committed_files():
+    corpus = ROOT / "datasets" / "external_apk_corpus_v1"
+    manifest = json.loads((corpus / "manifest.json").read_text(encoding="utf-8"))
+
+    assert manifest["corpus_version"] == "external_apk_corpus_v1"
+    assert len(manifest["samples"]) == 12
+    sources = {sample["source"] for sample in manifest["samples"]}
+    assert {"DroidBench", "F-Droid", "PIVAA"}.issubset(sources)
+
+    for sample in manifest["samples"]:
+        apk_path = corpus / sample["apk_path"]
+        assert apk_path.exists(), sample["id"]
+        assert sample["source_url"].startswith("https://")
+        assert sha256_hex(apk_path.read_bytes()) == sample["sha256"]

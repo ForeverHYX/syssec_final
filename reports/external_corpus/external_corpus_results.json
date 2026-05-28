@@ -1,0 +1,819 @@
+{
+  "categories": [
+    "packer",
+    "obfuscation",
+    "environment",
+    "native"
+  ],
+  "comparator_notes": {
+    "androguard_dex": "Open-source Androguard DEX parser baseline. It uses Androguard to extract DEX strings/classes/methods, then applies a shallow category mapping for comparison; APK manifest/native/resource evidence is intentionally out of scope.",
+    "apkid": "Open-source Android packer/protector/obfuscator identifier used as the main runnable baseline. Categories are mapped from APKiD's JSON match groups.",
+    "droidlysis": "Removed from the scored benchmark because the local environment lacks its required apktool/baksmali/dex2jar pipeline; it remains a qualitative reference only.",
+    "hardeninspector": "Project detector following the midterm route: APK/AXML/DEX/native static parsing, feature extraction, explainable evidence-chain rules.",
+    "mobsf": "Open-source mobile security framework discussed qualitatively in docs; not executed in the offline benchmark because it requires a heavier service/docker workflow.",
+    "zip_string_baseline": "Dependency-free raw ZIP filename/string baseline. It shows what a shallow strings-only scanner can recover without structured Android parsing."
+  },
+  "corpus_version": "external_apk_corpus_v1",
+  "samples_total": 12,
+  "schema_version": 1,
+  "scope_note": "External APKs have source metadata and checksums but no HardenInspector hardening ground-truth labels. Results are coverage and finding-distribution statistics, not precision/recall scores.",
+  "tools": [
+    {
+      "category_counts": {
+        "environment": 3,
+        "native": 0,
+        "obfuscation": 6,
+        "packer": 3
+      },
+      "coverage": {
+        "samples_total": 12,
+        "samples_with_results": 12
+      },
+      "samples": [
+        {
+          "apk_path": "apks/droidbench/reflection_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/reflection_5.apk",
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_both_1.apk",
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_source_1.apk",
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": null,
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_build_1.apk",
+          "finding_ids": [
+            "obfuscation.reflection",
+            "environment.system_properties"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_file_1.apk",
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_imei_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
+          "finding_ids": [
+            "environment.instrumentation_probe"
+          ],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
+          "source": "DroidBench",
+          "source_context": "SelfModification",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/native_id_function.apk",
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/source_in_native_code.apk",
+          "finding_ids": [
+            "obfuscation.reflection"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": null,
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+          "source": "F-Droid",
+          "source_context": "open-source real APK",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/security/pivaa.apk",
+          "finding_ids": [
+            "packer.high_entropy_payload",
+            "packer.dynamic_code_loading",
+            "obfuscation.reflection",
+            "environment.instrumentation_probe"
+          ],
+          "id": "pivaa",
+          "notes": null,
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+          "source": "PIVAA",
+          "source_context": "intentionally vulnerable Android test APK",
+          "status": "ok"
+        }
+      ],
+      "samples_with_any_category": 9,
+      "source_counts_with_any_category": {
+        "DroidBench": 8,
+        "PIVAA": 1
+      },
+      "tool": "hardeninspector"
+    },
+    {
+      "category_counts": {
+        "environment": 2,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "coverage": {
+        "samples_total": 12,
+        "samples_with_results": 12
+      },
+      "samples": [
+        {
+          "apk_path": "apks/droidbench/reflection_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/reflection_5.apk",
+          "finding_ids": [],
+          "id": "droidbench_reflection_5",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_both_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_dynamic_both_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_source_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_dynamic_source_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_build_1.apk",
+          "finding_ids": [
+            "apkid.anti_vm.Build.BOARD check",
+            "apkid.anti_vm.Build.FINGERPRINT check",
+            "apkid.anti_vm.Build.HARDWARE check",
+            "apkid.anti_vm.Build.MANUFACTURER check",
+            "apkid.anti_vm.Build.MODEL check",
+            "apkid.anti_vm.Build.PRODUCT check",
+            "apkid.anti_vm.Build.TAGS check",
+            "apkid.anti_vm.Build.USER check"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_file_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_emulator_file_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_imei_1.apk",
+          "finding_ids": [
+            "apkid.anti_vm.device ID check"
+          ],
+          "id": "droidbench_emulator_imei_1",
+          "notes": null,
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
+          "source": "DroidBench",
+          "source_context": "SelfModification",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/native_id_function.apk",
+          "finding_ids": [],
+          "id": "droidbench_native_id_function",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/source_in_native_code.apk",
+          "finding_ids": [],
+          "id": "droidbench_source_in_native_code",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+          "source": "F-Droid",
+          "source_context": "open-source real APK",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/security/pivaa.apk",
+          "finding_ids": [],
+          "id": "pivaa",
+          "notes": null,
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+          "source": "PIVAA",
+          "source_context": "intentionally vulnerable Android test APK",
+          "status": "ok"
+        }
+      ],
+      "samples_with_any_category": 2,
+      "source_counts_with_any_category": {
+        "DroidBench": 2
+      },
+      "tool": "apkid"
+    },
+    {
+      "category_counts": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 6,
+        "packer": 3
+      },
+      "coverage": {
+        "samples_total": 12,
+        "samples_with_results": 12
+      },
+      "samples": [
+        {
+          "apk_path": "apks/droidbench/reflection_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/reflection_5.apk",
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_both_1.apk",
+          "finding_ids": [
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_source_1.apk",
+          "finding_ids": [
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_build_1.apk",
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_file_1.apk",
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_imei_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
+          "source": "DroidBench",
+          "source_context": "SelfModification",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/native_id_function.apk",
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/source_in_native_code.apk",
+          "finding_ids": [
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+          "source": "F-Droid",
+          "source_context": "open-source real APK",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/security/pivaa.apk",
+          "finding_ids": [
+            "androguard.environment.frida",
+            "androguard.obfuscation.java/lang/reflect/Method",
+            "androguard.obfuscation.reflective_method",
+            "androguard.packer.DexClassLoader"
+          ],
+          "id": "pivaa",
+          "notes": "Androguard DEX parser baseline: DEX strings/classes/methods only.",
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+          "source": "PIVAA",
+          "source_context": "intentionally vulnerable Android test APK",
+          "status": "ok"
+        }
+      ],
+      "samples_with_any_category": 8,
+      "source_counts_with_any_category": {
+        "DroidBench": 7,
+        "PIVAA": 1
+      },
+      "tool": "androguard_dex"
+    },
+    {
+      "category_counts": {
+        "environment": 2,
+        "native": 0,
+        "obfuscation": 6,
+        "packer": 3
+      },
+      "coverage": {
+        "samples_total": 12,
+        "samples_with_results": 12
+      },
+      "samples": [
+        {
+          "apk_path": "apks/droidbench/reflection_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_reflection_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/reflection_5.apk",
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_reflection_5",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d",
+          "source": "DroidBench",
+          "source_context": "Reflection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_both_1.apk",
+          "finding_ids": [
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_both_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/dynamic_source_1.apk",
+          "finding_ids": [
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "droidbench_dynamic_source_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0",
+          "source": "DroidBench",
+          "source_context": "DynamicLoading",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_build_1.apk",
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_emulator_build_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_file_1.apk",
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_emulator_file_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/emulator_imei_1.apk",
+          "finding_ids": [],
+          "id": "droidbench_emulator_imei_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f",
+          "source": "DroidBench",
+          "source_context": "EmulatorDetection",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
+          "finding_ids": [
+            "zip_string.environment./proc/self/maps"
+          ],
+          "id": "droidbench_bytecode_tamper_1",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment"
+          ],
+          "runtime_ms": null,
+          "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea",
+          "source": "DroidBench",
+          "source_context": "SelfModification",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/native_id_function.apk",
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_native_id_function",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/droidbench/source_in_native_code.apk",
+          "finding_ids": [
+            "zip_string.obfuscation.java/lang/reflect/Method"
+          ],
+          "id": "droidbench_source_in_native_code",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "obfuscation"
+          ],
+          "runtime_ms": null,
+          "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd",
+          "source": "DroidBench",
+          "source_context": "Native",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
+          "finding_ids": [],
+          "id": "fdroid_editor",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [],
+          "runtime_ms": null,
+          "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9",
+          "source": "F-Droid",
+          "source_context": "open-source real APK",
+          "status": "ok"
+        },
+        {
+          "apk_path": "apks/security/pivaa.apk",
+          "finding_ids": [
+            "zip_string.environment.frida",
+            "zip_string.obfuscation.java/lang/reflect/Method",
+            "zip_string.packer.DexClassLoader"
+          ],
+          "id": "pivaa",
+          "notes": "Raw ZIP filename/string baseline without APK/AXML/DEX structural parsing.",
+          "predicted_categories": [
+            "environment",
+            "obfuscation",
+            "packer"
+          ],
+          "runtime_ms": null,
+          "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a",
+          "source": "PIVAA",
+          "source_context": "intentionally vulnerable Android test APK",
+          "status": "ok"
+        }
+      ],
+      "samples_with_any_category": 9,
+      "source_counts_with_any_category": {
+        "DroidBench": 8,
+        "PIVAA": 1
+      },
+      "tool": "zip_string_baseline"
+    }
+  ]
+}

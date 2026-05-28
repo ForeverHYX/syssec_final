@@ -81,3 +81,15 @@
 - Added deterministic ZIP metadata for generated APKs and a regression test proving the same synthetic spec emits identical APK bytes.
 - Verification passed: `.venv/bin/python -m pytest -q` passed with 25 tests; `make dataset` generated 11 samples; `make benchmark` regenerated reports; `make slides` compiled an 18-page PDF; slide log had no Overfull/Warning/Error matches; key rendered pages were visually readable.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` passed with 25 tests, and the fresh benchmark run under `/tmp/hardeninspector-benchmark-check` kept all four default tools at 11/11 coverage.
+
+## 2026-05-28 External APK Corpus Expansion
+
+- User requested expanding the test set beyond self-generated APKs and looking online for ready-made test datasets/APKs.
+- Researched public sources and selected DroidBench, F-Droid, and PIVAA because they provide ready-made APKs or direct APK downloads with clear source context.
+- Added `datasets/external_apk_corpus_v1/` with 12 committed APKs: 10 DroidBench samples, 1 F-Droid real APK, and 1 PIVAA security-test APK. `manifest.json` records source URL, source context, path, and SHA-256 for each sample.
+- Added `run_external_corpus` support to `src/hardeninspector/benchmark.py` and `make external-corpus`; outputs are `reports/external_corpus/external_corpus_results.json`, `external_corpus_counts.csv`, and `external_corpus_summary.md`.
+- Kept external APKs out of Precision/Recall/F1 because they do not provide HardenInspector hardening ground truth. They now report coverage, category counts, and per-sample findings instead.
+- External corpus exposed an over-sensitive `control_flow_density` switch-count condition on the F-Droid APK. Removed that condition so the rule requires both high control-flow count and density; `fdroid_editor` now has no HardenInspector finding.
+- Current external corpus stats: all four tools cover 12/12 samples; HardenInspector reports any category on 9/12, APKiD 2/12, Androguard DEX 8/12, ZIP Strings 9/12.
+- Final local verification passed: `.venv/bin/python -m pytest -q` reported 27 tests; `make dataset` regenerated 11 synthetic samples; `make benchmark` regenerated 11/11 scored benchmark reports; `make external-corpus` regenerated 12/12 external APK statistics; `make slides` compiled a 19-page ZJU Beamer PDF with no `Overfull`/`Underfull`/`Warning`/`Error` log matches.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 27 tests; fresh synthetic benchmark kept all four tools at 11/11 coverage; fresh external-corpus run kept all four tools at 12/12 coverage.

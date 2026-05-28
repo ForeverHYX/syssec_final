@@ -78,3 +78,13 @@ datasets/hardeninspector_eval_v1/
 - 每个样本的 `expected_findings` 都包含在实际检测结果中；
 - 每个合成样本都记录了它替代的原始数据来源计划。
 - 合成 DEX 带有标准 checksum、signature 和 map list，可被 Androguard DEX parser 解析，用于公平 benchmark。
+
+## 外部 APK 补充语料
+
+为了避免评估只停留在自构造 APK，本仓库另外维护 `datasets/external_apk_corpus_v1/`：
+
+- 10 个 DroidBench 现成 APK；
+- 1 个 F-Droid 真实开源 APK；
+- 1 个 PIVAA 漏洞测试 APK。
+
+外部 APK 没有 hardening ground truth，因此不进入 Precision/Recall/F1 评分，只进入 `make external-corpus` 的覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。

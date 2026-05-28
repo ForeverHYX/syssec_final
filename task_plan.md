@@ -138,6 +138,16 @@ Status: complete
 - Add slides that explain the final deliverable and the opcode profile without relying on generated framework images.
 - Recompile and visually inspect the updated 18-page ZJU Beamer deck.
 
+### Phase 14: External APK corpus expansion
+
+Status: complete
+
+- Find public ready-made APK/test-suite sources online.
+- Add a committed external APK corpus with source URLs and checksums.
+- Add external scan-statistics output separate from synthetic oracle F1 metrics.
+- Update docs, reports, slides, and environment targets.
+- Verify tests, synthetic benchmark, external corpus scan, slides, and git state.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

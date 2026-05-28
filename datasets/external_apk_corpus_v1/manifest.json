@@ -1,0 +1,102 @@
+{
+  "corpus_version": "external_apk_corpus_v1",
+  "description": "Public external APK corpus for HardenInspector scan-statistics expansion. These APKs do not provide hardening ground-truth labels, so they are used for coverage, finding distribution, and comparator-output statistics rather than precision/recall scoring.",
+  "samples": [
+    {
+      "id": "droidbench_reflection_1",
+      "apk_path": "apks/droidbench/reflection_1.apk",
+      "source": "DroidBench",
+      "source_context": "Reflection",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Reflection/Reflection1.apk",
+      "sha256": "aeadaccc80810c877088f42710b33ae228ff2a1c6a5e3d0a23859e5cb8d7b4bc"
+    },
+    {
+      "id": "droidbench_reflection_5",
+      "apk_path": "apks/droidbench/reflection_5.apk",
+      "source": "DroidBench",
+      "source_context": "Reflection",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Reflection/Reflection5.apk",
+      "sha256": "9968dfdefc5137f5d7fb4c1b19fd1d5e96be54e67a451bdd46880c8d4ac6dc4d"
+    },
+    {
+      "id": "droidbench_dynamic_both_1",
+      "apk_path": "apks/droidbench/dynamic_both_1.apk",
+      "source": "DroidBench",
+      "source_context": "DynamicLoading",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/DynamicLoading/DynamicBoth1.apk",
+      "sha256": "009ab3254991d1acc08684e3d5dbec24cb88836e1a2bb7049082c885869c4477"
+    },
+    {
+      "id": "droidbench_dynamic_source_1",
+      "apk_path": "apks/droidbench/dynamic_source_1.apk",
+      "source": "DroidBench",
+      "source_context": "DynamicLoading",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/DynamicLoading/DynamicSource1.apk",
+      "sha256": "c8e041d4e3bee25677aa036a5781e351584dcad5e32d9588ad0a82391e27d9f0"
+    },
+    {
+      "id": "droidbench_emulator_build_1",
+      "apk_path": "apks/droidbench/emulator_build_1.apk",
+      "source": "DroidBench",
+      "source_context": "EmulatorDetection",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/Build1.apk",
+      "sha256": "eb0b8fdbda3ab2963f44788dd7757e6fc254a3d2a56b37de31c44065de40f6f7"
+    },
+    {
+      "id": "droidbench_emulator_file_1",
+      "apk_path": "apks/droidbench/emulator_file_1.apk",
+      "source": "DroidBench",
+      "source_context": "EmulatorDetection",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/File1.apk",
+      "sha256": "84af999f7f0a1d4a62eb8c80014f7826ecf19c41eedea75455f0e6e2cde02397"
+    },
+    {
+      "id": "droidbench_emulator_imei_1",
+      "apk_path": "apks/droidbench/emulator_imei_1.apk",
+      "source": "DroidBench",
+      "source_context": "EmulatorDetection",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/EmulatorDetection/IMEI1.apk",
+      "sha256": "294974e91b88ab61e155dea672764db70ef51b0d6a15440f1bdcd10bd020018f"
+    },
+    {
+      "id": "droidbench_bytecode_tamper_1",
+      "apk_path": "apks/droidbench/bytecode_tamper_1.apk",
+      "source": "DroidBench",
+      "source_context": "SelfModification",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/SelfModification/BytecodeTamper1.apk",
+      "sha256": "b0a1081b73aa6c2831b6b017f376b8d5b3f82c1fd59ed8f524c0b5c77c3071ea"
+    },
+    {
+      "id": "droidbench_native_id_function",
+      "apk_path": "apks/droidbench/native_id_function.apk",
+      "source": "DroidBench",
+      "source_context": "Native",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Native/NativeIDFunction.apk",
+      "sha256": "f9d5dba507a05bff1c356bd6ca596796b8dbe563dfa610f5e9f764d559252185"
+    },
+    {
+      "id": "droidbench_source_in_native_code",
+      "apk_path": "apks/droidbench/source_in_native_code.apk",
+      "source": "DroidBench",
+      "source_context": "Native",
+      "source_url": "https://raw.githubusercontent.com/secure-software-engineering/DroidBench/72078d54b4e0e5b89f81c733f728e78559e93df5/apk/Native/SourceInNativeCode.apk",
+      "sha256": "f41fbaf2d4a93042bdd7b030de65625f5b0643ecd34047d2f556ed9733c141dd"
+    },
+    {
+      "id": "fdroid_editor",
+      "apk_path": "apks/fdroid/org.billthefarmer.editor_198.apk",
+      "source": "F-Droid",
+      "source_context": "open-source real APK",
+      "source_url": "https://f-droid.org/repo/org.billthefarmer.editor_198.apk",
+      "sha256": "343d17e11d0914e1a7708df2781580a0413e52501c0a41d91f7ef725d9615fe9"
+    },
+    {
+      "id": "pivaa",
+      "apk_path": "apks/security/pivaa.apk",
+      "source": "PIVAA",
+      "source_context": "intentionally vulnerable Android test APK",
+      "source_url": "https://raw.githubusercontent.com/HTBridge/pivaa/7fde8956083ec4c6023c75f013f72023d60eda12/apks/pivaa.apk",
+      "sha256": "57887e1d1e119939eec0e929801b049f8037cf90d2accab479a48f0d4dd2c19a"
+    }
+  ]
+}

@@ -299,6 +299,41 @@
   数据集、labels、每个样本报告都提交在仓库中；`make dataset` 可重新生成。
 \end{frame}
 
+\begin{frame}{外部 APK 语料}{不只扫描自构造样本}
+  \small
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.42\textwidth}
+      \begin{block}{来源组成}
+        \begin{itemize}
+          \item DroidBench：10 个现成测试 APK。
+          \item F-Droid：1 个真实开源 APK。
+          \item PIVAA：1 个漏洞测试 APK。
+        \end{itemize}
+      \end{block}
+      \vspace{0.35em}
+      外部 APK 无 hardening oracle，不计算 F1；只统计覆盖率和 finding 分布。
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \scriptsize
+      \begin{table}
+        \centering
+        \begin{tabular}{lrrrr}
+          \toprule
+          Tool & Samples & Any & Pack & Obf \\
+          \midrule
+          HardenInspector & 12/12 & 9 & 3 & 6 \\
+          APKiD & 12/12 & 2 & 0 & 0 \\
+          Androguard DEX & 12/12 & 8 & 3 & 6 \\
+          ZIP Strings & 12/12 & 9 & 3 & 6 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+      \vspace{0.25em}
+      \scriptsize F-Droid 样本当前无 finding；外部语料帮助发现并收紧了过敏的控制流密度规则。
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}{Benchmark 公平口径}
   \scriptsize
   \begin{table}
@@ -392,7 +427,9 @@
   \begin{itemize}
     \item 检测器源码：\texttt{src/hardeninspector/}
     \item 数据集：\texttt{datasets/hardeninspector\_eval\_v1/}
+    \item 外部 APK 语料：\texttt{datasets/external\_apk\_corpus\_v1/}
     \item Benchmark 统计：\texttt{reports/benchmark/}
+    \item 外部 APK 统计：\texttt{reports/external\_corpus/}
     \item 中文文档：\texttt{README.md}、\texttt{docs/}
     \item 总结报告：\texttt{reports/final\_summary.md}
     \item ZJU Beamer：\texttt{slides/final\_presentation.tex}

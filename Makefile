@@ -1,4 +1,4 @@
-.PHONY: setup test dataset benchmark demo slides all clean
+.PHONY: setup test dataset benchmark external-corpus demo slides all clean
 
 PYTHON ?= python3
 VENV ?= .venv
@@ -19,6 +19,9 @@ dataset:
 benchmark:
 	$(PY) -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --output reports/benchmark --tools hardeninspector apkid androguard_dex zip_string_baseline
 
+external-corpus:
+	$(PY) -m hardeninspector.benchmark --external-only --external-corpus datasets/external_apk_corpus_v1 --external-output reports/external_corpus --tools hardeninspector apkid androguard_dex zip_string_baseline
+
 demo:
 	$(PY) examples/make_demo_apk.py samples/demo_hardened.apk
 	$(PY) -m hardeninspector samples/demo_hardened.apk
@@ -27,7 +30,7 @@ slides:
 	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex
 	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex
 
-all: setup test dataset benchmark demo slides
+all: setup test dataset benchmark external-corpus demo slides
 
 clean:
-	rm -rf .pytest_cache reports/benchmark samples/demo_hardened.apk slides/*.aux slides/*.log slides/*.nav slides/*.out slides/*.snm slides/*.toc slides/*.vrb slides/*.synctex.gz slides/final_presentation.pdf
+	rm -rf .pytest_cache reports/benchmark reports/external_corpus samples/demo_hardened.apk slides/*.aux slides/*.log slides/*.nav slides/*.out slides/*.snm slides/*.toc slides/*.vrb slides/*.synctex.gz slides/final_presentation.pdf

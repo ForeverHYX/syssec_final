@@ -13,9 +13,10 @@ def test_out_of_box_environment_files_exist_and_expose_expected_targets():
     assert (ROOT / "Dockerfile").exists()
 
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    for target in ["setup:", "test:", "dataset:", "benchmark:", "demo:", "slides:", "all:"]:
+    for target in ["setup:", "test:", "dataset:", "benchmark:", "external-corpus:", "demo:", "slides:", "all:"]:
         assert target in makefile
     assert "--tools hardeninspector apkid androguard_dex zip_string_baseline" in makefile
+    assert "--external-corpus datasets/external_apk_corpus_v1" in makefile
     assert "droidlysis" not in makefile
 
 

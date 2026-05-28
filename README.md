@@ -28,10 +28,13 @@ make setup
 make test
 make dataset
 make benchmark
+make external-corpus
 make slides
 ```
 
 默认 benchmark 只包含当前环境可安装、可运行且 11/11 样本都有输出的比较对象：HardenInspector、APKiD、Androguard DEX baseline 和 ZIP Strings baseline。DroidLysis/MobSF 不进入默认评分表，避免把缺少外部分析管线造成的不可用结果记成 0 分。
+
+外部 APK 语料位于 `datasets/external_apk_corpus_v1/`，包含 DroidBench、F-Droid 和 PIVAA 的 12 个现成 APK。它们没有本项目四类标签，因此通过 `make external-corpus` 统计覆盖率和 finding 分布，不计算 F1。
 
 ## 使用
 
@@ -91,6 +94,7 @@ make slides
 - [架构说明](docs/architecture.md)
 - [检测规则说明](docs/rules.md)
 - [数据集构造说明](docs/dataset.md)
+- [外部 APK 语料说明](docs/external_corpus.md)
 - [开源实现对比与可靠性验证](docs/benchmark.md)
 - [开箱即用环境](docs/environment.md)
 - [课程展示 Demo](docs/demo.md)

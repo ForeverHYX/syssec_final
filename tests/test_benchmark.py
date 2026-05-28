@@ -7,10 +7,13 @@ from hardeninspector.benchmark import (
     build_confusion_matrix,
     compute_metrics,
     evaluate_predictions,
+    load_external_corpus,
     load_dataset,
     run_benchmark,
+    run_external_corpus,
 )
 from hardeninspector.dataset import build_dataset
+from hardeninspector.synthetic import SyntheticApkSpec, build_synthetic_apk
 
 
 def test_metrics_count_multilabel_predictions():
@@ -96,3 +99,45 @@ def test_zip_string_baseline_runs_without_external_dependencies(tmp_path):
     assert result["coverage"]["samples_total"] == 11
     assert result["coverage"]["samples_with_results"] == 11
     assert result["metrics"]["micro"]["recall"] > 0
+
+
+def test_external_corpus_reports_distribution_without_oracle_metrics(tmp_path):
+    corpus_dir = tmp_path / "external"
+    apks_dir = corpus_dir / "apks"
+    output_dir = tmp_path / "external-report"
+    apks_dir.mkdir(parents=True)
+    apk_path = build_synthetic_apk(
+        apks_dir / "sample.apk",
+        SyntheticApkSpec(
+            manifest_strings=["com.example.external", "com.example.external.MainActivity"],
+            class_descriptors=["Lcom/example/external/MainActivity;"],
+            dex_strings=["DexClassLoader"],
+        ),
+    )
+    manifest = {
+        "corpus_version": "test_external",
+        "samples": [
+            {
+                "id": "external_sample",
+                "apk_path": "apks/sample.apk",
+                "source": "unit-test",
+                "source_context": "dynamic-loading",
+                "source_url": "https://example.invalid/sample.apk",
+                "sha256": "test-only",
+            }
+        ],
+    }
+    (corpus_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    dataset = load_external_corpus(corpus_dir)
+    result = run_external_corpus(corpus_dir, output_dir, tools=["hardeninspector"])
+
+    assert dataset.samples[0]["absolute_apk_path"] == str(apk_path)
+    assert result["corpus_version"] == "test_external"
+    assert (output_dir / "external_corpus_results.json").exists()
+    payload = json.loads((output_dir / "external_corpus_results.json").read_text(encoding="utf-8"))
+    tool = payload["tools"][0]
+    assert "metrics" not in tool
+    assert tool["coverage"] == {"samples_total": 1, "samples_with_results": 1}
+    assert tool["category_counts"]["packer"] == 1
+    assert tool["samples"][0]["finding_ids"] == ["packer.dynamic_code_loading"]

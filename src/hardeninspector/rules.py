@@ -360,7 +360,7 @@ def _is_control_flow_heavy(profile: OpcodeProfile) -> bool:
         profile.instruction_count >= 8
         and profile.control_flow_count >= 5
         and profile.control_flow_density >= 0.42
-    ) or (profile.switch_count >= 2 and profile.control_flow_count >= 4)
+    )
 
 
 def _dedupe_evidence(items: list[Evidence]) -> list[Evidence]:

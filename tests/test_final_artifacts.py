@@ -7,19 +7,26 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_final_summary_report_and_beamer_exist():
     report = ROOT / "reports" / "final_summary.md"
     slides = ROOT / "slides" / "final_presentation.tex"
+    external_docs = ROOT / "docs" / "external_corpus.md"
 
     assert report.exists()
     assert slides.exists()
+    assert external_docs.exists()
 
     report_text = report.read_text(encoding="utf-8")
     slides_text = slides.read_text(encoding="utf-8")
+    external_text = external_docs.read_text(encoding="utf-8")
 
     assert "HardenInspector" in report_text
     assert "开源实现对比" in report_text
     assert "Micro F1" in report_text
+    assert "外部现成 APK" in report_text
+    assert "DroidBench" in external_text
+    assert "F-Droid" in external_text
     assert "\\documentclass" in slides_text
     assert "\\begin{document}" in slides_text
     assert "HardenInspector" in slides_text
+    assert "外部 APK 语料" in slides_text
 
 
 def test_beamer_uses_zju_template_and_ignores_build_outputs():

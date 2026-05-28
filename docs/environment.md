@@ -9,6 +9,7 @@ make setup
 make test
 make dataset
 make benchmark
+make external-corpus
 make demo
 make slides
 ```

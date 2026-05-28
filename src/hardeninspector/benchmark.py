@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import argparse
+from collections import Counter
 import json
 from pathlib import Path
 import shutil
@@ -83,6 +84,22 @@ def load_dataset(dataset_dir: str | Path) -> BenchmarkDataset:
             }
         )
     return BenchmarkDataset(dataset_version=labels["dataset_version"], samples=samples)
+
+
+def load_external_corpus(corpus_dir: str | Path) -> BenchmarkDataset:
+    root = Path(corpus_dir)
+    manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+    samples: list[dict[str, Any]] = []
+    for sample in manifest["samples"]:
+        apk_path = root / sample["apk_path"]
+        samples.append(
+            {
+                **sample,
+                "absolute_apk_path": str(apk_path),
+                "expected_categories": [],
+            }
+        )
+    return BenchmarkDataset(dataset_version=manifest["corpus_version"], samples=samples)
 
 
 def evaluate_predictions(
@@ -196,6 +213,44 @@ def run_benchmark(
     }
 
 
+def run_external_corpus(
+    corpus_dir: str | Path,
+    output_dir: str | Path,
+    tools: list[str] | None = None,
+) -> dict[str, Any]:
+    dataset = load_external_corpus(corpus_dir)
+    tools = tools or DEFAULT_TOOLS
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    results = {
+        "schema_version": 1,
+        "corpus_version": dataset.dataset_version,
+        "categories": DEFAULT_CATEGORIES,
+        "samples_total": len(dataset.samples),
+        "tools": [_external_tool_summary(dataset, tool, _run_tool(dataset, tool)) for tool in tools],
+        "scope_note": (
+            "External APKs have source metadata and checksums but no HardenInspector hardening "
+            "ground-truth labels. Results are coverage and finding-distribution statistics, "
+            "not precision/recall scores."
+        ),
+        "comparator_notes": _comparator_notes(),
+    }
+    (output / "external_corpus_results.json").write_text(
+        json.dumps(results, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (output / "external_corpus_summary.md").write_text(_render_external_markdown_summary(results), encoding="utf-8")
+    (output / "external_corpus_counts.csv").write_text(_render_external_counts_csv(results), encoding="utf-8")
+    return {
+        "corpus_version": dataset.dataset_version,
+        "output_dir": str(output),
+        "tools": tools,
+        "results_path": str(output / "external_corpus_results.json"),
+        "summary_path": str(output / "external_corpus_summary.md"),
+        "counts_csv_path": str(output / "external_corpus_counts.csv"),
+    }
+
+
 def _run_tool(dataset: BenchmarkDataset, tool: str) -> dict[str, ToolPrediction]:
     if tool == "hardeninspector":
         return _run_hardeninspector(dataset)
@@ -206,6 +261,50 @@ def _run_tool(dataset: BenchmarkDataset, tool: str) -> dict[str, ToolPrediction]
     if tool == "zip_string_baseline":
         return _run_zip_string_baseline(dataset)
     raise ValueError(f"unknown benchmark tool: {tool}")
+
+
+def _external_tool_summary(
+    dataset: BenchmarkDataset,
+    tool: str,
+    predictions: dict[str, ToolPrediction],
+) -> dict[str, Any]:
+    category_counts: Counter[str] = Counter()
+    source_counts: Counter[str] = Counter()
+    rows = []
+    for sample in dataset.samples:
+        prediction = predictions.get(
+            sample["id"],
+            ToolPrediction(sample_id=sample["id"], categories=[], status="missing"),
+        )
+        categories = sorted(prediction.categories)
+        category_counts.update(categories)
+        if categories:
+            source_counts.update([sample.get("source", "unknown")])
+        rows.append(
+            {
+                "id": sample["id"],
+                "source": sample.get("source"),
+                "source_context": sample.get("source_context"),
+                "apk_path": sample.get("apk_path"),
+                "sha256": sample.get("sha256"),
+                "predicted_categories": categories,
+                "finding_ids": prediction.finding_ids or [],
+                "status": prediction.status,
+                "runtime_ms": None,
+                "notes": prediction.notes,
+            }
+        )
+    return {
+        "tool": tool,
+        "coverage": {
+            "samples_total": len(dataset.samples),
+            "samples_with_results": sum(1 for row in rows if row["status"] == "ok"),
+        },
+        "category_counts": {category: category_counts.get(category, 0) for category in DEFAULT_CATEGORIES},
+        "samples_with_any_category": sum(1 for row in rows if row["predicted_categories"]),
+        "source_counts_with_any_category": dict(sorted(source_counts.items())),
+        "samples": rows,
+    }
 
 
 def _run_hardeninspector(dataset: BenchmarkDataset) -> dict[str, ToolPrediction]:
@@ -516,6 +615,73 @@ def _render_metrics_csv(results: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _render_external_markdown_summary(results: dict[str, Any]) -> str:
+    lines = [
+        "# External APK Corpus Scan Statistics",
+        "",
+        f"Corpus: `{results['corpus_version']}`",
+        "",
+        results["scope_note"],
+        "",
+        "## Coverage and Category Counts",
+        "",
+        "| Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |",
+        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for tool_result in results["tools"]:
+        coverage = tool_result["coverage"]
+        counts = tool_result["category_counts"]
+        lines.append(
+            "| {tool} | {seen}/{total} | {any_count} | {packer} | {obfuscation} | {environment} | {native} |".format(
+                tool=_display_tool_name(tool_result["tool"]),
+                seen=coverage["samples_with_results"],
+                total=coverage["samples_total"],
+                any_count=tool_result["samples_with_any_category"],
+                packer=counts["packer"],
+                obfuscation=counts["obfuscation"],
+                environment=counts["environment"],
+                native=counts["native"],
+            )
+        )
+
+    lines.extend(["", "## HardenInspector Sample Results", ""])
+    hardeninspector = next(
+        (tool for tool in results["tools"] if tool["tool"] == "hardeninspector"),
+        None,
+    )
+    if hardeninspector is not None:
+        lines.append("| Sample | Source | Context | Categories | Findings |")
+        lines.append("| --- | --- | --- | --- | --- |")
+        for sample in hardeninspector["samples"]:
+            categories = ", ".join(sample["predicted_categories"]) or "-"
+            findings = ", ".join(sample["finding_ids"]) or "-"
+            lines.append(
+                f"| {sample['id']} | {sample['source']} | {sample['source_context']} | {categories} | {findings} |"
+            )
+    lines.append("")
+    return "\n".join(lines)
+
+
+def _render_external_counts_csv(results: dict[str, Any]) -> str:
+    lines = ["tool,samples_total,samples_with_results,samples_with_any_category,packer,obfuscation,environment,native"]
+    for tool_result in results["tools"]:
+        coverage = tool_result["coverage"]
+        counts = tool_result["category_counts"]
+        lines.append(
+            "{tool},{total},{seen},{any_count},{packer},{obfuscation},{environment},{native}".format(
+                tool=tool_result["tool"],
+                total=coverage["samples_total"],
+                seen=coverage["samples_with_results"],
+                any_count=tool_result["samples_with_any_category"],
+                packer=counts["packer"],
+                obfuscation=counts["obfuscation"],
+                environment=counts["environment"],
+                native=counts["native"],
+            )
+        )
+    return "\n".join(lines) + "\n"
+
+
 def _display_tool_name(tool: str) -> str:
     return {
         "hardeninspector": "HardenInspector",
@@ -550,8 +716,33 @@ def main(argv: list[str] | None = None) -> int:
         choices=["hardeninspector", "apkid", "androguard_dex", "zip_string_baseline"],
         help="tools to run",
     )
+    parser.add_argument(
+        "--external-corpus",
+        help="optional external APK corpus directory containing manifest.json",
+    )
+    parser.add_argument(
+        "--external-output",
+        default="reports/external_corpus",
+        help="directory where external corpus statistics are written",
+    )
+    parser.add_argument(
+        "--external-only",
+        action="store_true",
+        help="run only external corpus scan statistics and skip oracle benchmark",
+    )
     args = parser.parse_args(argv)
-    manifest = run_benchmark(args.dataset, args.output, args.tools)
+    if args.external_only:
+        if not args.external_corpus:
+            parser.error("--external-only requires --external-corpus")
+        manifest = run_external_corpus(args.external_corpus, args.external_output, args.tools)
+    else:
+        manifest = run_benchmark(args.dataset, args.output, args.tools)
+        if args.external_corpus:
+            manifest["external_corpus"] = run_external_corpus(
+                args.external_corpus,
+                args.external_output,
+                args.tools,
+            )
     print(json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 

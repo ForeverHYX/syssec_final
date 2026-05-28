@@ -51,3 +51,15 @@ The previous limitation around opcode/control-flow statistics has been partially
 The dataset now includes `control_flow_flattening.apk`, a synthetic control-flow-density sample. Current scored benchmark coverage remains 11/11 for HardenInspector, APKiD, Androguard DEX, and ZIP Strings; Micro F1 values are 1.000, 0.476, 0.769, and 0.933 respectively. The slide deck now explains this as a lightweight, reproducible pre-screening signal rather than a full CFG implementation.
 
 Synthetic APK generation now fixes ZIP entry timestamps and permissions. Running `make dataset` twice keeps APK SHA-256 values stable, so the committed dataset is reproducible instead of changing due only to archive metadata.
+
+## External APK Corpus Research
+
+DroidBench is suitable as an external test-suite source because its README describes it as an open Android taint-analysis benchmark and states that the distribution contains source projects plus readily compiled APKs in the `apk` folder. It is not a hardening-specific oracle, so it should be used for external scan coverage and finding-distribution statistics, not for precision/recall against packer/obfuscation/environment/native labels.
+
+F-Droid is suitable as an external benign/open-source APK source. F-Droid package pages expose direct APK downloads and state that listed builds are built and signed by F-Droid and correspond to source tarballs. These samples can broaden real-world APK parsing coverage, but they do not provide hardening ground truth; use them for scan statistics and false-positive review rather than scored oracle metrics.
+
+PIVAA/InsecureShop-style intentionally vulnerable APKs are useful as security testing APKs, but their labels target vulnerability scanners, not hardening detection. If included, they should follow the same external-corpus treatment: committed source URL, checksum, scan result, and no precision/recall oracle unless a hardening label is explicitly justified.
+
+Implementation decision: include 12 external APKs in `datasets/external_apk_corpus_v1/`: 10 DroidBench APKs, one F-Droid APK (`org.billthefarmer.editor_198.apk`), and PIVAA. The corpus is intentionally small enough to commit, about 5.7 MiB, while spanning reflection, dynamic loading, emulator detection, native, self-modification, a normal open-source app, and an intentionally vulnerable security-test APK.
+
+External corpus statistics after rule tuning: all four tools cover 12/12 samples. HardenInspector reports at least one category on 9/12 samples with category counts packer=3, obfuscation=6, environment=3, native=0. APKiD reports 2/12, Androguard DEX reports 8/12, ZIP Strings reports 9/12. `fdroid_editor` has no HardenInspector finding after tightening `control_flow_density`, which reduces a real false-positive risk found by the external corpus.

@@ -305,3 +305,12 @@
 - Ran `git push origin main` with escalation; GitHub accepted `55e8ce4..fb5993e main -> main`, synchronizing the four local commits.
 - Started the local Web demo at `http://127.0.0.1:8000/`.
 - Web demo smoke checks passed: homepage shows Exhibit Map, Evidence Chain, Dataset Story, 34 scored APKs, 22 + 12 dataset split, HardenInspector Micro F1 1.000, and 69 regression tests; `/api/samples` lists curated synthetic/external samples; `/api/scan?id=combined_hardened_showcase` returns packer=4, obfuscation=2, environment=3, native=1; `/api/metrics` returns current benchmark metrics; `HEAD /assets/apk-cutaway.png` returns 200 image/png.
+
+## 2026-05-28 Chinese Web Demo Localization
+
+- Started Phase 35 after the user requested the Web demo be Chinese.
+- TDD RED: updated `tests/test_demo_web.py` to require Chinese sample metadata, Chinese upload-scan metadata, Chinese first-screen labels, and absence of the old English exhibit/upload labels. The focused Web demo tests failed against the English UI.
+- TDD GREEN: localized `src/hardeninspector/demo_web.py` visible UI text, sample titles/descriptions/roles, upload errors, scan states, result table headings, category labels, and uploaded APK metadata. API routes and detector finding IDs remain stable.
+- Synchronized README, `docs/demo_web.md`, `docs/demo.md`, `docs/live_demo_script.md`, `docs/defense_qa.md`, completion audit, final summary, and the Web-demo slide with the Chinese UI terms. Updated final-artifact tests to require the Chinese slide/demo-script terminology.
+- Verification checkpoint: focused Web/final-artifact tests passed; full `.venv/bin/python -m pytest -q` passed with 69 tests; `make slides` compiled 22 pages; `pdfinfo` reported 22 pages; LaTeX log scan had no warning/error matches.
+- Relaunched the local Web demo at `http://127.0.0.1:8000/`. Host-network smoke checks confirmed the Chinese homepage, Chinese sample metadata, `combined_hardened_showcase` scan summary `packer=4`, `obfuscation=2`, `environment=3`, `native=1`, and `HEAD /assets/apk-cutaway.png` returning 200 image/png.

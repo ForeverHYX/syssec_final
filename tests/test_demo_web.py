@@ -50,16 +50,16 @@ def test_demo_catalog_points_to_existing_curated_samples():
         assert apk_path.exists()
         assert apk_path.suffix == ".apk"
         assert sample["size_bytes"] > 0
-        assert sample["dataset_kind"] in {"Synthetic oracle", "External corpus"}
+        assert sample["dataset_kind"] in {"合成 Oracle", "外部 APK 语料"}
         assert sample["showcase_role"]
 
-    assert by_id["combined_hardened_showcase"]["showcase_role"] == "All-category evidence chain"
-    assert by_id["adb_developer_settings_probe"]["showcase_role"] == "ADB and developer-settings probe"
-    assert by_id["installer_source_probe"]["showcase_role"] == "Installer-source environment probe"
-    assert by_id["java_debug_api_probe"]["showcase_role"] == "Java-layer anti-debug API probe"
-    assert by_id["signature_integrity_check"]["showcase_role"] == "Anti-tamper integrity evidence"
-    assert by_id["root_artifact_probe"]["showcase_role"] == "Rooted-device environment probe"
-    assert by_id["fdroid_editor"]["dataset_kind"] == "External corpus"
+    assert by_id["combined_hardened_showcase"]["showcase_role"] == "四类证据链样本"
+    assert by_id["adb_developer_settings_probe"]["showcase_role"] == "ADB 与开发者设置探测"
+    assert by_id["installer_source_probe"]["showcase_role"] == "安装来源环境探测"
+    assert by_id["java_debug_api_probe"]["showcase_role"] == "Java 层反调试 API"
+    assert by_id["signature_integrity_check"]["showcase_role"] == "签名完整性与防篡改证据"
+    assert by_id["root_artifact_probe"]["showcase_role"] == "Root 环境探测"
+    assert by_id["fdroid_editor"]["dataset_kind"] == "外部 APK 语料"
 
 
 def test_scan_demo_sample_returns_report_with_expected_signal():
@@ -78,17 +78,19 @@ def test_scan_uploaded_apk_scans_raw_apk_bytes():
     result = scan_uploaded_apk(apk_path.read_bytes(), "combined_hardened_showcase.apk")
 
     assert result["sample"]["id"] == "uploaded"
-    assert result["sample"]["source"] == "Uploaded APK"
+    assert result["sample"]["source"] == "本地上传 APK"
+    assert result["sample"]["dataset_kind"] == "本地上传文件"
+    assert result["sample"]["showcase_role"] == "现场扫描验证"
     assert result["sample"]["size_bytes"] == apk_path.stat().st_size
     assert result["report"]["summary"]["packer"] > 0
     assert result["report"]["summary"]["environment"] > 0
 
 
 def test_scan_uploaded_apk_rejects_non_apk_and_oversized_inputs():
-    with pytest.raises(ValueError, match="APK file"):
+    with pytest.raises(ValueError, match="APK"):
         scan_uploaded_apk(b"not an apk", "notes.txt")
 
-    with pytest.raises(ValueError, match="exceeds"):
+    with pytest.raises(ValueError, match="超过"):
         scan_uploaded_apk(b"0123456789", "sample.apk", max_bytes=4)
 
 
@@ -109,22 +111,26 @@ def test_load_demo_metrics_exposes_comparison_rows():
 def test_render_index_html_contains_demo_api_surface():
     html = render_index_html()
 
-    assert "HardenInspector Demo" in html
-    assert "Exhibit Map" in html
-    assert "Evidence Chain" in html
-    assert "Dataset Story" in html
-    assert "Synthetic Oracle" in html
-    assert "External APK Corpus" in html
+    assert "HardenInspector 本地演示" in html
+    assert "展品导览" in html
+    assert "证据链" in html
+    assert "数据集说明" in html
+    assert "合成 Oracle" in html
+    assert "外部 APK 语料" in html
     assert "HardenInspector Micro F1" in html
-    assert "34 scored APKs" in html
-    assert "69 regression tests" in html
+    assert "34 个评分 APK" in html
+    assert "69 个回归测试" in html
     assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html
     assert "/api/scan-upload" in html
     assert "/api/metrics" in html
-    assert "Upload APK" in html
-    assert "Evidence" in html
+    assert "上传 APK" in html
+    assert "扫描上传文件" in html
+    assert "证据" in html
+    assert "Exhibit Map" not in html
+    assert "Upload APK" not in html
+    assert "Scan Upload" not in html
 
 
 def test_demo_asset_head_request_returns_png_headers_without_body():

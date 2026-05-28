@@ -26,17 +26,17 @@ make demo-web
 http://127.0.0.1:8000/
 ```
 
-先展示页面结构：
+先展示中文页面结构：
 
-- 顶部 `Exhibit Map`：说明项目动机、证据链、数据集结构、34 个评分 APK、69 个测试和 HardenInspector Micro F1；
-- 左侧 curated samples；
-- `Upload APK` 和 `Scan Upload`；
-- 右侧 summary、finding、Evidence 表；
-- 下方 benchmark comparison。
+- 顶部 `展品导览`：说明项目动机、证据链、数据集结构、34 个评分 APK、69 个测试和 HardenInspector Micro F1；
+- 左侧 `样本` 列表；
+- `上传 APK` 和 `扫描上传文件`；
+- 右侧 summary、finding、证据表；
+- 下方 Benchmark 对比。
 
 ## 3. 演示 clean baseline
 
-选择 `F-Droid clean synthetic baseline`，点击 `Scan`。
+选择 `F-Droid 合成干净基线`，点击 `扫描`。
 
 讲解重点：
 
@@ -46,7 +46,7 @@ http://127.0.0.1:8000/
 
 ## 4. 演示综合加固样本
 
-选择 `Combined hardened showcase`，点击 `Scan`。
+选择 `综合加固展示样本`，点击 `扫描`。
 
 讲解顺序：
 
@@ -61,25 +61,25 @@ http://127.0.0.1:8000/
 
 建议二选一：
 
-- `ADB developer-settings probe`：展示 Android Settings API 与 `ADB_ENABLED` / `development_settings_enabled` 组合形成的 ADB/developer-options evidence；
-- `Installer-source probe`：展示安装来源 API 与 Play Store、package installer、unknown source 或 `adb install` 组合形成的 side-load evidence；
-- `Signature integrity check`：展示 PackageManager 签名 API 与 `MessageDigest/SHA-256` 组合形成的反篡改 evidence；
-- `Java Debug API probe`：展示 `android.os.Debug` / `waitingForDebugger` 组成的 Java 层反调试 evidence；
-- `Root artifact probe`：展示 `su` 路径、Superuser/Magisk 包名和 `test-keys` 组成的 root 环境 evidence；
-- `Native ptrace and loader signals`：展示 ELF 符号表证据，说明 Native 不只是字符串扫描；
-- `Emulator IMEI probe`：展示 telephony/device-id emulator probe。
+- `ADB 与开发者设置探测`：展示 Android Settings API 与 `ADB_ENABLED` / `development_settings_enabled` 组合形成的 ADB/developer-options evidence；
+- `安装来源探测`：展示安装来源 API 与 Play Store、package installer、unknown source 或 `adb install` 组合形成的 side-load evidence；
+- `签名完整性检查`：展示 PackageManager 签名 API 与 `MessageDigest/SHA-256` 组合形成的反篡改 evidence；
+- `Java Debug API 探测`：展示 `android.os.Debug` / `waitingForDebugger` 组成的 Java 层反调试 evidence；
+- `Root 痕迹探测`：展示 `su` 路径、Superuser/Magisk 包名和 `test-keys` 组成的 root 环境 evidence；
+- `Native ptrace 与 loader 信号`：展示 ELF 符号表证据，说明 Native 不只是字符串扫描；
+- `模拟器 IMEI 探测`：展示 telephony/device-id emulator probe。
 
-如果老师关注真实 APK，选择 `PIVAA training APK`，说明它是外部现成 APK，用来证明工具能处理非自造样本。
+如果老师关注真实 APK，选择 `PIVAA 训练 APK`，说明它是外部现成 APK，用来证明工具能处理非自造样本。
 
 ## 6. 演示上传扫描
 
-点击 `Upload APK`，选择仓库中的一个 APK，例如：
+点击 `上传 APK`，选择仓库中的一个 APK，例如：
 
 ```text
 datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk
 ```
 
-点击 `Scan Upload`。
+点击 `扫描上传文件`。
 
 讲解重点：
 

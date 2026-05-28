@@ -348,6 +348,15 @@ Status: complete
 - Synchronize README, demo docs, environment docs, final deliverable, completion audit, final summary, slides, and Web demo HTML from 67/68 to the current 69-test result.
 - Recompile slides and verify local/fresh pytest, stale-count scan, LaTeX log scan, PDF page count, and `git diff --check`.
 
+### Phase 35: Chinese Web demo localization
+
+Status: complete
+
+- Localize the Web demo first-screen copy, sample catalog metadata, upload controls, scan status text, result table headings, category labels, and upload-scan metadata into Chinese.
+- Update regression coverage so the Web demo must expose the Chinese labels and must not regress to the old English exhibit/upload labels.
+- Synchronize README, demo docs, defense notes, completion audit, final summary, live-demo script, and the Web-demo slide to the Chinese UI terminology.
+- Verify local pytest, slide compilation, PDF page count, LaTeX log scan, and host-network Web demo smoke before committing and pushing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -360,5 +369,6 @@ Status: complete
 | `git ls-files -i` was missing the required mode flag | checking whether slide build artifacts were tracked | Re-ran the check with `git check-ignore -v`; slide PDF/log/aux outputs are ignored and not tracked |
 | Sandbox denied binding a local HTTP port | `.venv/bin/python -m hardeninspector.demo_web --host 127.0.0.1 --port 8765` | Re-ran with approved local bind escalation for the Web demo smoke test |
 | Local `curl` used the proxy for `127.0.0.1` | first Web demo smoke requests | Re-ran with proxy variables unset and `--noproxy '*'` |
+| Sandbox network could not reach the host demo server | localhost smoke test for the relaunched Chinese Web demo | Re-ran the smoke requests on the host network with proxy variables unset |
 | `HEAD` is unsupported by the demo handler | checking `/assets/apk-cutaway.png` with `curl -I` | Added `do_HEAD` for read-only Web demo routes and a regression test for image asset headers |
 | Network sandbox blocked GitHub push | `git push origin main` | DNS failed in the sandbox; escalated push was rejected by the approval reviewer pending explicit user confirmation for exporting repository contents |

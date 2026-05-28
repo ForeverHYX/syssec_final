@@ -221,3 +221,9 @@ This caught a real wording issue in `docs/architecture.md`: the dynamic verifica
 Adding final-facing guard tests changes the regression-test count, so hard-coded presentation counts can drift immediately. The current suite now includes a guard that checks final-facing materials and the Web demo show the current 69-test result and do not retain stale `67 passed` wording.
 
 The Web demo, README, environment/demo docs, completion audit, final deliverable, final summary, live demo script, and Beamer source now all present the same 69-test figure. This makes the classroom demo's first screen and the slide verification page consistent with the actual pytest output.
+
+## Chinese Web Demo Localization
+
+The live Web demo is now ready for a Chinese classroom walkthrough. The page chrome, first-screen exhibit labels, sample names, sample roles, upload controls, scan states, result table headings, category display labels, and uploaded APK metadata are Chinese while the underlying API routes and detector finding IDs remain stable for scripts and tests.
+
+The localization guard matters because the demo is the highest-visibility artifact in the presentation. The tests now require Chinese UI labels and explicitly reject the old English exhibit/upload labels in the rendered page, reducing the chance that future edits accidentally revert the demo to mixed-language controls.

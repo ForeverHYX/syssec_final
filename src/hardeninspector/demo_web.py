@@ -55,112 +55,112 @@ class DemoSample:
 DEMO_SAMPLES = (
     DemoSample(
         id="fdroid_clean_baseline",
-        title="F-Droid clean synthetic baseline",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Low-noise baseline",
+        title="F-Droid 合成干净基线",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="低噪声基线",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/fdroid_clean_baseline.apk"),
-        description="A benign baseline sample used to show that the detector can produce an empty finding set.",
+        description="良性基线样本，用来展示检测器可以输出空 finding，避免把正常 APK 误判为加固。",
         expected_categories=(),
     ),
     DemoSample(
         id="combined_hardened_showcase",
-        title="Combined hardened showcase",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="All-category evidence chain",
+        title="综合加固展示样本",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="四类证据链样本",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk"),
-        description="A compact exhibit sample combining packer, obfuscation, environment, and native indicators.",
+        description="把加壳、混淆、环境探测和 Native 证据放在一个小样本里，适合现场完整演示。",
         expected_categories=("packer", "obfuscation", "environment", "native"),
     ),
     DemoSample(
         id="native_ptrace_loader",
-        title="Native ptrace and loader signals",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="ELF symbol evidence",
+        title="Native ptrace 与 loader 信号",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="ELF 符号证据",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/native_ptrace_loader.apk"),
-        description="Native-symbol focused sample for anti-debug and dynamic loader evidence.",
+        description="聚焦 Native 符号的样本，用来展示反调试和动态加载相关证据。",
         expected_categories=("environment", "native"),
     ),
     DemoSample(
         id="emulator_imei_probe",
-        title="Emulator IMEI probe",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Environment probe evidence",
+        title="模拟器 IMEI 探测",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="环境探测证据",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/emulator_imei_probe.apk"),
-        description="Environment-detection sample with emulator telephony identifiers.",
+        description="包含模拟器电话标识符的环境检测样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="java_debug_api_probe",
-        title="Java Debug API probe",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Java-layer anti-debug API probe",
+        title="Java Debug API 探测",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="Java 层反调试 API",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/java_debug_api_probe.apk"),
-        description="Java-layer anti-debug sample using android.os.Debug and waitingForDebugger evidence.",
+        description="使用 android.os.Debug 与 waitingForDebugger 证据的 Java 层反调试样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="adb_developer_settings_probe",
-        title="ADB developer-settings probe",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="ADB and developer-settings probe",
+        title="ADB 与开发者设置探测",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="ADB 与开发者设置探测",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/adb_developer_settings_probe.apk"),
-        description="Environment sample checking Android Settings keys such as ADB_ENABLED and development_settings_enabled.",
+        description="检查 ADB_ENABLED、development_settings_enabled 等 Android Settings 键的环境探测样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="installer_source_probe",
-        title="Installer-source probe",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Installer-source environment probe",
+        title="安装来源探测",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="安装来源环境探测",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/installer_source_probe.apk"),
-        description="Environment sample checking install-source APIs and sideload or package-installer indicators.",
+        description="检查安装来源 API、侧载和 package-installer 指示器的环境探测样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="signature_integrity_check",
-        title="Signature integrity check",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Anti-tamper integrity evidence",
+        title="签名完整性检查",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="签名完整性与防篡改证据",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/signature_integrity_check.apk"),
-        description="Self-integrity sample combining PackageManager signature APIs with digest evidence.",
+        description="把 PackageManager 签名 API 与 digest 证据结合起来的自完整性样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="root_artifact_probe",
-        title="Root artifact probe",
-        source="Synthetic oracle",
-        dataset_kind="Synthetic oracle",
-        showcase_role="Rooted-device environment probe",
+        title="Root 痕迹探测",
+        source="合成 Oracle",
+        dataset_kind="合成 Oracle",
+        showcase_role="Root 环境探测",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/root_artifact_probe.apk"),
-        description="Root-detection sample with su paths, Superuser/Magisk package names, and test-key evidence.",
+        description="包含 su 路径、Superuser/Magisk 包名和 test-keys 证据的 Root 检测样本。",
         expected_categories=("environment",),
     ),
     DemoSample(
         id="pivaa",
-        title="PIVAA training APK",
-        source="External corpus",
-        dataset_kind="External corpus",
-        showcase_role="Real APK sanity check",
+        title="PIVAA 训练 APK",
+        source="外部 APK 语料",
+        dataset_kind="外部 APK 语料",
+        showcase_role="真实 APK 解析检查",
         apk_path=Path("datasets/external_apk_corpus_v1/apks/security/pivaa.apk"),
-        description="Public vulnerable Android app used as a real APK sanity check.",
+        description="公开的 Android 漏洞训练应用，用来验证真实 APK 解析路径。",
         expected_categories=("packer", "obfuscation", "environment", "native"),
     ),
     DemoSample(
         id="fdroid_editor",
-        title="F-Droid editor APK",
-        source="External corpus",
-        dataset_kind="External corpus",
-        showcase_role="Clean real-world baseline",
+        title="F-Droid 编辑器 APK",
+        source="外部 APK 语料",
+        dataset_kind="外部 APK 语料",
+        showcase_role="真实应用干净基线",
         apk_path=Path("datasets/external_apk_corpus_v1/apks/fdroid/org.billthefarmer.editor_198.apk"),
-        description="Real open-source APK baseline used to demonstrate low-noise behavior.",
+        description="真实开源 APK 基线，用来展示正常应用上的低噪声表现。",
         expected_categories=(),
     ),
 )
@@ -201,11 +201,11 @@ def scan_uploaded_apk(
 ) -> dict[str, Any]:
     safe_name = Path(filename or "uploaded.apk").name or "uploaded.apk"
     if not safe_name.lower().endswith(".apk"):
-        raise ValueError("Upload must be an APK file")
+        raise ValueError("上传文件必须是 APK")
     if not apk_bytes:
-        raise ValueError("Uploaded APK is empty")
+        raise ValueError("上传的 APK 为空")
     if len(apk_bytes) > max_bytes:
-        raise ValueError(f"Uploaded APK exceeds the {max_bytes // (1024 * 1024)} MiB demo limit")
+        raise ValueError(f"上传 APK 超过 {max_bytes // (1024 * 1024)} MiB 演示上限")
 
     with tempfile.TemporaryDirectory(prefix="hardeninspector-upload-") as tmp_dir:
         apk_path = Path(tmp_dir) / safe_name
@@ -213,19 +213,19 @@ def scan_uploaded_apk(
         try:
             report = scan_apk(apk_path).to_dict()
         except Exception as exc:
-            raise ValueError(f"Uploaded APK could not be scanned: {exc}") from exc
+            raise ValueError(f"上传 APK 无法扫描：{exc}") from exc
 
     report["apk"]["path"] = f"uploaded:{safe_name}"
     return {
         "sample": {
             "id": "uploaded",
             "title": safe_name,
-            "source": "Uploaded APK",
-            "dataset_kind": "Uploaded local file",
-            "showcase_role": "Live smoke test",
+            "source": "本地上传 APK",
+            "dataset_kind": "本地上传文件",
+            "showcase_role": "现场扫描验证",
             "apk_path": f"uploaded:{safe_name}",
             "relative_path": safe_name,
-            "description": "APK uploaded through the local demo page and scanned from a temporary file.",
+            "description": "通过本地演示页面上传，并在临时目录中完成扫描的 APK。",
             "expected_categories": [],
             "size_bytes": len(apk_bytes),
         },
@@ -275,11 +275,11 @@ def _parse_float(value: str | None) -> float | None:
 
 def render_index_html() -> str:
     return """<!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HardenInspector Demo</title>
+  <title>HardenInspector 本地演示</title>
   <style>
     :root {
       color-scheme: light;
@@ -632,79 +632,79 @@ def render_index_html() -> str:
   <header>
     <div class="wrap topbar">
       <div>
-        <h1>HardenInspector Demo</h1>
-        <p class="subtitle">Interactive local showcase for static Android hardening evidence.</p>
+        <h1>HardenInspector 本地演示</h1>
+        <p class="subtitle">用于课堂展示的 Android 加固证据静态分析页面。</p>
       </div>
       <div class="api">
-        API <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/scan-upload</code><code>/api/metrics</code>
+        接口 <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/scan-upload</code><code>/api/metrics</code>
       </div>
     </div>
     <div class="wrap exhibit-map">
       <div class="exhibit-copy">
         <div>
-          <div class="eyebrow">Exhibit Map</div>
-          <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
+          <div class="eyebrow">展品导览</div>
+          <h2>为什么做这个检测器、读取哪些证据、测试集如何支撑结论。</h2>
         </div>
         <div class="stat-grid">
-          <div class="stat-tile"><strong>34</strong><span class="muted">34 scored APKs</span></div>
-          <div class="stat-tile"><strong>22 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>34</strong><span class="muted">34 个评分 APK</span></div>
+          <div class="stat-tile"><strong>22 + 12</strong><span class="muted">合成 Oracle + 外部 APK 语料</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>69</strong><span class="muted">69 regression tests</span></div>
+          <div class="stat-tile"><strong>69</strong><span class="muted">69 个回归测试</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">
-            <strong>Evidence Chain</strong>
-            <span class="muted">Manifest, DEX, Native symbols, resources and entropy feed explainable findings.</span>
+            <strong>证据链</strong>
+            <span class="muted">Manifest、DEX、Native 符号、资源和熵值汇总为可解释 finding。</span>
           </div>
           <div class="story-item">
-            <strong>Dataset Story</strong>
-            <span class="muted">Synthetic oracle samples give precise labels; public APKs expose parser and false-positive risks.</span>
+            <strong>数据集说明</strong>
+            <span class="muted">合成样本提供精确标签；公开 APK 暴露解析和误报风险。</span>
           </div>
           <div class="story-item">
-            <strong>Live Demo Flow</strong>
-            <span class="muted">Clean baseline, combined hardening, specialty signals, upload scan, then benchmark comparison.</span>
+            <strong>现场演示流程</strong>
+            <span class="muted">干净基线、综合加固、专项信号、上传扫描，再看 benchmark 对比。</span>
           </div>
         </div>
       </div>
       <div class="cutaway">
-        <img src="/assets/apk-cutaway.png" alt="APK static analysis cutaway showing evidence sources">
+        <img src="/assets/apk-cutaway.png" alt="展示证据来源的 APK 静态分析拆解图">
       </div>
     </div>
   </header>
   <main class="wrap">
     <aside class="panel">
       <div class="toolbar">
-        <h2>Samples</h2>
-        <span class="muted" id="sampleCount">Loading</span>
+        <h2>样本</h2>
+        <span class="muted" id="sampleCount">加载中</span>
       </div>
       <div class="sample-list" id="sampleList"></div>
       <div class="upload-box">
-        <label class="file-label" for="uploadFile">Upload APK</label>
+        <label class="file-label" for="uploadFile">上传 APK</label>
         <input class="file-input" id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
-        <button class="secondary-button" id="uploadButton" disabled>Scan Upload</button>
-        <div class="muted" id="uploadMeta">No file selected</div>
+        <button class="secondary-button" id="uploadButton" disabled>扫描上传文件</button>
+        <div class="muted" id="uploadMeta">未选择文件</div>
       </div>
     </aside>
     <section>
       <div class="panel">
         <div class="toolbar">
           <div>
-            <h2 id="selectedTitle">Select a sample</h2>
-            <div class="muted" id="selectedMeta">APK scan results render here.</div>
+            <h2 id="selectedTitle">选择一个样本</h2>
+            <div class="muted" id="selectedMeta">APK 扫描结果会显示在这里。</div>
           </div>
-          <button class="scan-button" id="scanButton" disabled>Scan</button>
+          <button class="scan-button" id="scanButton" disabled>扫描</button>
         </div>
         <div class="content" id="scanContent">
-          <div class="empty">Choose a sample from the left panel, then scan it.</div>
+          <div class="empty">从左侧选择样本，然后点击扫描。</div>
         </div>
       </div>
       <div class="panel metrics">
         <div class="toolbar">
-          <h2>Benchmark Comparison</h2>
-          <span class="muted">Micro/macro and category rows from reports/benchmark</span>
+          <h2>Benchmark 对比</h2>
+          <span class="muted">来自 reports/benchmark 的 micro/macro 和类别指标</span>
         </div>
         <div class="content" id="metricsContent">
-          <div class="empty">Loading metrics.</div>
+          <div class="empty">正在加载指标。</div>
         </div>
       </div>
     </section>
@@ -712,6 +712,17 @@ def render_index_html() -> str:
   <script>
     const state = { samples: [], selected: null, scanning: false, uploadFile: null };
     const categories = ["packer", "obfuscation", "environment", "native"];
+    const categoryLabels = {
+      packer: "加壳",
+      obfuscation: "混淆",
+      environment: "环境检测",
+      native: "Native",
+      clean: "无 finding",
+      micro: "Micro 汇总",
+      macro: "Macro 汇总"
+    };
+    const severityLabels = { low: "低", medium: "中", high: "高" };
+    const confidenceLabels = { low: "低", medium: "中", high: "高" };
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, ch => ({
@@ -719,9 +730,13 @@ def render_index_html() -> str:
       }[ch]));
     }
 
+    function categoryLabel(value) {
+      return categoryLabels[value] || value;
+    }
+
     function renderSamples() {
       const container = document.getElementById("sampleList");
-      document.getElementById("sampleCount").textContent = `${state.samples.length} APKs`;
+      document.getElementById("sampleCount").textContent = `${state.samples.length} 个 APK`;
       container.innerHTML = state.samples.map(sample => `
         <button class="sample-button ${state.selected?.id === sample.id ? "active" : ""}" data-id="${escapeHtml(sample.id)}">
           <span class="sample-title">${escapeHtml(sample.title)}</span>
@@ -729,7 +744,7 @@ def render_index_html() -> str:
           <span class="sample-meta" style="display:block;margin-top:5px;">${escapeHtml(sample.description)}</span>
           <span class="badge-row">
             ${(sample.expected_categories && sample.expected_categories.length ? sample.expected_categories : ["clean"]).map(category => `
-                <span class="badge category-${escapeHtml(category)}">${escapeHtml(category)}</span>
+                <span class="badge category-${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</span>
               `).join("")}
           </span>
         </button>
@@ -745,7 +760,7 @@ def render_index_html() -> str:
       document.getElementById("selectedTitle").textContent = state.selected.title;
       document.getElementById("selectedMeta").textContent = `${state.selected.dataset_kind} · ${state.selected.showcase_role} · ${state.selected.relative_path}`;
       document.getElementById("scanContent").innerHTML = `
-        <div class="empty">Ready to scan ${escapeHtml(state.selected.title)}.</div>
+        <div class="empty">已选择 ${escapeHtml(state.selected.title)}，可以开始扫描。</div>
       `;
       renderSamples();
     }
@@ -755,7 +770,7 @@ def render_index_html() -> str:
       const summary = report.summary || {};
       const cards = categories.map(category => `
         <div class="card">
-          <div class="label">${escapeHtml(category)}</div>
+          <div class="label">${escapeHtml(categoryLabel(category))}</div>
           <div class="value">${summary[category] || 0}</div>
         </div>
       `).join("");
@@ -765,16 +780,16 @@ def render_index_html() -> str:
         <article class="finding">
           <div class="finding-head">
             <strong>${escapeHtml(finding.title)}</strong>
-            <span class="badge category-${escapeHtml(finding.category)}">${escapeHtml(finding.category)}</span>
+            <span class="badge category-${escapeHtml(finding.category)}">${escapeHtml(categoryLabel(finding.category))}</span>
           </div>
-          <div class="muted">${escapeHtml(finding.id)} · ${escapeHtml(finding.severity)} severity · ${escapeHtml(finding.confidence)} confidence</div>
+          <div class="muted">${escapeHtml(finding.id)} · 严重度 ${escapeHtml(severityLabels[finding.severity] || finding.severity)} · 置信度 ${escapeHtml(confidenceLabels[finding.confidence] || finding.confidence)}</div>
           <div class="badge-row">
             ${(finding.evidence || []).slice(0, 8).map(item => `
               <span class="badge">${escapeHtml(item.kind)}</span>
             `).join("")}
           </div>
           <table class="evidence">
-            <thead><tr><th>Evidence</th><th>Value</th><th>Location</th></tr></thead>
+            <thead><tr><th>证据</th><th>取值</th><th>位置</th></tr></thead>
             <tbody>
               ${(finding.evidence || []).slice(0, 8).map(item => `
                 <tr>
@@ -786,7 +801,7 @@ def render_index_html() -> str:
             </tbody>
           </table>
         </article>
-      `).join("") : `<div class="empty">No hardening indicators matched this sample.</div>`;
+      `).join("") : `<div class="empty">该样本未命中加固或反分析证据。</div>`;
 
       document.getElementById("scanContent").innerHTML = `
         <div class="cards">${cards}</div>
@@ -804,19 +819,19 @@ def render_index_html() -> str:
       state.scanning = true;
       const button = document.getElementById("scanButton");
       button.disabled = true;
-      button.textContent = "Scanning";
-      document.getElementById("scanContent").innerHTML = `<div class="empty">Scanning APK and extracting evidence.</div>`;
+      button.textContent = "扫描中";
+      document.getElementById("scanContent").innerHTML = `<div class="empty">正在扫描 APK 并提取证据。</div>`;
       try {
         const response = await fetch(`/api/scan?id=${encodeURIComponent(state.selected.id)}`);
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Scan failed");
+        if (!response.ok) throw new Error(result.error || "扫描失败");
         renderReport(result);
       } catch (error) {
         document.getElementById("scanContent").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
       } finally {
         state.scanning = false;
         button.disabled = false;
-        button.textContent = "Scan";
+        button.textContent = "扫描";
       }
     }
 
@@ -825,10 +840,10 @@ def render_index_html() -> str:
       state.scanning = true;
       const button = document.getElementById("uploadButton");
       button.disabled = true;
-      button.textContent = "Scanning";
+      button.textContent = "扫描中";
       document.getElementById("selectedTitle").textContent = state.uploadFile.name;
-      document.getElementById("selectedMeta").textContent = `Uploaded APK · ${(state.uploadFile.size / 1024).toFixed(1)} KB`;
-      document.getElementById("scanContent").innerHTML = `<div class="empty">Scanning uploaded APK.</div>`;
+      document.getElementById("selectedMeta").textContent = `本地上传 APK · ${(state.uploadFile.size / 1024).toFixed(1)} KB`;
+      document.getElementById("scanContent").innerHTML = `<div class="empty">正在扫描上传的 APK。</div>`;
       try {
         const response = await fetch(`/api/scan-upload?filename=${encodeURIComponent(state.uploadFile.name)}`, {
           method: "POST",
@@ -836,14 +851,14 @@ def render_index_html() -> str:
           body: state.uploadFile
         });
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || "Upload scan failed");
+        if (!response.ok) throw new Error(result.error || "上传扫描失败");
         renderReport(result);
       } catch (error) {
         document.getElementById("scanContent").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
       } finally {
         state.scanning = false;
         button.disabled = false;
-        button.textContent = "Scan Upload";
+        button.textContent = "扫描上传文件";
       }
     }
 
@@ -852,7 +867,7 @@ def render_index_html() -> str:
       const body = rows.map(row => `
         <tr>
           <td>${escapeHtml(row.tool)}</td>
-          <td>${escapeHtml(row.category)}</td>
+          <td>${escapeHtml(categoryLabel(row.category))}</td>
           <td>${Number(row.precision ?? 0).toFixed(3)}</td>
           <td>${Number(row.recall ?? 0).toFixed(3)}</td>
           <td>${Number(row.f1 ?? 0).toFixed(3)}</td>
@@ -860,7 +875,7 @@ def render_index_html() -> str:
       `).join("");
       document.getElementById("metricsContent").innerHTML = `
         <table class="metric-table">
-          <thead><tr><th>Tool</th><th>Row</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
+          <thead><tr><th>工具</th><th>行</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
           <tbody>${body}</tbody>
         </table>
       `;
@@ -884,7 +899,7 @@ def render_index_html() -> str:
       document.getElementById("uploadButton").disabled = !state.uploadFile;
       document.getElementById("uploadMeta").textContent = state.uploadFile
         ? `${state.uploadFile.name} · ${(state.uploadFile.size / 1024).toFixed(1)} KB`
-        : "No file selected";
+        : "未选择文件";
     });
     document.getElementById("uploadButton").addEventListener("click", scanUpload);
     init().catch(error => {
@@ -950,7 +965,7 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
                 return
             if content_length > MAX_UPLOAD_BYTES:
                 self._send_json(
-                    {"error": f"Uploaded APK exceeds the {MAX_UPLOAD_BYTES // (1024 * 1024)} MiB demo limit"},
+                    {"error": f"上传 APK 超过 {MAX_UPLOAD_BYTES // (1024 * 1024)} MiB 演示上限"},
                     HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
                 )
                 return
@@ -1028,11 +1043,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     server = serve(args.host, args.port, args.repo_root)
-    print(f"HardenInspector Demo: http://{args.host}:{args.port}/")
+    print(f"HardenInspector 本地演示: http://{args.host}:{args.port}/")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nStopping HardenInspector Demo.")
+        print("\n正在停止 HardenInspector 本地演示。")
     finally:
         server.server_close()
     return 0

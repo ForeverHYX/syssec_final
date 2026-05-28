@@ -37,11 +37,11 @@ def test_final_summary_report_and_beamer_exist():
     assert "HardenInspector" in slides_text
     assert "外部 APK 语料" in slides_text
     assert "现场 Web Demo" in slides_text
-    assert "Exhibit Map" in slides_text
-    assert "Dataset Story" in slides_text
-    assert "Scan Upload" in slides_text
-    assert "Synthetic Oracle" in slides_text
-    assert "External APK Corpus" in slides_text
+    assert "展品导览" in slides_text
+    assert "数据集说明" in slides_text
+    assert "扫描上传文件" in slides_text
+    assert "合成 Oracle" in slides_text
+    assert "外部 APK 语料" in slides_text
     assert "这轮" not in slides_text
     assert "本轮" not in slides_text
     assert "下一步" not in slides_text
@@ -52,7 +52,7 @@ def test_final_summary_report_and_beamer_exist():
     assert "droidbench_reflection_5" in defense_text
     assert "support-library-only" in defense_text
     assert "make demo-web" in demo_text
-    assert "Scan Upload" in demo_text
+    assert "扫描上传文件" in demo_text
     assert "docs/defense_qa.md" in readme_text
     assert "docs/live_demo_script.md" in readme_text
 

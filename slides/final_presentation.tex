@@ -90,7 +90,7 @@
         每条 finding 给出位置、命中值、类别、置信度和解释。
       \end{block}
       \begin{block}{边界}
-        不判断恶意/良性；不复制开源工具规则；动态 Frida 验证作为后续扩展。
+        不判断恶意/良性；不复制开源工具规则；动态 Frida 验证不作为课程核心交付。
       \end{block}
     \end{column}
   \end{columns}
@@ -142,7 +142,7 @@
         \end{itemize}
       \end{block}
       \vspace{0.3em}
-      这张图只承担“APK 拆解对象”的直观说明；具体规则和指标由后续表格给出。
+      这张图只承担“APK 拆解对象”的直观说明；具体规则和指标由后面的表格给出。
     \end{column}
   \end{columns}
 \end{frame}
@@ -485,10 +485,10 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{局限与已优化项}
+\begin{frame}{能力边界与实现强化}
   \begin{columns}[T,totalwidth=\textwidth]
     \begin{column}{0.48\textwidth}
-      \begin{block}{这轮已补齐}
+      \begin{block}{已经实现的强化}
         \begin{itemize}
           \item opcode 统计升级为 branch/goto/switch/throw profile。
           \item 增加 \texttt{obfuscation.control\_flow\_density} 规则。

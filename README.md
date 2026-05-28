@@ -49,6 +49,7 @@ make slides
 | 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
 | 外部语料 HardenInspector 分布 | Any 10/12；packer=4；obfuscation=2；environment=5；native=3；F-Droid 样本无 finding |
 | Slides | ZJU Beamer 可通过 `make slides` 编译为 21 页，PDF/aux/log 等构建产物已忽略 |
+| Web Demo | 首屏展示 Exhibit Map、Evidence Chain、Dataset Story、29 个评分 APK、46 个测试和上传扫描 |
 
 ## 使用
 
@@ -58,7 +59,7 @@ make slides
 make demo-web
 ```
 
-浏览器访问 `http://127.0.0.1:8000/`。页面可以选择 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，也可以上传本地 APK 临时扫描，现场查看 summary、finding evidence 和 benchmark 对比指标。
+浏览器访问 `http://127.0.0.1:8000/`。页面首屏先展示项目动机、证据链、Synthetic Oracle + External APK Corpus 的数据集结构、29 个评分 APK、46 个回归测试和 HardenInspector Micro F1。随后可以选择 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，也可以上传本地 APK 临时扫描，现场查看 summary、finding evidence 和 benchmark 对比指标。
 
 生成可复现演示 APK：
 

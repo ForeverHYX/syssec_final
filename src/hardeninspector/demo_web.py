@@ -30,6 +30,8 @@ class DemoSample:
     id: str
     title: str
     source: str
+    dataset_kind: str
+    showcase_role: str
     apk_path: Path
     description: str
     expected_categories: tuple[str, ...]
@@ -40,6 +42,8 @@ class DemoSample:
             "id": self.id,
             "title": self.title,
             "source": self.source,
+            "dataset_kind": self.dataset_kind,
+            "showcase_role": self.showcase_role,
             "apk_path": str(path),
             "relative_path": str(self.apk_path),
             "description": self.description,
@@ -53,6 +57,8 @@ DEMO_SAMPLES = (
         id="fdroid_clean_baseline",
         title="F-Droid clean synthetic baseline",
         source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Low-noise baseline",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/fdroid_clean_baseline.apk"),
         description="A benign baseline sample used to show that the detector can produce an empty finding set.",
         expected_categories=(),
@@ -61,6 +67,8 @@ DEMO_SAMPLES = (
         id="combined_hardened_showcase",
         title="Combined hardened showcase",
         source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="All-category evidence chain",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk"),
         description="A compact exhibit sample combining packer, obfuscation, environment, and native indicators.",
         expected_categories=("packer", "obfuscation", "environment", "native"),
@@ -69,6 +77,8 @@ DEMO_SAMPLES = (
         id="native_ptrace_loader",
         title="Native ptrace and loader signals",
         source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="ELF symbol evidence",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/native_ptrace_loader.apk"),
         description="Native-symbol focused sample for anti-debug and dynamic loader evidence.",
         expected_categories=("environment", "native"),
@@ -77,6 +87,8 @@ DEMO_SAMPLES = (
         id="emulator_imei_probe",
         title="Emulator IMEI probe",
         source="Synthetic oracle",
+        dataset_kind="Synthetic oracle",
+        showcase_role="Environment probe evidence",
         apk_path=Path("datasets/hardeninspector_eval_v1/apks/emulator_imei_probe.apk"),
         description="Environment-detection sample with emulator telephony identifiers.",
         expected_categories=("environment",),
@@ -85,6 +97,8 @@ DEMO_SAMPLES = (
         id="pivaa",
         title="PIVAA training APK",
         source="External corpus",
+        dataset_kind="External corpus",
+        showcase_role="Real APK sanity check",
         apk_path=Path("datasets/external_apk_corpus_v1/apks/security/pivaa.apk"),
         description="Public vulnerable Android app used as a real APK sanity check.",
         expected_categories=("packer", "obfuscation", "environment", "native"),
@@ -93,6 +107,8 @@ DEMO_SAMPLES = (
         id="fdroid_editor",
         title="F-Droid editor APK",
         source="External corpus",
+        dataset_kind="External corpus",
+        showcase_role="Clean real-world baseline",
         apk_path=Path("datasets/external_apk_corpus_v1/apks/fdroid/org.billthefarmer.editor_198.apk"),
         description="Real open-source APK baseline used to demonstrate low-noise behavior.",
         expected_categories=(),
@@ -155,6 +171,8 @@ def scan_uploaded_apk(
             "id": "uploaded",
             "title": safe_name,
             "source": "Uploaded APK",
+            "dataset_kind": "Uploaded local file",
+            "showcase_role": "Live smoke test",
             "apk_path": f"uploaded:{safe_name}",
             "relative_path": safe_name,
             "description": "APK uploaded through the local demo page and scanned from a temporary file.",
@@ -215,11 +233,11 @@ def render_index_html() -> str:
   <style>
     :root {
       color-scheme: light;
-      --bg: #f7f7f4;
+      --bg: #eef3f7;
       --panel: #ffffff;
       --ink: #1f2933;
       --muted: #65717f;
-      --line: #d8ded8;
+      --line: #cfd9e3;
       --accent: #1b6b5f;
       --accent-2: #b7410e;
       --accent-3: #345995;
@@ -235,7 +253,7 @@ def render_index_html() -> str:
     }
     header {
       border-bottom: 1px solid var(--line);
-      background: #fdfdfb;
+      background: #f9fbfd;
     }
     .wrap {
       width: min(1180px, calc(100vw - 32px));
@@ -268,6 +286,76 @@ def render_index_html() -> str:
       color: var(--accent);
       margin-left: 7px;
       white-space: nowrap;
+    }
+    .exhibit-map {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr);
+      gap: 18px;
+      padding: 0 0 18px;
+      align-items: stretch;
+    }
+    .exhibit-copy {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .exhibit-copy h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .stat-tile {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 10px;
+      min-height: 76px;
+    }
+    .stat-tile strong {
+      display: block;
+      font-size: 18px;
+    }
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+    .story-item {
+      border-left: 4px solid var(--accent-3);
+      background: #f8fbff;
+      padding: 9px 10px;
+      border-radius: 6px;
+      min-height: 82px;
+    }
+    .story-item strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+    .cutaway {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+      min-height: 100%;
+    }
+    .cutaway img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 250px;
+      object-fit: cover;
     }
     main {
       display: grid;
@@ -482,6 +570,9 @@ def render_index_html() -> str:
     @media (max-width: 840px) {
       .topbar { align-items: flex-start; flex-direction: column; }
       .api { text-align: left; }
+      .exhibit-map { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .story-grid { grid-template-columns: 1fr; }
       main { grid-template-columns: 1fr; }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
@@ -496,6 +587,37 @@ def render_index_html() -> str:
       </div>
       <div class="api">
         API <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/scan-upload</code><code>/api/metrics</code>
+      </div>
+    </div>
+    <div class="wrap exhibit-map">
+      <div class="exhibit-copy">
+        <div>
+          <div class="eyebrow">Exhibit Map</div>
+          <h2>Why this detector exists, what evidence it reads, and how the test set proves it.</h2>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-tile"><strong>29</strong><span class="muted">29 scored APKs</span></div>
+          <div class="stat-tile"><strong>17 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
+          <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
+          <div class="stat-tile"><strong>46</strong><span class="muted">46 regression tests</span></div>
+        </div>
+        <div class="story-grid">
+          <div class="story-item">
+            <strong>Evidence Chain</strong>
+            <span class="muted">Manifest, DEX, Native symbols, resources and entropy feed explainable findings.</span>
+          </div>
+          <div class="story-item">
+            <strong>Dataset Story</strong>
+            <span class="muted">Synthetic oracle samples give precise labels; public APKs expose parser and false-positive risks.</span>
+          </div>
+          <div class="story-item">
+            <strong>Live Demo Flow</strong>
+            <span class="muted">Clean baseline, combined hardening, specialty signals, upload scan, then benchmark comparison.</span>
+          </div>
+        </div>
+      </div>
+      <div class="cutaway">
+        <img src="/assets/apk-cutaway.png" alt="APK static analysis cutaway showing evidence sources">
       </div>
     </div>
   </header>
@@ -553,8 +675,13 @@ def render_index_html() -> str:
       container.innerHTML = state.samples.map(sample => `
         <button class="sample-button ${state.selected?.id === sample.id ? "active" : ""}" data-id="${escapeHtml(sample.id)}">
           <span class="sample-title">${escapeHtml(sample.title)}</span>
-          <span class="sample-meta">${escapeHtml(sample.source)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
+          <span class="sample-meta">${escapeHtml(sample.dataset_kind)} · ${escapeHtml(sample.showcase_role)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
           <span class="sample-meta" style="display:block;margin-top:5px;">${escapeHtml(sample.description)}</span>
+          <span class="badge-row">
+            ${(sample.expected_categories && sample.expected_categories.length ? sample.expected_categories : ["clean"]).map(category => `
+                <span class="badge category-${escapeHtml(category)}">${escapeHtml(category)}</span>
+              `).join("")}
+          </span>
         </button>
       `).join("");
       container.querySelectorAll("button").forEach(button => {
@@ -566,7 +693,7 @@ def render_index_html() -> str:
       state.selected = state.samples.find(sample => sample.id === id);
       document.getElementById("scanButton").disabled = !state.selected;
       document.getElementById("selectedTitle").textContent = state.selected.title;
-      document.getElementById("selectedMeta").textContent = `${state.selected.relative_path}`;
+      document.getElementById("selectedMeta").textContent = `${state.selected.dataset_kind} · ${state.selected.showcase_role} · ${state.selected.relative_path}`;
       document.getElementById("scanContent").innerHTML = `
         <div class="empty">Ready to scan ${escapeHtml(state.selected.title)}.</div>
       `;
@@ -613,6 +740,10 @@ def render_index_html() -> str:
 
       document.getElementById("scanContent").innerHTML = `
         <div class="cards">${cards}</div>
+        <div class="story-item" style="margin-bottom:12px;">
+          <strong>${escapeHtml(result.sample.dataset_kind)} · ${escapeHtml(result.sample.showcase_role)}</strong>
+          <span class="muted">${escapeHtml(result.sample.description)}</span>
+        </div>
         <div class="muted">SHA-256: ${escapeHtml(report.apk.sha256)} · ZIP entries: ${report.apk.entry_count}</div>
         <div class="findings" style="margin-top:14px;">${findingHtml}</div>
       `;
@@ -726,6 +857,8 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
             try:
                 if parsed.path == "/":
                     self._send_text(render_index_html(), "text/html; charset=utf-8")
+                elif parsed.path == "/assets/apk-cutaway.png":
+                    self._send_file(root / "slides/figures/apk_static_analysis_cutaway.png", "image/png")
                 elif parsed.path == "/api/samples":
                     self._send_json({"samples": build_demo_catalog(root)})
                 elif parsed.path == "/api/scan":
@@ -787,6 +920,18 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
         def _send_text(self, text: str, content_type: str, status: HTTPStatus = HTTPStatus.OK) -> None:
             body = text.encode("utf-8")
             self.send_response(status.value)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+
+        def _send_file(self, path: Path, content_type: str) -> None:
+            if not path.exists() or not path.is_file():
+                self._send_json({"error": "asset not found"}, HTTPStatus.NOT_FOUND)
+                return
+            body = path.read_bytes()
+            self.send_response(HTTPStatus.OK.value)
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")

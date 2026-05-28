@@ -35,6 +35,12 @@ def test_final_summary_report_and_beamer_exist():
     assert "\\begin{document}" in slides_text
     assert "HardenInspector" in slides_text
     assert "外部 APK 语料" in slides_text
+    assert "这轮" not in slides_text
+    assert "本轮" not in slides_text
+    assert "下一步" not in slides_text
+    assert "后续扩展" not in slides_text
+    assert "这轮" not in report_text
+    assert "本轮" not in report_text
     assert "HardenInspector Micro F1 = 1.000" in defense_text
     assert "droidbench_reflection_5" in defense_text
     assert "support-library-only" in defense_text

@@ -25,6 +25,11 @@ def test_demo_catalog_points_to_existing_curated_samples():
         assert apk_path.exists()
         assert apk_path.suffix == ".apk"
         assert sample["size_bytes"] > 0
+        assert sample["dataset_kind"] in {"Synthetic oracle", "External corpus"}
+        assert sample["showcase_role"]
+
+    assert by_id["combined_hardened_showcase"]["showcase_role"] == "All-category evidence chain"
+    assert by_id["fdroid_editor"]["dataset_kind"] == "External corpus"
 
 
 def test_scan_demo_sample_returns_report_with_expected_signal():
@@ -75,6 +80,15 @@ def test_render_index_html_contains_demo_api_surface():
     html = render_index_html()
 
     assert "HardenInspector Demo" in html
+    assert "Exhibit Map" in html
+    assert "Evidence Chain" in html
+    assert "Dataset Story" in html
+    assert "Synthetic Oracle" in html
+    assert "External APK Corpus" in html
+    assert "HardenInspector Micro F1" in html
+    assert "29 scored APKs" in html
+    assert "46 regression tests" in html
+    assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html
     assert "/api/scan-upload" in html

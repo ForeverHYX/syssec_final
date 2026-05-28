@@ -247,6 +247,16 @@ Status: complete
 - Link both documents from README.
 - Update progress and findings.
 
+### Phase 25: Final-presentation language and exhibit Web polish
+
+Status: complete
+
+- Add regression coverage that rejects process-oriented wording such as `这轮` / `本轮` in final-facing slides and summary report.
+- Add regression coverage requiring the Web demo to explain Exhibit Map, Evidence Chain, Dataset Story, 29 scored APKs, HardenInspector Micro F1, and 46 regression tests.
+- Enrich the Web demo catalog with dataset-kind and showcase-role metadata for each curated sample.
+- Add a first-screen exhibit overview, dataset explanation, benchmark/test summary, and APK cutaway visual asset route to the Web demo.
+- Update README, Web demo docs, final summary, progress, and findings.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -256,3 +266,7 @@ Status: complete
 | DroidLysis default config writes cache under read-only home | `droidlysis --config ...` | Use `XDG_CACHE_HOME=/tmp/droidlysis_cache` in benchmark adapter |
 | DroidLysis cannot provide a fair default benchmark without external tools | default scored comparison | Removed from scored tools; APKiD, Androguard DEX, and ZIP Strings now provide full-coverage comparisons |
 | Androguard initially rejected synthetic DEX files | first Androguard DEX benchmark attempt | Added DEX SHA-1 signature, Adler-32 checksum, and map list to the synthetic DEX builder |
+| `git ls-files -i` was missing the required mode flag | checking whether slide build artifacts were tracked | Re-ran the check with `git check-ignore -v`; slide PDF/log/aux outputs are ignored and not tracked |
+| Sandbox denied binding a local HTTP port | `.venv/bin/python -m hardeninspector.demo_web --host 127.0.0.1 --port 8765` | Re-ran with approved local bind escalation for the Web demo smoke test |
+| Local `curl` used the proxy for `127.0.0.1` | first Web demo smoke requests | Re-ran with proxy variables unset and `--noproxy '*'` |
+| `HEAD` is unsupported by the demo handler | checking `/assets/apk-cutaway.png` with `curl -I` | Verified the browser-relevant `GET` path instead; it returned 200 `image/png` |

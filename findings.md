@@ -151,3 +151,9 @@ The upload route intentionally rejects non-`.apk` filenames and files above 64 M
 After the benchmark reached 1.000, the highest-value remaining work was not another detector rule but a stronger answer package for the final exhibit. The new live demo script gives a deterministic 5-8 minute flow, including clean baseline, combined showcase, specialty sample, upload scan, benchmark explanation, and terminal fallback.
 
 The new Q&A document is designed for likely grading questions: why HardenInspector is not just APKiD/Androguard, why HardenInspector Micro F1 = 1.000 is scoped rather than overclaiming, why `droidbench_reflection_5` was relabeled after support-library-only evidence inspection, and where the implementation boundaries remain.
+
+## Final Presentation Language and Web Exhibit Polish
+
+Final-facing materials need to speak as a completed course exhibit, not as an internal optimization log. The slide phrase `这轮已补齐` was a real presentation risk because it frames the deck as an iterative work note; it is now guarded by `tests/test_final_artifacts.py`, and the slide section has been rewritten as `能力边界与实现强化` / `已经实现的强化`.
+
+The Web demo had functional scanning and upload support, but it did not yet visually explain the whole project before the presenter clicked a sample. The page now opens with an Exhibit Map, Evidence Chain, Dataset Story, benchmark/test summary, and APK cutaway image. Curated samples also carry `dataset_kind` and `showcase_role`, so the presenter can explain why each sample exists: low-noise baseline, all-category evidence chain, ELF symbol evidence, environment probe, real APK sanity check, or clean real-world baseline.

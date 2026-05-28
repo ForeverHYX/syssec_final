@@ -194,3 +194,13 @@
 - Added `docs/live_demo_script.md` with a 5-8 minute exhibit flow: opening position, web launch, clean baseline, combined showcase, specialty sample, upload scan, benchmark, terminal fallback, and closing line.
 - Added `docs/defense_qa.md` covering detector scope, comparator fairness, HardenInspector Micro F1 = 1.000, `droidbench_reflection_5`, `Scan Upload`, synthetic/external dataset roles, and limitations.
 - Linked both documents from README and recorded the phase in task plan/findings/progress.
+
+## 2026-05-28 Final Presentation Language and Web Exhibit Polish
+
+- Started Phase 25 from the persistent goal to keep improving the detector/test/showcase package without further questions.
+- Audited final-facing files and confirmed `slides/final_presentation.tex` still contained the process-oriented phrase `这轮已补齐`.
+- TDD RED: extended `tests/test_final_artifacts.py` to reject `这轮` / `本轮` / `下一步` / `后续扩展` in the final slides and summary report. The targeted test failed on `这轮已补齐`.
+- TDD RED: extended `tests/test_demo_web.py` to require sample `dataset_kind` / `showcase_role` metadata and final-exhibit HTML sections for Exhibit Map, Evidence Chain, Dataset Story, HardenInspector Micro F1, 29 scored APKs, 46 regression tests, and the APK cutaway asset route. The targeted tests failed because the fields and sections did not exist.
+- TDD GREEN: added dataset-kind and showcase-role metadata to curated Web demo samples, added a first-screen exhibit overview with benchmark/test statistics and dataset story, surfaced sample roles in the UI, served the APK cutaway visual asset at `/assets/apk-cutaway.png`, and rewrote slide/report process wording into final-presentation language.
+- Updated README, `docs/demo_web.md`, final summary, task plan, progress, and findings.
+- Verification checkpoint: full pytest passed with 46 tests, `git diff --check` passed, and `make slides` compiled a 21-page PDF. The local Web demo smoke test required port-binding escalation and proxy-free `curl`; HTML, `/api/samples`, `/api/scan`, `/api/metrics`, and `/assets/apk-cutaway.png` returned the expected content.

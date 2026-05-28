@@ -29,7 +29,7 @@ http://127.0.0.1:8000/
 | Exhibit Map | 解释项目为什么存在：检测 APK 加固证据，而不是判恶意 |
 | Evidence Chain | 强调 Manifest、DEX、Native 符号、资源和熵值如何汇总为 finding |
 | Dataset Story | 直观区分 22 个 Synthetic Oracle APK 与 12 个 External APK Corpus |
-| 指标摘要 | 展示 34 个评分 APK、67 个回归测试和 HardenInspector Micro F1 |
+| 指标摘要 | 展示 34 个评分 APK、69 个回归测试和 HardenInspector Micro F1 |
 | APK 拆解图 | 使用 `slides/figures/apk_static_analysis_cutaway.png` 作为视觉说明 |
 
 页面内置一组展示样本，每个样本都带有 dataset kind 和 showcase role，便于现场讲清楚“这个样本为什么在这里”：

@@ -8,7 +8,7 @@
 - 可运行 CLI；
 - 本地 Web Demo：`src/hardeninspector/demo_web.py`、`make demo-web`、`docs/demo_web.md`；
 - JSON/文本报告输出；
-- 67 个自动化测试；
+- 69 个自动化测试；
 - 可复现评估数据集 `datasets/hardeninspector_eval_v1/`；
 - 外部现成 APK 语料 `datasets/external_apk_corpus_v1/`；
 - 开源实现对比与统计结果：`reports/benchmark/`、`docs/benchmark.md`；
@@ -53,7 +53,7 @@ make slides
 
 | 检查项 | 结果 |
 | --- | --- |
-| 单元/集成测试 | 67 个测试通过 |
+| 单元/集成测试 | 69 个测试通过 |
 | 合成数据集 | `make dataset` 生成 22 个带标签 APK |
 | Combined benchmark | 22 个 synthetic APK + 12 个外部 APK；四个工具均为 34/34 coverage；Micro F1 分别为 1.000、0.314、0.609、0.759 |
 | 外部 APK 语料 | 12 个 DroidBench/F-Droid/PIVAA APK；已纳入评分，单独统计四个工具均为 12/12 coverage |

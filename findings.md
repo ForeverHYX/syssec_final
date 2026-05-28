@@ -215,3 +215,9 @@ The dataset now includes `installer_source_probe.apk`, and the Web demo exposes 
 The final-presentation language guard now covers more than the Beamer source and final summary. README, architecture, benchmark, dataset, demo, Web demo, final-deliverable, implementation-scope, live-demo script, final summary, and slides are all checked for process-oriented terms such as `这轮`, `本轮`, `下一步`, and `后续扩展`.
 
 This caught a real wording issue in `docs/architecture.md`: the dynamic verification layer was described as `后续扩展`, which reads like an internal iteration note. It now states that dynamic verification is outside the current deliverable boundary, which is clearer for final-class presentation and defense.
+
+## Final-material Test-count Synchronization Gate
+
+Adding final-facing guard tests changes the regression-test count, so hard-coded presentation counts can drift immediately. The current suite now includes a guard that checks final-facing materials and the Web demo show the current 69-test result and do not retain stale `67 passed` wording.
+
+The Web demo, README, environment/demo docs, completion audit, final deliverable, final summary, live demo script, and Beamer source now all present the same 69-test figure. This makes the classroom demo's first screen and the slide verification page consistent with the actual pytest output.

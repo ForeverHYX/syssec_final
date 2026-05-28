@@ -340,6 +340,14 @@ Status: complete
 - Replace the remaining architecture-doc phrase `后续扩展` with a final-deliverable boundary statement.
 - Verify the focused wording test, full pytest, final-facing wording scan, and `git diff --check`.
 
+### Phase 34: Final-material test-count synchronization gate
+
+Status: complete
+
+- Add regression coverage requiring the Web demo and final-facing materials to show the current regression-test count.
+- Synchronize README, demo docs, environment docs, final deliverable, completion audit, final summary, slides, and Web demo HTML from 67/68 to the current 69-test result.
+- Recompile slides and verify local/fresh pytest, stale-count scan, LaTeX log scan, PDF page count, and `git diff --check`.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

@@ -649,7 +649,7 @@ def render_index_html() -> str:
           <div class="stat-tile"><strong>34</strong><span class="muted">34 scored APKs</span></div>
           <div class="stat-tile"><strong>22 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>67</strong><span class="muted">67 regression tests</span></div>
+          <div class="stat-tile"><strong>69</strong><span class="muted">69 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">

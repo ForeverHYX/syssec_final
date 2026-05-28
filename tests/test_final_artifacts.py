@@ -113,6 +113,24 @@ def test_final_facing_docs_avoid_process_oriented_language():
             assert term not in text, f"{term!r} found in {path.relative_to(ROOT)}"
 
 
+def test_final_materials_show_current_regression_test_count():
+    final_texts = {
+        "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
+        "docs/benchmark.md": (ROOT / "docs" / "benchmark.md").read_text(encoding="utf-8"),
+        "docs/demo.md": (ROOT / "docs" / "demo.md").read_text(encoding="utf-8"),
+        "docs/demo_web.md": (ROOT / "docs" / "demo_web.md").read_text(encoding="utf-8"),
+        "docs/environment.md": (ROOT / "docs" / "environment.md").read_text(encoding="utf-8"),
+        "docs/final_deliverable.md": (ROOT / "docs" / "final_deliverable.md").read_text(encoding="utf-8"),
+        "docs/live_demo_script.md": (ROOT / "docs" / "live_demo_script.md").read_text(encoding="utf-8"),
+        "reports/final_summary.md": (ROOT / "reports" / "final_summary.md").read_text(encoding="utf-8"),
+        "slides/final_presentation.tex": (ROOT / "slides" / "final_presentation.tex").read_text(encoding="utf-8"),
+    }
+
+    for label, text in final_texts.items():
+        assert "69" in text, f"current test count missing from {label}"
+        assert "67 passed" not in text, f"stale pytest count found in {label}"
+
+
 def test_rules_document_describes_java_debug_api_probe():
     rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
 

@@ -289,3 +289,11 @@
 - TDD RED: added `test_final_facing_docs_avoid_process_oriented_language`, covering README, key docs, final summary, and slides. It failed on `docs/architecture.md` because the file still used `后续扩展`.
 - TDD GREEN: rewrote the architecture sentence to describe the dynamic verification layer as outside the current deliverable boundary.
 - Verification checkpoint: focused wording test passed; full local pytest passed with 68 tests; final-facing wording scan had no matches; `git diff --check` passed.
+- Committed Phase 33 locally as `dcc568c test: guard final-facing wording`.
+
+## 2026-05-28 Final-material Test-count Synchronization Gate
+
+- Started Phase 34 after Phase 33 introduced a new test and exposed stale final-material references to `67` tests.
+- TDD RED: updated Web demo and final-artifact expectations to require the current displayed regression-test count; focused tests failed because Web demo, README/docs, final summary, and slides still showed the old count.
+- TDD GREEN: synchronized final-facing materials and Web demo HTML to the current 69-test result. The first synchronization to 68 immediately exposed the fact that the new consistency test itself increased the suite to 69, so the final materials were corrected to 69.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` and `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` both passed with 69 tests; `make slides` compiled 22 pages; stale 67/68 final-material scan had no matches; LaTeX log scan, `pdfinfo`, and `git diff --check` were clean.

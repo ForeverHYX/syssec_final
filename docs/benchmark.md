@@ -107,7 +107,7 @@ make external-corpus
 | Androguard DEX | 34/34 | 0.800 | 0.488 | 0.609 | 0.516 |
 | ZIP Strings | 34/34 | 0.829 | 0.698 | 0.759 | 0.740 |
 
-测试状态：`.venv/bin/python -m pytest -q` 为 67 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
+测试状态：`.venv/bin/python -m pytest -q` 为 69 个测试通过；`make benchmark` 在当前仓库环境中重新生成上述统计。
 
 分类细节：
 

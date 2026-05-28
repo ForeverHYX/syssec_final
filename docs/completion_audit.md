@@ -14,7 +14,7 @@
 | 纳入外部现成 APK/测试集 | `datasets/external_apk_corpus_v1/` 包含 12 个 DroidBench/F-Droid/PIVAA APK，`reports/external_corpus/` 包含覆盖率和 finding 分布统计 |
 | 公平 benchmark 对比 | 默认评分表包含 22 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 34/34 coverage；DroidLysis/MobSF 不进入评分表 |
 | 提供完善中文文档 | `docs/usage.md`、`docs/architecture.md`、`docs/rules.md`、`docs/dataset.md`、`docs/demo.md`、`docs/demo_web.md`、`docs/implementation_scope.md`、`docs/final_deliverable.md` |
-| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、34 个评分 APK、67 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
+| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、34 个评分 APK、69 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
 | 产出中文总结报告 | `reports/final_summary.md` |
 | 产出期末 Beamer | `slides/final_presentation.tex` 使用 ZJU Beamer Template，标题为项目名，作者为洪奕迅、蒋城昊、项康，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图 |
 | slides 编译产物忽略 | `slides/final_presentation.pdf` 及 `.aux/.log/.nav/.out/.snm/.toc` 等 LaTeX 产物在 `.gitignore` 中忽略 |
@@ -30,14 +30,14 @@
 结果：
 
 ```text
-67 passed
+69 passed
 ```
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m pytest -q
 ```
 
-结果：fresh venv 中 67 个测试通过。
+结果：fresh venv 中 69 个测试通过。
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output /tmp/hardeninspector-benchmark-check --tools hardeninspector apkid androguard_dex zip_string_baseline

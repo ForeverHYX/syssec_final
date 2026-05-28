@@ -32,6 +32,7 @@ all = [
 hardeninspector = "hardeninspector.cli:main"
 hardeninspector-benchmark = "hardeninspector.benchmark:main"
 hardeninspector-dataset = "hardeninspector.dataset:main"
+hardeninspector-demo-web = "hardeninspector.demo_web:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

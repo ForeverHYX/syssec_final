@@ -1,4 +1,4 @@
-.PHONY: setup test dataset benchmark external-corpus demo slides all clean
+.PHONY: setup test dataset benchmark external-corpus demo demo-web slides all clean
 
 PYTHON ?= python3
 VENV ?= .venv
@@ -25,6 +25,9 @@ external-corpus:
 demo:
 	$(PY) examples/make_demo_apk.py samples/demo_hardened.apk
 	$(PY) -m hardeninspector samples/demo_hardened.apk
+
+demo-web:
+	$(PY) -m hardeninspector.demo_web --host 127.0.0.1 --port 8000
 
 slides:
 	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex

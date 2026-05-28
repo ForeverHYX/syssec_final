@@ -13,7 +13,17 @@ def test_out_of_box_environment_files_exist_and_expose_expected_targets():
     assert (ROOT / "Dockerfile").exists()
 
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    for target in ["setup:", "test:", "dataset:", "benchmark:", "external-corpus:", "demo:", "slides:", "all:"]:
+    for target in [
+        "setup:",
+        "test:",
+        "dataset:",
+        "benchmark:",
+        "external-corpus:",
+        "demo:",
+        "demo-web:",
+        "slides:",
+        "all:",
+    ]:
         assert target in makefile
     assert "--tools hardeninspector apkid androguard_dex zip_string_baseline" in makefile
     assert "--score-external-corpus datasets/external_apk_corpus_v1" in makefile
@@ -28,3 +38,4 @@ def test_pyproject_exposes_benchmark_extra():
     assert '"apkid==3.1.0"' in pyproject
     assert '"androguard==4.1.3"' in pyproject
     assert '"droidlysis==3.4.7"' not in pyproject
+    assert 'hardeninspector-demo-web = "hardeninspector.demo_web:main"' in pyproject

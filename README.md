@@ -29,6 +29,7 @@ make test
 make dataset
 make benchmark
 make external-corpus
+make demo-web
 make slides
 ```
 
@@ -42,7 +43,7 @@ make slides
 
 | 项目 | 结果 |
 | --- | --- |
-| 自动化测试 | `39 passed` |
+| 自动化测试 | `43 passed` |
 | 合并评分数据集 | 17 个 synthetic APK + 12 个外部 APK，四个默认评分工具均为 29/29 coverage |
 | Combined benchmark Micro F1 | HardenInspector 0.987；APKiD 0.340；Androguard DEX 0.542；ZIP Strings 0.735 |
 | 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
@@ -50,6 +51,14 @@ make slides
 | Slides | ZJU Beamer 可通过 `make slides` 编译为 21 页，PDF/aux/log 等构建产物已忽略 |
 
 ## 使用
+
+启动本地网页展示：
+
+```bash
+make demo-web
+```
+
+浏览器访问 `http://127.0.0.1:8000/`。页面可以选择 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK，现场查看 summary、finding evidence 和 benchmark 对比指标。
 
 生成可复现演示 APK：
 
@@ -111,6 +120,7 @@ make slides
 - [开源实现对比与可靠性验证](docs/benchmark.md)
 - [开箱即用环境](docs/environment.md)
 - [课程展示 Demo](docs/demo.md)
+- [本地 Web Demo](docs/demo_web.md)
 - [实现范围与目标调整说明](docs/implementation_scope.md)
 - [期末交付说明](docs/final_deliverable.md)
 - [期末总结报告](reports/final_summary.md)

@@ -161,3 +161,11 @@
 - Ran `git push origin main`; GitHub accepted `main -> main`, updating the remote from `b853735` to `6c23939`.
 - Fresh post-push verification passed: local tests reported 39 passed, `make benchmark` regenerated 29/29 combined results with HardenInspector Micro F1 0.987, `make external-corpus` regenerated 12/12 external-corpus statistics, and `make slides` compiled 21 pages.
 - `git rev-parse HEAD origin/main` showed the same commit after the push before this final status-doc refresh.
+
+## 2026-05-28 Local Web Demo
+
+- Started Phase 21 after the user requested further optimization, richer demonstration, maintained docs/README, and timely GitHub pushes.
+- TDD RED: added tests for `hardeninspector.demo_web`, curated sample catalog, sample scanning, benchmark metric parsing, HTML API surface, and Makefile/pyproject entry exposure. The targeted test run failed because the module did not exist yet.
+- Implemented `src/hardeninspector/demo_web.py` with only Python standard-library dependencies. It serves `/`, `/api/samples`, `/api/scan?id=<sample_id>`, and `/api/metrics`.
+- Added `make demo-web` and the `hardeninspector-demo-web` console script.
+- Added `docs/demo_web.md` and updated README, usage/demo/environment/final-deliverable docs, final summary, completion audit, and task plan.

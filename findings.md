@@ -125,3 +125,9 @@ Implemented label-audit guardrail:
 - Added a regression test that scans committed external APKs and requires any scored sample with visible `Java_*` JNI exports to include `native`.
 - Updated the BytecodeTamper label basis to record the exported JNI bridge.
 - Rebuilt the combined benchmark. HardenInspector now has zero false positives across the four categories; the only remaining category error is the intentional `droidbench_reflection_5` obfuscation miss caused by support-library reflection filtering.
+
+## Local Web Demo
+
+The final exhibit now has a browser-based demo in addition to the CLI. The implementation deliberately uses Python standard-library HTTP serving instead of Flask/Node so the showcase remains reproducible from the existing virtual environment and can run offline.
+
+The demo exposes curated synthetic and external samples: clean baseline, combined hardened showcase, native ptrace/loader, emulator IMEI probe, PIVAA, and F-Droid editor. This gives a better oral-exam flow than only showing terminal JSON: one click shows category summary, finding details, evidence tables, and the benchmark micro/macro comparison loaded from `reports/benchmark/benchmark_metrics.csv`.

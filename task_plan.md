@@ -22,6 +22,7 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; `main` is synchronized with `origin/main` |
 | Commit and push at milestones | User objective | Git history shows staged commits; latest local improvements are pushed to GitHub |
+| Provide an interactive demo page | User objective | `make demo-web` launches a local standard-library Web demo with sample scans and benchmark metrics |
 
 ## Phases
 
@@ -206,6 +207,16 @@ Status: complete
 - Regenerate benchmark/external-corpus reports, README, docs, final summary, and slides.
 - Verify locally and in fresh venv.
 - Commit locally and push to GitHub.
+
+### Phase 21: Local Web demo page
+
+Status: complete
+
+- Add a dependency-free `hardeninspector.demo_web` server using Python standard library HTTP APIs.
+- Add curated synthetic/external APK samples for classroom scanning.
+- Expose `/api/samples`, `/api/scan`, and `/api/metrics` for live report and benchmark display.
+- Add tests for catalog integrity, scan output, metric parsing, HTML/API surface, and command exposure.
+- Update README, usage/demo/environment/final-deliverable docs, final summary, and completion audit.
 
 ## Errors Encountered
 

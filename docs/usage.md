@@ -51,7 +51,15 @@ JSON：
 Summary: packer=4, obfuscation=2, environment=3, native=1
 ```
 
-## 4. 构造评估数据集
+## 4. 本地网页展示
+
+```bash
+make demo-web
+```
+
+访问 `http://127.0.0.1:8000/` 后，可以在浏览器中选择已提交的合成/外部 APK 样本，查看 summary、finding evidence 和 benchmark 对比指标。详见 `docs/demo_web.md`。
+
+## 5. 构造评估数据集
 
 ```bash
 .venv/bin/python -m hardeninspector.dataset datasets/hardeninspector_eval_v1
@@ -63,7 +71,7 @@ Summary: packer=4, obfuscation=2, environment=3, native=1
 sed -n '1,220p' datasets/hardeninspector_eval_v1/labels.json
 ```
 
-## 5. 解释输出
+## 6. 解释输出
 
 报告中的每条 finding 都应从 evidence 解释。
 
@@ -86,7 +94,7 @@ sed -n '1,220p' datasets/hardeninspector_eval_v1/labels.json
 
 解释：APK 中存在常见壳库名 `libjiagu.so`，因此命中高置信加壳库规则。
 
-## 6. 常见问题
+## 7. 常见问题
 
 ### 为什么某个正常应用也命中动态加载？
 

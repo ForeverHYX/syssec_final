@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-39 passed
+43 passed
 ```
 
 ## 2. 生成演示 APK
@@ -50,7 +50,23 @@ JSON 报告：
 .venv/bin/python -m hardeninspector samples/demo_hardened.apk --json -o reports/demo_report.json
 ```
 
-## 4. 展示重点
+## 4. 本地 Web Demo
+
+期末展示时可以优先使用网页界面，避免现场只展示终端输出：
+
+```bash
+make demo-web
+```
+
+打开：
+
+```text
+http://127.0.0.1:8000/
+```
+
+网页会列出 clean baseline、综合加固样本、Native/IMEI 专项样本和外部 APK。点击 `Scan` 后会展示四类 summary 计数、finding 列表和 evidence 表，并在下方展示 `reports/benchmark/benchmark_metrics.csv` 中的 micro/macro 对比指标。接口说明见 `docs/demo_web.md`。
+
+## 5. 展示重点
 
 展示时建议按三条线讲解：
 
@@ -58,7 +74,7 @@ JSON 报告：
 2. **混淆证据链**：短类名比例和反射调用说明静态语义被削弱，但检测器不会直接声称其为恶意。
 3. **环境检测证据链**：system property、debugger、Frida/Xposed/process maps 等证据说明应用可能主动探测分析环境。
 
-## 5. 相对中期报告的调整
+## 6. 相对中期报告的调整
 
 详见 `docs/implementation_scope.md`。主要调整：
 
@@ -67,7 +83,7 @@ JSON 报告：
 - 不承诺商业加固器签名覆盖率；
 - 控制流混淆已实现轻量 opcode profile 和分支/跳转密度规则，但不实现完整 CFG。
 
-## 6. 数据集展示
+## 7. 数据集展示
 
 期末展示还可以直接扫描已构造的数据集主样本：
 

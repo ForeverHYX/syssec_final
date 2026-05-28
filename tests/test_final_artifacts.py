@@ -91,6 +91,28 @@ def test_rules_document_covers_dataset_findings():
         assert f"### `{finding_id}`" in rules_text
 
 
+def test_final_facing_docs_avoid_process_oriented_language():
+    final_doc_paths = [
+        ROOT / "README.md",
+        ROOT / "docs" / "architecture.md",
+        ROOT / "docs" / "benchmark.md",
+        ROOT / "docs" / "dataset.md",
+        ROOT / "docs" / "demo.md",
+        ROOT / "docs" / "demo_web.md",
+        ROOT / "docs" / "final_deliverable.md",
+        ROOT / "docs" / "implementation_scope.md",
+        ROOT / "docs" / "live_demo_script.md",
+        ROOT / "reports" / "final_summary.md",
+        ROOT / "slides" / "final_presentation.tex",
+    ]
+    banned_terms = ["这轮", "本轮", "下一步", "后续扩展"]
+
+    for path in final_doc_paths:
+        text = path.read_text(encoding="utf-8")
+        for term in banned_terms:
+            assert term not in text, f"{term!r} found in {path.relative_to(ROOT)}"
+
+
 def test_rules_document_describes_java_debug_api_probe():
     rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
 

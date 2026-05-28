@@ -280,3 +280,12 @@
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 67 tests; `make dataset`, `make benchmark`, and `make external-corpus` regenerated committed artifacts; `make slides` compiled 22 pages; `pdfinfo` reported 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 67 tests, fresh combined benchmark kept all four tools at 34/34 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
 - Local Web demo smoke test passed on port 8765: the homepage showed 34 scored APKs, 22 + 12 samples, and 67 tests; `/api/scan?id=installer_source_probe` returned `environment.installer_source_probe`; `/api/metrics` returned current 34/34 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.
+- Committed Phase 32 locally as `82778c5 feat: detect installer source probes`.
+- Attempted `git push origin main`; the sandboxed command failed with DNS resolution failure, and the escalated push was rejected by the approval reviewer pending explicit user confirmation for exporting the repository to GitHub.
+
+## 2026-05-28 Final-facing Documentation Wording Gate
+
+- Started Phase 33 after auditing final-facing documentation for process-oriented language beyond the slides and final summary.
+- TDD RED: added `test_final_facing_docs_avoid_process_oriented_language`, covering README, key docs, final summary, and slides. It failed on `docs/architecture.md` because the file still used `后续扩展`.
+- TDD GREEN: rewrote the architecture sentence to describe the dynamic verification layer as outside the current deliverable boundary.
+- Verification checkpoint: focused wording test passed; full local pytest passed with 68 tests; final-facing wording scan had no matches; `git diff --check` passed.

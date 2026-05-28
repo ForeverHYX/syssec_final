@@ -332,6 +332,14 @@ Status: complete
 - Synchronize README, rules/dataset/benchmark/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides.
 - Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording/stale-count scans, and Web demo smoke before committing.
 
+### Phase 33: Final-facing documentation wording gate
+
+Status: complete
+
+- Add a regression test that checks README, key docs, final summary, and slides for process-oriented wording such as `这轮`, `本轮`, `下一步`, and `后续扩展`.
+- Replace the remaining architecture-doc phrase `后续扩展` with a final-deliverable boundary statement.
+- Verify the focused wording test, full pytest, final-facing wording scan, and `git diff --check`.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |
@@ -345,3 +353,4 @@ Status: complete
 | Sandbox denied binding a local HTTP port | `.venv/bin/python -m hardeninspector.demo_web --host 127.0.0.1 --port 8765` | Re-ran with approved local bind escalation for the Web demo smoke test |
 | Local `curl` used the proxy for `127.0.0.1` | first Web demo smoke requests | Re-ran with proxy variables unset and `--noproxy '*'` |
 | `HEAD` is unsupported by the demo handler | checking `/assets/apk-cutaway.png` with `curl -I` | Added `do_HEAD` for read-only Web demo routes and a regression test for image asset headers |
+| Network sandbox blocked GitHub push | `git push origin main` | DNS failed in the sandbox; escalated push was rejected by the approval reviewer pending explicit user confirmation for exporting repository contents |

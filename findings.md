@@ -209,3 +209,9 @@ Installer-source and side-load checks are now represented as an explicit environ
 The pairing matters for false-positive control: ordinary PackageManager metadata lookups for `getPackageInfo` or `versionName` do not trigger this rule unless installer-source API evidence and a source value both appear. Evidence is preserved with API and source value entries so the presenter can explain the signal as an environment or distribution-channel check.
 
 The dataset now includes `installer_source_probe.apk`, and the Web demo exposes it as an installer-source environment sample. After regeneration, the combined scoring set is 34 samples: 22 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.314, 0.609, and 0.759 Micro F1 respectively.
+
+## Final-facing Documentation Wording Gate
+
+The final-presentation language guard now covers more than the Beamer source and final summary. README, architecture, benchmark, dataset, demo, Web demo, final-deliverable, implementation-scope, live-demo script, final summary, and slides are all checked for process-oriented terms such as `这轮`, `本轮`, `下一步`, and `后续扩展`.
+
+This caught a real wording issue in `docs/architecture.md`: the dynamic verification layer was described as `后续扩展`, which reads like an internal iteration note. It now states that dynamic verification is outside the current deliverable boundary, which is clearer for final-class presentation and defense.

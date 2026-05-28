@@ -289,6 +289,14 @@ Status: complete
 - Synchronize README, rules/dataset/benchmark/external/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides with 19 synthetic + 12 external samples, 31/31 benchmark coverage, 53 tests, and 22 slides.
 - Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
 
+### Phase 29: Rules documentation consistency gate
+
+Status: complete
+
+- Add a regression test that reads committed dataset labels and requires every actual finding ID to have a corresponding section in `docs/rules.md`.
+- Synchronize final-facing test counts to 54 and recompile the Beamer deck.
+- Verify local and fresh venv tests, slides, final wording scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

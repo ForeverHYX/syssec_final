@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,3 +75,17 @@ def test_beamer_uses_zju_template_and_ignores_build_outputs():
     assert "slides/final_presentation.pdf" in gitignore
     assert "slides/*.aux" in gitignore
     assert "slides/*.log" in gitignore
+
+
+def test_rules_document_covers_dataset_findings():
+    labels = json.loads((ROOT / "datasets" / "hardeninspector_eval_v1" / "labels.json").read_text(encoding="utf-8"))
+    rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
+
+    finding_ids = {
+        finding_id
+        for sample in labels["samples"]
+        for finding_id in sample["actual_findings"]
+    }
+
+    for finding_id in sorted(finding_ids):
+        assert f"### `{finding_id}`" in rules_text

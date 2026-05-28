@@ -237,3 +237,10 @@
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 53 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, final-facing wording scan, and `git diff --check` were clean.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 53 tests; fresh combined benchmark kept all four tools at 31/31 coverage with the same Micro F1 values; fresh external-corpus run kept all four tools at 12/12 coverage.
 - Local Web demo smoke test passed on port 8765: the homepage showed 31 scored APKs, 19 + 12 samples, and 53 tests; `/api/scan?id=root_artifact_probe` returned `environment.root_artifact_probe`; `/api/samples` listed the root sample with the `Rooted-device environment probe` role.
+
+## 2026-05-28 Rules Documentation Consistency Gate
+
+- Started Phase 29 to reduce final-deliverable drift risk after adding multiple detector rules in quick succession.
+- Added `test_rules_document_covers_dataset_findings`, which reads committed `datasets/hardeninspector_eval_v1/labels.json` and requires every `actual_findings` ID to have a matching `### \`rule.id\`` section in `docs/rules.md`.
+- The focused test passed immediately because the current docs already describe all dataset-triggered rules; the value is future regression protection.
+- Updated final-facing README/docs/report/slides/Web demo test-count text from 53 to 54.

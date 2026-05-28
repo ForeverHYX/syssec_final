@@ -111,7 +111,7 @@ def test_render_index_html_contains_demo_api_surface():
     assert "External APK Corpus" in html
     assert "HardenInspector Micro F1" in html
     assert "31 scored APKs" in html
-    assert "53 regression tests" in html
+    assert "54 regression tests" in html
     assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html

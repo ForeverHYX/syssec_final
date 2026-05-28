@@ -179,3 +179,9 @@ Rooted-device checks are another common environment/anti-analysis technique in A
 The rule intentionally does not match bare `su`; the negative regression uses ordinary strings like `support`, `subscribe`, and `sunset` to keep this boundary explicit. The signal is medium confidence because benign diagnostics can mention root artifacts, so evidence is preserved for review rather than treated as a malicious verdict.
 
 The dataset now includes `root_artifact_probe.apk`, and the Web demo exposes it as a rooted-device environment sample. After regeneration, the combined scoring set is 31 samples: 19 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.333, 0.571, and 0.740 Micro F1 respectively.
+
+## Rules Documentation Consistency Gate
+
+The final exhibit now has a regression test tying dataset-triggered finding IDs to `docs/rules.md` sections. This catches a common presentation risk: adding a detector rule and sample while forgetting to document the rule in the material used for defense.
+
+The test intentionally reads committed dataset labels rather than hard-coding a duplicate list in the test. That keeps the guard aligned with the exhibit artifacts that are actually presented.

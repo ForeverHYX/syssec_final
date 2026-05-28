@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-58 passed
+63 passed
 ```
 
 ## 2. 生成演示 APK
@@ -64,7 +64,7 @@ make demo-web
 http://127.0.0.1:8000/
 ```
 
-网页会列出 clean baseline、综合加固样本、signature integrity、root artifact、Native/IMEI 专项样本和外部 APK，也支持上传本地 `.apk` 临时扫描。点击 `Scan` 或 `Scan Upload` 后会展示四类 summary 计数、finding 列表和 evidence 表，并在下方展示 `reports/benchmark/benchmark_metrics.csv` 中的 micro/macro 对比指标。接口说明见 `docs/demo_web.md`。
+网页会列出 clean baseline、综合加固样本、ADB/developer-settings、signature integrity、root artifact、Native/IMEI 专项样本和外部 APK，也支持上传本地 `.apk` 临时扫描。点击 `Scan` 或 `Scan Upload` 后会展示四类 summary 计数、finding 列表和 evidence 表，并在下方展示 `reports/benchmark/benchmark_metrics.csv` 中的 micro/macro 对比指标。接口说明见 `docs/demo_web.md`。
 
 ## 5. 展示重点
 
@@ -72,7 +72,7 @@ http://127.0.0.1:8000/
 
 1. **加壳证据链**：壳库名、StubApp、动态加载 API、高熵 payload 共同说明 APK 可能存在运行时释放或加载隐藏代码的行为。
 2. **混淆证据链**：短类名比例和反射调用说明静态语义被削弱，但检测器不会直接声称其为恶意。
-3. **环境检测证据链**：system property、Java Debug API、debugger、Frida/Xposed/process maps 等证据说明应用可能主动探测分析环境。
+3. **环境检测证据链**：system property、ADB/developer settings、Java Debug API、debugger、Frida/Xposed/process maps 等证据说明应用可能主动探测分析环境。
 
 ## 6. 相对中期报告的调整
 

@@ -308,6 +308,18 @@ Status: complete
 - Regenerate dataset, benchmark, external-corpus reports, README/docs/final summary, and slides with 20 synthetic + 12 external samples, 32/32 benchmark coverage, 58 tests, and 22 slides.
 - Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording scans, and Web demo smoke before committing.
 
+### Phase 31: ADB/developer-settings environment detection
+
+Status: complete
+
+- Add detector regression coverage for Android Settings API evidence combined with ADB/developer-options keys such as `ADB_ENABLED`, `adb_enabled`, and `development_settings_enabled`.
+- Add negative coverage so bare `adb` help text, URLs, or generic strings do not trigger the environment finding.
+- Add `adb_developer_settings_probe.apk` to the synthetic oracle dataset and Web demo catalog.
+- Extend shallow benchmark environment keywords so comparator rows expose the ADB/developer-settings signal.
+- Regenerate dataset, benchmark, and external-corpus reports with 21 synthetic + 12 external samples, 33/33 benchmark coverage, and 63 tests.
+- Synchronize README, rules/dataset/benchmark/demo/environment/final-deliverable docs, final summary, completion audit, live demo script, and slides.
+- Verify local and fresh venv tests, benchmark, external-corpus, slides, final wording/stale-count scans, and Web demo smoke before committing.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

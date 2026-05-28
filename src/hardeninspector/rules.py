@@ -179,6 +179,19 @@ ROOT_ARTIFACT_PATTERNS = [
     "which su",
 ]
 
+ADB_SETTINGS_CLASS_PATTERNS = [
+    "Landroid/provider/Settings$Secure;",
+    "Landroid/provider/Settings$Global;",
+    "android.provider.Settings$Secure",
+    "android.provider.Settings$Global",
+]
+
+ADB_SETTINGS_KEY_PATTERNS = [
+    "ADB_ENABLED",
+    "adb_enabled",
+    "development_settings_enabled",
+]
+
 DEBUGGER_PATTERNS = [
     "isDebuggerConnected",
     "/proc/self/status",
@@ -234,6 +247,7 @@ def evaluate_rules(features: ApkFeatures) -> list[Finding]:
         _telephony_identifier_probe,
         _integrity_check,
         _root_artifact_probe,
+        _adb_settings_probe,
         _debugger_probe,
         _instrumentation_probe,
         _native_debugger_symbol,
@@ -506,6 +520,37 @@ def _root_artifact_probe(features: ApkFeatures) -> Finding | None:
             "or explicit root-check commands used in anti-analysis environment checks."
         ),
         evidence=_dedupe_evidence(evidence)[:10],
+    )
+
+
+def _adb_settings_probe(features: ApkFeatures) -> Finding | None:
+    string_evidence = [
+        item
+        for item in features.string_evidence
+        if item.kind in {"manifest-string", "dex-string", "dex-const-string"}
+    ]
+    settings_class_evidence = _string_matches(string_evidence, ADB_SETTINGS_CLASS_PATTERNS)
+    setting_key_evidence = _string_matches(string_evidence, ADB_SETTINGS_KEY_PATTERNS)
+    if not (settings_class_evidence and setting_key_evidence):
+        return None
+
+    method_evidence: list[Evidence] = []
+    for method in features.methods + features.invoked_methods:
+        if method.name in {"getInt", "getString"}:
+            method_evidence.append(Evidence("method", f"{method.class_descriptor}->{method.name}", "DEX method table"))
+
+    evidence = _dedupe_evidence([*settings_class_evidence, *setting_key_evidence, *method_evidence])
+    return Finding(
+        id="environment.adb_settings_probe",
+        category="environment",
+        severity="medium",
+        confidence="medium",
+        title="ADB or developer-settings probe",
+        description=(
+            "APK references Android Settings APIs together with ADB/developer-options keys, "
+            "a static signal for checking whether the device is in an analysis-friendly state."
+        ),
+        evidence=evidence[:10],
     )
 
 

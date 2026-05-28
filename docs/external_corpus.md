@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 32 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 33 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 
@@ -54,7 +54,7 @@ make external-corpus
 make benchmark
 ```
 
-`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 32 个评分样本。
+`make benchmark` 会把 `datasets/hardeninspector_eval_v1/` 和 `datasets/external_apk_corpus_v1/` 合并为 33 个评分样本。
 
 ## 当前统计
 
@@ -71,10 +71,10 @@ make benchmark
 
 | Tool | Samples | Micro Precision | Micro Recall | Micro F1 | Macro F1 |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| HardenInspector | 32/32 | 1.000 | 1.000 | 1.000 | 1.000 |
-| APKiD | 32/32 | 1.000 | 0.195 | 0.327 | 0.247 |
-| Androguard DEX | 32/32 | 0.792 | 0.463 | 0.585 | 0.505 |
-| ZIP Strings | 32/32 | 0.824 | 0.683 | 0.747 | 0.733 |
+| HardenInspector | 33/33 | 1.000 | 1.000 | 1.000 | 1.000 |
+| APKiD | 33/33 | 1.000 | 0.190 | 0.320 | 0.240 |
+| Androguard DEX | 33/33 | 0.800 | 0.476 | 0.597 | 0.511 |
+| ZIP Strings | 33/33 | 0.829 | 0.690 | 0.753 | 0.737 |
 
 重要观察：
 

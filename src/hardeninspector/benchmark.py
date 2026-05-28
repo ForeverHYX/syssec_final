@@ -61,6 +61,9 @@ ZIP_BASELINE_KEYWORDS = {
         "com.topjohnwu.magisk",
         "test-keys",
         "which su",
+        "ADB_ENABLED",
+        "adb_enabled",
+        "development_settings_enabled",
     ],
     "native": ["JNI_OnLoad"],
 }

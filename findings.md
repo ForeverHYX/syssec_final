@@ -193,3 +193,11 @@ Java-layer anti-debug checks are now explicit environment evidence rather than b
 That pairing matters for false-positive control: ordinary strings such as `debug`, `debuggable`, `debug logging enabled`, or app-owned debug-log helper names do not trigger `environment.debugger_probe` by themselves.
 
 The dataset now includes `java_debug_api_probe.apk`, and the Web demo exposes it as a Java-layer anti-debug sample. After regeneration, the combined scoring set is 32 samples: 20 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.327, 0.585, and 0.747 Micro F1 respectively.
+
+## ADB Developer Settings Environment Detection
+
+ADB/developer-options checks are now represented as an explicit environment signal. The new `environment.adb_settings_probe` rule requires Android Settings API context, such as `Landroid/provider/Settings$Secure;` or `Landroid/provider/Settings$Global;`, together with concrete keys such as `ADB_ENABLED`, `adb_enabled`, or `development_settings_enabled`.
+
+The pairing is important for false-positive control: ordinary `adb` help text, backup messages, URLs, or comments do not trigger the finding unless the APK also shows Android Settings API access. Evidence is preserved with both the API descriptor and the setting key so the presenter can explain why the signal is an environment probe rather than a generic string match.
+
+The dataset now includes `adb_developer_settings_probe.apk`, and the Web demo exposes it as an ADB/developer-settings sample. After regeneration, the combined scoring set is 33 samples: 21 synthetic and 12 external. HardenInspector remains at Micro/Macro F1 1.000; APKiD, Androguard DEX, and ZIP Strings are 0.320, 0.597, and 0.753 Micro F1 respectively.

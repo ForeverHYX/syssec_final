@@ -109,6 +109,33 @@ DATASET_SPECS: tuple[DatasetSampleSpec, ...] = (
         ),
     ),
     DatasetSampleSpec(
+        sample_id="adb_developer_settings_probe",
+        apk_name="adb_developer_settings_probe.apk",
+        source_plan="ADB/developer-settings environment sample",
+        construction=(
+            "synthetic environment-detection sample combining Android Settings Secure/Global APIs "
+            "with `ADB_ENABLED`, `adb_enabled`, and `development_settings_enabled` keys"
+        ),
+        expected_findings=["environment.adb_settings_probe"],
+        apk_spec=SyntheticApkSpec(
+            manifest_strings=["edu.syssec.adbprobe", "edu.syssec.adbprobe.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/adbprobe/MainActivity;",
+                "Ledu/syssec/adbprobe/DeveloperSettingsProbe;",
+                "Landroid/provider/Settings$Secure;",
+                "Landroid/provider/Settings$Global;",
+            ],
+            method_names=["<clinit>", "checkAdb", "getInt"],
+            dex_strings=[
+                "Landroid/provider/Settings$Secure;",
+                "Landroid/provider/Settings$Global;",
+                "ADB_ENABLED",
+                "development_settings_enabled",
+                "adb_enabled",
+            ],
+        ),
+    ),
+    DatasetSampleSpec(
         sample_id="r8_identifier_obfuscation",
         apk_name="r8_identifier_obfuscation.apk",
         source_plan="ProGuard/R8 controlled obfuscation",
@@ -616,6 +643,7 @@ The samples correspond to the dataset categories described in the midterm report
 - F-Droid-style clean baseline
 - self-written environment-detection APK
 - Java Debug API anti-debug sample
+- ADB/developer-settings environment sample
 - ProGuard/R8-style identifier obfuscation
 - Obfuscapk-style reflection and dynamic loading
 - packer-like stub/payload APK

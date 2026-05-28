@@ -97,3 +97,25 @@ def test_rules_document_describes_java_debug_api_probe():
     assert "### `environment.debugger_probe`" in rules_text
     assert "Landroid/os/Debug;" in rules_text
     assert "waitingForDebugger" in rules_text
+
+
+def test_rules_document_describes_adb_settings_probe():
+    rules_text = (ROOT / "docs" / "rules.md").read_text(encoding="utf-8")
+
+    assert "### `environment.adb_settings_probe`" in rules_text
+    assert "ADB_ENABLED" in rules_text
+    assert "development_settings_enabled" in rules_text
+
+
+def test_final_materials_include_adb_settings_showcase():
+    readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
+    dataset_text = (ROOT / "docs" / "dataset.md").read_text(encoding="utf-8")
+    demo_text = (ROOT / "docs" / "live_demo_script.md").read_text(encoding="utf-8")
+    report_text = (ROOT / "reports" / "final_summary.md").read_text(encoding="utf-8")
+    slides_text = (ROOT / "slides" / "final_presentation.tex").read_text(encoding="utf-8")
+
+    for text in (readme_text, dataset_text, demo_text, report_text, slides_text):
+        assert "ADB" in text
+        assert "developer" in text
+    assert "adb_developer_settings_probe" in dataset_text
+    assert "environment.adb_settings_probe" in report_text

@@ -104,7 +104,7 @@
       \begin{block}{我们实现了什么}
         \begin{itemize}
           \item 一个可运行 CLI：输入 APK，输出 JSON/text report。
-          \item 一个可复现数据集：20 个 APK、labels 和逐样本报告。
+          \item 一个可复现数据集：21 个 APK、labels 和逐样本报告。
           \item 一个外部语料：12 个 DroidBench/F-Droid/PIVAA 现成 APK。
           \item 一个公平 benchmark：只统计本仓库可运行的对比工具。
         \end{itemize}
@@ -304,7 +304,7 @@
   数据集、labels、每个样本报告都提交在仓库中；\texttt{make dataset} 可重新生成。
 \end{frame}
 
-\begin{frame}{数据集构造（二）}{外部语料暴露的 7 个补充样本}
+\begin{frame}{数据集构造（二）}{外部语料与规则审计暴露的 8 个补充样本}
   \scriptsize
   \begin{table}
     \centering
@@ -315,6 +315,7 @@
       \texttt{class\_forname} & 混淆 & 覆盖 \texttt{Class.forName}，补 DroidBench Reflection 漏检。 \\
       \texttt{emu\_files} & 环境 & 覆盖 \texttt{/proc}、\texttt{/sys}、\texttt{goldfish} 文件/硬件痕迹。 \\
       \texttt{emu\_imei} & 环境 & 覆盖 \texttt{TelephonyManager/getDeviceId} + 零值 IMEI。 \\
+      \texttt{adb\_settings} & 环境 & 覆盖 Settings API + \texttt{ADB} / developer key 组合。 \\
       \texttt{java\_debug} & 环境 & 覆盖 \texttt{android.os.Debug} / \texttt{waitingForDebugger} Java 层反调试 API。 \\
       \texttt{jni\_export} & Native & 覆盖 ELF \texttt{Java\_*} JNI 导出符号，不依赖 \texttt{JNI\_OnLoad}。 \\
       \texttt{sig\_integrity} & 环境 & 覆盖 PackageManager 签名查询 + digest 自完整性检查。 \\
@@ -323,7 +324,7 @@
     \end{tabular}
   \end{table}
   \vspace{0.35em}
-  当前合成数据集共 20 个 APK；新增样本来自 benchmark 和外部样本暴露的真实缺口，而不是单纯扩大数量。
+  当前合成数据集共 21 个 APK；新增样本来自 benchmark 和外部样本暴露的真实缺口，而不是单纯扩大数量。
 \end{frame}
 
 \begin{frame}{外部 APK 语料}{不只扫描自构造样本}
@@ -372,13 +373,13 @@
       HardenInspector & 是 & 本项目检测器，四类 evidence-chain 输出 \\
       APKiD & 是 & 可安装可运行，输出 packer/oddity 相关签名 \\
       Androguard DEX & 是 & 可运行 DEX parser baseline，验证样本可被外部 parser 解析 \\
-      ZIP Strings & 是 & 无结构字符串扫描下限，32/32 样本有输出 \\
+      ZIP Strings & 是 & 无结构字符串扫描下限，33/33 样本有输出 \\
       DroidLysis & 否 & 缺 apktool/baksmali/dex2jar 时不是完整能力 \\
       MobSF & 否 & 需要服务/Docker 工作流，不纳入离线评分 \\
       \bottomrule
     \end{tabular}
   \end{table}
-  评分比较当前仓库环境中 32/32 合并样本可运行的工具，避免把“环境不可用”统计成工具能力差。
+  评分比较当前仓库环境中 33/33 合并样本可运行的工具，避免把“环境不可用”统计成工具能力差。
 \end{frame}
 
 \begin{frame}{Benchmark 统计结果}
@@ -389,15 +390,15 @@
       \toprule
       Tool & Samples & Precision & Recall & Micro F1 \\
       \midrule
-      HardenInspector & 32/32 & 1.000 & 1.000 & 1.000 \\
-      APKiD & 32/32 & 1.000 & 0.195 & 0.327 \\
-      Androguard DEX & 32/32 & 0.792 & 0.463 & 0.585 \\
-      ZIP Strings & 32/32 & 0.824 & 0.683 & 0.747 \\
+      HardenInspector & 33/33 & 1.000 & 1.000 & 1.000 \\
+      APKiD & 33/33 & 1.000 & 0.190 & 0.320 \\
+      Androguard DEX & 33/33 & 0.800 & 0.476 & 0.597 \\
+      ZIP Strings & 33/33 & 0.829 & 0.690 & 0.753 \\
       \bottomrule
     \end{tabular}
   \end{table}
   \vspace{0.35em}
-  默认评分工具均完成 32/32 个合成 + 外部样本；不可用环境工具不计入指标表。
+  默认评分工具均完成 33/33 个合成 + 外部样本；不可用环境工具不计入指标表。
 \end{frame}
 
 \begin{frame}{Micro F1 可视化}
@@ -413,13 +414,13 @@
     \node[anchor=east,font=\scriptsize] at (0,2) {Androguard DEX};
     \node[anchor=east,font=\scriptsize] at (0,1) {APKiD};
     \fill[structure.fg!85] (0,3.72) rectangle (1.000,4.28);
-    \fill[gray!65] (0,2.72) rectangle (0.747,3.28);
-    \fill[PineGreen!75] (0,1.72) rectangle (0.585,2.28);
-    \fill[Orange!80] (0,0.72) rectangle (0.327,1.28);
+    \fill[gray!65] (0,2.72) rectangle (0.753,3.28);
+    \fill[PineGreen!75] (0,1.72) rectangle (0.597,2.28);
+    \fill[Orange!80] (0,0.72) rectangle (0.320,1.28);
     \node[anchor=west,font=\scriptsize] at (1.02,4) {1.000};
-    \node[anchor=west,font=\scriptsize] at (0.77,3) {0.747};
-    \node[anchor=west,font=\scriptsize] at (0.60,2) {0.585};
-    \node[anchor=west,font=\scriptsize] at (0.35,1) {0.327};
+    \node[anchor=west,font=\scriptsize] at (0.77,3) {0.753};
+    \node[anchor=west,font=\scriptsize] at (0.60,2) {0.597};
+    \node[anchor=west,font=\scriptsize] at (0.35,1) {0.320};
   \end{tikzpicture}
 
   \vspace{0.5em}
@@ -436,9 +437,9 @@
       \toprule
       检查项 & 结果 \\
       \midrule
-      自动化测试 & 58 个测试通过 \\
-      合成数据集 & \texttt{make dataset} 生成 20 个带标签 APK \\
-      评分统计 & 四工具均为 32/32；Micro F1：HI 1.000 / APKiD 0.327 / Androguard 0.585 / ZIP 0.747 \\
+      自动化测试 & 63 个测试通过 \\
+      合成数据集 & \texttt{make dataset} 生成 21 个带标签 APK \\
+      评分统计 & 四工具均为 33/33；Micro F1：HI 1.000 / APKiD 0.320 / Androguard 0.597 / ZIP 0.753 \\
       外部 APK 语料 & 12 个现成 APK 已纳入评分；单独统计四工具均为 12/12 \\
       外部语料误报观察 & F-Droid 真实 APK 当前无 HardenInspector finding \\
       汇报稿 & ZJU Beamer 可编译；PDF/aux/log 已忽略 \\
@@ -472,7 +473,7 @@
     \end{column}
   \end{columns}
   \vspace{0.7em}
-  本地验证：58 个测试通过；combined benchmark 为 32/32 coverage；external corpus 单独统计为 12/12 coverage。
+  本地验证：63 个测试通过；combined benchmark 为 33/33 coverage；external corpus 单独统计为 12/12 coverage。
 \end{frame}
 
 \begin{frame}{现场 Web Demo}{把工具能力、测试集故事和现场验证放在同一页}
@@ -491,14 +492,14 @@
         \begin{itemize}
           \item 扫 clean baseline，证明低噪声。
           \item 扫 combined showcase，展示四类 evidence。
-          \item 扫 Java Debug API / signature integrity / root / Native / IMEI 专项样本，解释结构化信号。
+          \item 扫 ADB developer settings / Java Debug API / signature integrity / root / Native / IMEI 专项样本，解释结构化信号。
           \item 使用 \textbf{Scan Upload} 上传本地 APK，证明不是写死结果。
         \end{itemize}
       \end{block}
     \end{column}
   \end{columns}
   \vspace{0.35em}
-  网页直接读取 \texttt{reports/benchmark/}，展示 32 个评分 APK、58 个测试和 HardenInspector Micro F1 = 1.000。
+  网页直接读取 \texttt{reports/benchmark/}，展示 33 个评分 APK、63 个测试和 HardenInspector Micro F1 = 1.000。
 \end{frame}
 
 \begin{frame}{项目交付}
@@ -541,7 +542,7 @@
 \begin{frame}{结论}
   \begin{itemize}
     \item HardenInspector 完成了中期报告提出的轻量静态证据链检测器。
-    \item 构造了 20 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
+    \item 构造了 21 个样本的可复现数据集，并给出 Precision、Recall、Micro F1、Macro F1 统计。
     \item 纳入 12 个公开现成 APK 进入合并评分，同时保留覆盖率和 finding 分布统计。
     \item 与 APKiD 等开源工具对比后，当前实现已覆盖课程目标范围内的关键信号。
     \item 工具、数据集、文档、环境和汇报材料均已维护在 GitHub 仓库中。

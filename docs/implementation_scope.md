@@ -30,7 +30,7 @@
 
 - 加壳规则：已知壳库名、Manifest StubApp、高熵 assets、动态加载 API、Native dynamic loader 符号。
 - 混淆规则：短类名比例、反射 API/`invoke`/`Class.forName` 证据、控制流 opcode 密度。
-- 环境检测规则：模拟器 system properties、emulator file artifacts、IMEI/device-id probe、Java Debug API、signature integrity/self-check、root/Magisk/su artifact probe、debugger probe、Frida/Xposed/Substrate/process maps。
+- 环境检测规则：模拟器 system properties、emulator file artifacts、IMEI/device-id probe、ADB/developer-settings probe、Java Debug API、signature integrity/self-check、root/Magisk/su artifact probe、debugger probe、Frida/Xposed/Substrate/process maps。
 - Native/符号规则：`JNI_OnLoad` 入口证据、`Java_*` JNI 导出符号、Native anti-debug 符号、Native dynamic loader 符号。
 - CLI 支持终端摘要、JSON 输出和 `-o/--output` 文件输出。
 - `examples/make_demo_apk.py` 可生成不含真实恶意逻辑的合成展示 APK。
@@ -38,7 +38,7 @@
 ### 数据集
 
 - `src/hardeninspector/dataset.py` 可一键构造 `hardeninspector_eval_v1` 数据集。
-- 数据集包含 20 个 APK：F-Droid 风格基线、自写环境检测、Java Debug API 反调试、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader 符号样本、Class.forName 反射样本、emulator file artifacts 样本、IMEI/device-id probe 样本、JNI `Java_*` 导出符号样本、signature integrity/self-check 样本、root/rooted-device artifact 样本、综合展示样本。
+- 数据集包含 21 个 APK：F-Droid 风格基线、自写环境检测、Java Debug API 反调试、ADB/developer-settings 系统设置探测、R8 风格短标识符、Obfuscapk 风格反射/动态加载、两类加壳 stub/payload、Native JNI bridge、Frida/Xposed 探测、reflection-only dispatch、控制流密度样本、高熵 payload-only 样本、Native ptrace/loader 符号样本、Class.forName 反射样本、emulator file artifacts 样本、IMEI/device-id probe 样本、JNI `Java_*` 导出符号样本、signature integrity/self-check 样本、root/rooted-device artifact 样本、综合展示样本。
 - 每个样本都有 `labels.json` 标签项和对应 JSON 检测报告。
 
 ## 调整的目标

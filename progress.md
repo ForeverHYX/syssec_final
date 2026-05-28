@@ -256,3 +256,15 @@
 - Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 58 tests; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, stale-count scan, final-facing wording scan, and `git diff --check` were clean.
 - Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 58 tests, fresh combined benchmark kept all four tools at 32/32 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
 - Local Web demo smoke test passed on port 8765: the homepage showed 32 scored APKs, 20 + 12 samples, and 58 tests; `/api/scan?id=java_debug_api_probe` returned `environment.debugger_probe`; `/api/metrics` returned the current 32/32 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.
+
+## 2026-05-28 ADB Developer Settings Environment Detection
+
+- Started Phase 31 to add a common Android environment-analysis signal: apps reading ADB/developer-options settings through `android.provider.Settings`.
+- TDD RED: added detector coverage requiring Android Settings API evidence plus ADB/developer-settings keys, and negative coverage proving bare `adb` strings do not trigger the rule.
+- TDD GREEN: implemented `environment.adb_settings_probe`, added `adb_developer_settings_probe.apk`, added Web demo catalog metadata, and extended shallow benchmark keywords for ADB/developer-settings evidence.
+- Regenerated the synthetic dataset, combined benchmark, and external-corpus artifacts. Current combined scoring set is 33 samples: 21 synthetic and 12 external. Micro F1 values are HardenInspector 1.000, APKiD 0.320, Androguard DEX 0.597, and ZIP Strings 0.753.
+- Added final-material regression coverage requiring README, dataset docs, live demo script, final summary, and slides to include the ADB/developer-settings showcase.
+- Updated README, rules/dataset/benchmark/demo/environment/final-deliverable docs, defense/live-demo docs, final summary, completion audit, and slides to reflect the new sample, 33 scored APKs, and 63 tests.
+- Verification checkpoint: local `.venv/bin/python -m pytest -q` passed with 63 tests; `make dataset`, `make benchmark`, and `make external-corpus` regenerated committed artifacts; `make slides` compiled 22 pages; `pdfinfo` reports 22 pages; slide log scan, stale-count scan, final-facing wording scan, and `git diff --check` were clean.
+- Fresh venv verification passed: `/tmp/hardeninspector-venv-check/bin/python -m pytest -q` reported 63 tests, fresh combined benchmark kept all four tools at 33/33 coverage with the same Micro F1 values, and fresh external-corpus run kept all four tools at 12/12 coverage.
+- Local Web demo smoke test passed on port 8765: the homepage showed 33 scored APKs, 21 + 12 samples, and 63 tests; `/api/scan?id=adb_developer_settings_probe` returned `environment.adb_settings_probe`; `/api/metrics` returned the current 33/33 benchmark metrics; `HEAD /assets/apk-cutaway.png` returned 200 image/png. The temporary server was stopped.

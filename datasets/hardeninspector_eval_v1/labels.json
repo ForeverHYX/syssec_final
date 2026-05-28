@@ -59,6 +59,25 @@
     },
     {
       "actual_findings": [
+        "environment.adb_settings_probe"
+      ],
+      "actual_summary": {
+        "environment": 1,
+        "native": 0,
+        "obfuscation": 0,
+        "packer": 0
+      },
+      "apk_path": "apks/adb_developer_settings_probe.apk",
+      "construction": "synthetic environment-detection sample combining Android Settings Secure/Global APIs with `ADB_ENABLED`, `adb_enabled`, and `development_settings_enabled` keys",
+      "expected_findings": [
+        "environment.adb_settings_probe"
+      ],
+      "id": "adb_developer_settings_probe",
+      "report_path": "reports/adb_developer_settings_probe.json",
+      "source_plan": "ADB/developer-settings environment sample"
+    },
+    {
+      "actual_findings": [
         "obfuscation.short_identifiers"
       ],
       "actual_summary": {

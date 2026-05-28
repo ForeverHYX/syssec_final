@@ -360,6 +360,54 @@ def test_debug_logging_strings_are_not_debugger_probe(tmp_path):
     assert "environment.debugger_probe" not in finding_ids
 
 
+def test_detector_reports_adb_developer_settings_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "adb-settings.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.adbprobe", "edu.syssec.adbprobe.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/adbprobe/MainActivity;",
+                "Ledu/syssec/adbprobe/DeveloperSettingsProbe;",
+            ],
+            method_names=["<clinit>", "checkAdb", "getInt"],
+            dex_strings=[
+                "Landroid/provider/Settings$Secure;",
+                "Landroid/provider/Settings$Global;",
+                "ADB_ENABLED",
+                "development_settings_enabled",
+                "adb_enabled",
+            ],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding = next(item for item in report.findings if item.id == "environment.adb_settings_probe")
+
+    assert finding.category == "environment"
+    assert any(item.value == "ADB_ENABLED" for item in finding.evidence)
+    assert any(item.value == "Landroid/provider/Settings$Secure;" for item in finding.evidence)
+
+
+def test_adb_word_alone_is_not_adb_settings_probe(tmp_path):
+    apk_path = build_synthetic_apk(
+        tmp_path / "adb-docs.apk",
+        SyntheticApkSpec(
+            manifest_strings=["edu.syssec.adbdocs", "edu.syssec.adbdocs.MainActivity"],
+            class_descriptors=[
+                "Ledu/syssec/adbdocs/MainActivity;",
+                "Ledu/syssec/adbdocs/HelpScreen;",
+            ],
+            method_names=["<clinit>", "showHelp"],
+            dex_strings=["adb", "adb backup is deprecated", "https://example.invalid/adb-help"],
+        ),
+    )
+
+    report = scan_apk(apk_path)
+    finding_ids = {finding.id for finding in report.findings}
+
+    assert "environment.adb_settings_probe" not in finding_ids
+
+
 def test_regular_words_containing_su_are_not_root_probe(tmp_path):
     apk_path = build_synthetic_apk(
         tmp_path / "regular-strings.apk",

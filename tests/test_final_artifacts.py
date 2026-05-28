@@ -35,6 +35,12 @@ def test_final_summary_report_and_beamer_exist():
     assert "\\begin{document}" in slides_text
     assert "HardenInspector" in slides_text
     assert "外部 APK 语料" in slides_text
+    assert "现场 Web Demo" in slides_text
+    assert "Exhibit Map" in slides_text
+    assert "Dataset Story" in slides_text
+    assert "Scan Upload" in slides_text
+    assert "Synthetic Oracle" in slides_text
+    assert "External APK Corpus" in slides_text
     assert "这轮" not in slides_text
     assert "本轮" not in slides_text
     assert "下一步" not in slides_text

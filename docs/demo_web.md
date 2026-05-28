@@ -29,7 +29,7 @@ http://127.0.0.1:8000/
 | Exhibit Map | 解释项目为什么存在：检测 APK 加固证据，而不是判恶意 |
 | Evidence Chain | 强调 Manifest、DEX、Native 符号、资源和熵值如何汇总为 finding |
 | Dataset Story | 直观区分 17 个 Synthetic Oracle APK 与 12 个 External APK Corpus |
-| 指标摘要 | 展示 29 个评分 APK、46 个回归测试和 HardenInspector Micro F1 |
+| 指标摘要 | 展示 29 个评分 APK、47 个回归测试和 HardenInspector Micro F1 |
 | APK 拆解图 | 使用 `slides/figures/apk_static_analysis_cutaway.png` 作为视觉说明 |
 
 页面内置一组展示样本，每个样本都带有 dataset kind 和 showcase role，便于现场讲清楚“这个样本为什么在这里”：
@@ -57,6 +57,6 @@ http://127.0.0.1:8000/
 | `/api/scan?id=<sample_id>` | 指定样本的 HardenInspector JSON report |
 | `/api/scan-upload?filename=<name.apk>` | 上传 APK bytes 后返回 HardenInspector JSON report |
 | `/api/metrics` | `reports/benchmark/benchmark_metrics.csv` 解析后的指标行 |
-| `/assets/apk-cutaway.png` | 展示页使用的 APK 静态分析拆解图 |
+| `/assets/apk-cutaway.png` | 展示页使用的 APK 静态分析拆解图；支持 `GET` 和 `HEAD` |
 
 这些接口只读取仓库内已提交的 APK/报告文件或浏览器上传的本地 APK bytes，不向外部上传数据，也不需要联网。

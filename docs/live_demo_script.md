@@ -28,7 +28,7 @@ http://127.0.0.1:8000/
 
 先展示页面结构：
 
-- 顶部 `Exhibit Map`：说明项目动机、证据链、数据集结构、29 个评分 APK、46 个测试和 HardenInspector Micro F1；
+- 顶部 `Exhibit Map`：说明项目动机、证据链、数据集结构、29 个评分 APK、47 个测试和 HardenInspector Micro F1；
 - 左侧 curated samples；
 - `Upload APK` 和 `Scan Upload`；
 - 右侧 summary、finding、Evidence 表；

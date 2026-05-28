@@ -53,12 +53,12 @@ make slides
 
 | 检查项 | 结果 |
 | --- | --- |
-| 单元/集成测试 | 46 个测试通过 |
+| 单元/集成测试 | 47 个测试通过 |
 | 合成数据集 | `make dataset` 生成 17 个带标签 APK |
 | Combined benchmark | 17 个 synthetic APK + 12 个外部 APK；四个工具均为 29/29 coverage；Micro F1 分别为 1.000、0.348、0.517、0.716 |
 | 外部 APK 语料 | 12 个 DroidBench/F-Droid/PIVAA APK；已纳入评分，单独统计四个工具均为 12/12 coverage |
 | 外部语料 finding 分布 | HardenInspector Any 10/12；packer=4、obfuscation=2、environment=5、native=3；F-Droid 样本无 finding |
-| Slides | `make slides` 可编译 21 页 ZJU Beamer；PDF 和 LaTeX 辅助文件已加入 `.gitignore` |
+| Slides | `make slides` 可编译 22 页 ZJU Beamer；PDF 和 LaTeX 辅助文件已加入 `.gitignore` |
 
 ## 当前边界
 

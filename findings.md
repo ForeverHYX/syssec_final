@@ -157,3 +157,9 @@ The new Q&A document is designed for likely grading questions: why HardenInspect
 Final-facing materials need to speak as a completed course exhibit, not as an internal optimization log. The slide phrase `这轮已补齐` was a real presentation risk because it frames the deck as an iterative work note; it is now guarded by `tests/test_final_artifacts.py`, and the slide section has been rewritten as `能力边界与实现强化` / `已经实现的强化`.
 
 The Web demo had functional scanning and upload support, but it did not yet visually explain the whole project before the presenter clicked a sample. The page now opens with an Exhibit Map, Evidence Chain, Dataset Story, benchmark/test summary, and APK cutaway image. Curated samples also carry `dataset_kind` and `showcase_role`, so the presenter can explain why each sample exists: low-noise baseline, all-category evidence chain, ELF symbol evidence, environment probe, real APK sanity check, or clean real-world baseline.
+
+## Web Demo Protocol Polish and Slide Demo Narrative
+
+The Web demo's image asset route returned correct data for browser-style `GET` requests, but `HEAD /assets/apk-cutaway.png` used the base handler's unsupported-method path. This is a small but real polish issue for smoke checks and browser/tool preflight probes. The handler now shares read-only routing between GET and HEAD and suppresses the body for HEAD while keeping content type and content length headers.
+
+The Beamer deck previously had no dedicated page explaining the Web demo even though the live page is now the clearest way to show the project's distinctive features. A new `现场 Web Demo` slide connects Exhibit Map, Evidence Chain, Dataset Story, Synthetic Oracle, External APK Corpus, curated scans, and Scan Upload into one final-class narrative.

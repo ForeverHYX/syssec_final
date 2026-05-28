@@ -48,12 +48,12 @@ make all
 
 | 命令 | 结果 |
 | --- | --- |
-| `.venv/bin/python -m pytest -q` | 46 个测试通过 |
+| `.venv/bin/python -m pytest -q` | 47 个测试通过 |
 | `make dataset` | 生成 17 个合成 oracle APK |
 | `make benchmark` | 合成 + 外部共 29 个评分样本；四个默认评分工具均为 29/29 coverage |
 | `make external-corpus` | 单独外部统计中四个工具均为 12/12 coverage |
 | `make demo-web` | 启动本地网页展示，默认监听 `http://127.0.0.1:8000/`，支持预置样本和本地 APK 上传扫描 |
-| `make slides` | ZJU Beamer 可编译为 21 页，构建产物由 `.gitignore` 忽略 |
+| `make slides` | ZJU Beamer 可编译为 22 页，构建产物由 `.gitignore` 忽略 |
 
 ## 方式三：Docker
 

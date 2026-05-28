@@ -14,7 +14,7 @@
 | 纳入外部现成 APK/测试集 | `datasets/external_apk_corpus_v1/` 包含 12 个 DroidBench/F-Droid/PIVAA APK，`reports/external_corpus/` 包含覆盖率和 finding 分布统计 |
 | 公平 benchmark 对比 | 默认评分表包含 17 个合成 APK + 12 个外部 APK；HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 均为 29/29 coverage；DroidLysis/MobSF 不进入评分表 |
 | 提供完善中文文档 | `docs/usage.md`、`docs/architecture.md`、`docs/rules.md`、`docs/dataset.md`、`docs/demo.md`、`docs/demo_web.md`、`docs/implementation_scope.md`、`docs/final_deliverable.md` |
-| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、29 个评分 APK、46 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
+| 现场可视化展示 | `make demo-web` 启动本地 Web demo，首屏展示 Exhibit Map、Evidence Chain、Dataset Story、APK 拆解图、29 个评分 APK、47 个测试和 HardenInspector Micro F1；页面可扫描 curated APK 样本、上传本地 APK，并展示 evidence 与 benchmark 指标 |
 | 产出中文总结报告 | `reports/final_summary.md` |
 | 产出期末 Beamer | `slides/final_presentation.tex` 使用 ZJU Beamer Template，标题为项目名，作者为洪奕迅、蒋城昊、项康，包含表格、TikZ 架构/指标图和一张 APK 拆解示意图 |
 | slides 编译产物忽略 | `slides/final_presentation.pdf` 及 `.aux/.log/.nav/.out/.snm/.toc` 等 LaTeX 产物在 `.gitignore` 中忽略 |
@@ -30,14 +30,14 @@
 结果：
 
 ```text
-46 passed
+47 passed
 ```
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m pytest -q
 ```
 
-结果：fresh venv 中 46 个测试通过。
+结果：fresh venv 中 47 个测试通过。
 
 ```bash
 /tmp/hardeninspector-venv-check/bin/python -m hardeninspector.benchmark --dataset datasets/hardeninspector_eval_v1 --score-external-corpus datasets/external_apk_corpus_v1 --output /tmp/hardeninspector-benchmark-check --tools hardeninspector apkid androguard_dex zip_string_baseline
@@ -83,7 +83,7 @@ make slides
 pdfinfo slides/final_presentation.pdf
 ```
 
-结果：ZJU Beamer 编译通过，PDF 为 21 页；LaTeX 日志没有 `Overfull`、`Warning` 或 `Error` 命中；已视觉检查成果页、APK 拆解示意、总体架构、控制流统计、数据集矩阵、外部 APK 语料、测试结果复核、benchmark 公平口径、Micro F1 图页和局限页。
+结果：ZJU Beamer 编译通过，PDF 为 22 页；LaTeX 日志没有 `Overfull`、`Warning` 或 `Error` 命中；已视觉检查成果页、APK 拆解示意、总体架构、控制流统计、数据集矩阵、外部 APK 语料、测试结果复核、benchmark 公平口径、Micro F1 图页、现场 Web Demo 页和局限页。
 
 展示语气审计：`tests/test_final_artifacts.py` 已防止 final-facing slides/report 出现 `这轮`、`本轮`、`下一步`、`后续扩展` 等过程措辞，确保汇报稿面向最后一节课的完整项目展示。
 

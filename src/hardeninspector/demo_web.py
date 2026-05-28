@@ -599,7 +599,7 @@ def render_index_html() -> str:
           <div class="stat-tile"><strong>29</strong><span class="muted">29 scored APKs</span></div>
           <div class="stat-tile"><strong>17 + 12</strong><span class="muted">Synthetic Oracle + External APK Corpus</span></div>
           <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>46</strong><span class="muted">46 regression tests</span></div>
+          <div class="stat-tile"><strong>47</strong><span class="muted">47 regression tests</span></div>
         </div>
         <div class="story-grid">
           <div class="story-item">
@@ -853,29 +853,39 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
         server_version = "HardenInspectorDemo/0.1"
 
         def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+            self._handle_read_request(include_body=True)
+
+        def do_HEAD(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
+            self._handle_read_request(include_body=False)
+
+        def _handle_read_request(self, include_body: bool) -> None:
             parsed = urlparse(self.path)
             try:
                 if parsed.path == "/":
-                    self._send_text(render_index_html(), "text/html; charset=utf-8")
+                    self._send_text(render_index_html(), "text/html; charset=utf-8", include_body=include_body)
                 elif parsed.path == "/assets/apk-cutaway.png":
-                    self._send_file(root / "slides/figures/apk_static_analysis_cutaway.png", "image/png")
+                    self._send_file(
+                        root / "slides/figures/apk_static_analysis_cutaway.png",
+                        "image/png",
+                        include_body=include_body,
+                    )
                 elif parsed.path == "/api/samples":
-                    self._send_json({"samples": build_demo_catalog(root)})
+                    self._send_json({"samples": build_demo_catalog(root)}, include_body=include_body)
                 elif parsed.path == "/api/scan":
                     query = parse_qs(parsed.query)
                     sample_id = query.get("id", [""])[0]
                     if not sample_id:
-                        self._send_json({"error": "missing sample id"}, HTTPStatus.BAD_REQUEST)
+                        self._send_json({"error": "missing sample id"}, HTTPStatus.BAD_REQUEST, include_body=include_body)
                     else:
-                        self._send_json(scan_demo_sample(sample_id, root))
+                        self._send_json(scan_demo_sample(sample_id, root), include_body=include_body)
                 elif parsed.path == "/api/metrics":
-                    self._send_json(load_demo_metrics(root))
+                    self._send_json(load_demo_metrics(root), include_body=include_body)
                 else:
-                    self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND)
+                    self._send_json({"error": "not found"}, HTTPStatus.NOT_FOUND, include_body=include_body)
             except KeyError as exc:
-                self._send_json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+                self._send_json({"error": str(exc)}, HTTPStatus.NOT_FOUND, include_body=include_body)
             except Exception as exc:  # pragma: no cover - defensive server boundary
-                self._send_json({"error": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+                self._send_json({"error": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR, include_body=include_body)
 
         def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
             parsed = urlparse(self.path)
@@ -908,27 +918,40 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
         def log_message(self, format: str, *args: Any) -> None:
             return
 
-        def _send_json(self, payload: dict[str, Any], status: HTTPStatus = HTTPStatus.OK) -> None:
+        def _send_json(
+            self,
+            payload: dict[str, Any],
+            status: HTTPStatus = HTTPStatus.OK,
+            include_body: bool = True,
+        ) -> None:
             body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
             self.send_response(status.value)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
-            self.wfile.write(body)
+            if include_body:
+                self.wfile.write(body)
 
-        def _send_text(self, text: str, content_type: str, status: HTTPStatus = HTTPStatus.OK) -> None:
+        def _send_text(
+            self,
+            text: str,
+            content_type: str,
+            status: HTTPStatus = HTTPStatus.OK,
+            include_body: bool = True,
+        ) -> None:
             body = text.encode("utf-8")
             self.send_response(status.value)
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
-            self.wfile.write(body)
+            if include_body:
+                self.wfile.write(body)
 
-        def _send_file(self, path: Path, content_type: str) -> None:
+        def _send_file(self, path: Path, content_type: str, include_body: bool = True) -> None:
             if not path.exists() or not path.is_file():
-                self._send_json({"error": "asset not found"}, HTTPStatus.NOT_FOUND)
+                self._send_json({"error": "asset not found"}, HTTPStatus.NOT_FOUND, include_body=include_body)
                 return
             body = path.read_bytes()
             self.send_response(HTTPStatus.OK.value)
@@ -936,7 +959,8 @@ def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRe
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
-            self.wfile.write(body)
+            if include_body:
+                self.wfile.write(body)
 
     return DemoRequestHandler
 

@@ -433,7 +433,7 @@
       \toprule
       检查项 & 结果 \\
       \midrule
-      自动化测试 & 46 个测试通过 \\
+      自动化测试 & 47 个测试通过 \\
       合成数据集 & \texttt{make dataset} 生成 17 个带标签 APK \\
       评分统计 & 四工具均为 29/29；Micro F1：HI 1.000 / APKiD 0.348 / Androguard 0.517 / ZIP 0.716 \\
       外部 APK 语料 & 12 个现成 APK 已纳入评分；单独统计四工具均为 12/12 \\
@@ -469,7 +469,33 @@
     \end{column}
   \end{columns}
   \vspace{0.7em}
-  本地验证：46 个测试通过；combined benchmark 为 29/29 coverage；external corpus 单独统计为 12/12 coverage。
+  本地验证：47 个测试通过；combined benchmark 为 29/29 coverage；external corpus 单独统计为 12/12 coverage。
+\end{frame}
+
+\begin{frame}{现场 Web Demo}{把工具能力、测试集故事和现场验证放在同一页}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \begin{column}{0.46\textwidth}
+      \begin{block}{页面首屏}
+        \begin{itemize}
+          \item \textbf{Exhibit Map}：说明为什么做检测器，而不是恶意判定器。
+          \item \textbf{Evidence Chain}：把 Manifest、DEX、Native、资源证据串到 finding。
+          \item \textbf{Dataset Story}：直观区分 Synthetic Oracle 和 External APK Corpus。
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{现场操作}
+        \begin{itemize}
+          \item 扫 clean baseline，证明低噪声。
+          \item 扫 combined showcase，展示四类 evidence。
+          \item 扫 Native / IMEI 专项样本，解释结构化信号。
+          \item 使用 \textbf{Scan Upload} 上传本地 APK，证明不是写死结果。
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vspace{0.35em}
+  网页直接读取 \texttt{reports/benchmark/}，展示 29 个评分 APK、47 个测试和 HardenInspector Micro F1 = 1.000。
 \end{frame}
 
 \begin{frame}{项目交付}

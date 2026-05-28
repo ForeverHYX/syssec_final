@@ -18,7 +18,7 @@ Build and maintain the `syssec_final` GitHub repository for the course final exh
 | Preserve the midterm technical route and avoid copying open-source implementations | User clarification | Benchmark adapters only invoke/reference external tools; detector remains evidence-chain static rules |
 | Produce final summary report and LaTeX Beamer | User clarification | `reports/final_summary.md` and `slides/final_presentation.tex` |
 | Use ZJU Beamer template and include tables/illustrations | User clarification | ZJU template assets in `slides/`; deck title is `HardenInspector`, authors match the midterm report, and compiled output has tables plus TikZ figures |
-| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 21-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
+| Compile slides and ignore generated artifacts | User clarification | `make slides` produces a 22-page PDF; PDF and LaTeX auxiliary files are ignored by `.gitignore` |
 | Maintain an out-of-the-box environment | User clarification | Setup script, Makefile, dependency files, optional Dockerfile, fresh setup verification |
 | Maintain GitHub repo named `syssec_final` | User objective | Local repo initialized, remote `git@github.com:ForeverHYX/syssec_final.git` configured; `main` is synchronized with `origin/main` |
 | Commit and push at milestones | User objective | Git history shows staged commits; latest local improvements are pushed to GitHub |
@@ -252,10 +252,20 @@ Status: complete
 Status: complete
 
 - Add regression coverage that rejects process-oriented wording such as `这轮` / `本轮` in final-facing slides and summary report.
-- Add regression coverage requiring the Web demo to explain Exhibit Map, Evidence Chain, Dataset Story, 29 scored APKs, HardenInspector Micro F1, and 46 regression tests.
+- Add regression coverage requiring the Web demo to explain Exhibit Map, Evidence Chain, Dataset Story, 29 scored APKs, HardenInspector Micro F1, and current regression-test count.
 - Enrich the Web demo catalog with dataset-kind and showcase-role metadata for each curated sample.
 - Add a first-screen exhibit overview, dataset explanation, benchmark/test summary, and APK cutaway visual asset route to the Web demo.
 - Update README, Web demo docs, final summary, progress, and findings.
+
+### Phase 26: Web demo protocol polish and slide demo narrative
+
+Status: complete
+
+- Add regression coverage for `HEAD /assets/apk-cutaway.png` so smoke checks and browser preflight-style probes return image headers without a body.
+- Add regression coverage requiring the final Beamer deck to include a dedicated `现场 Web Demo` frame with Exhibit Map, Evidence Chain, Dataset Story, Synthetic Oracle, External APK Corpus, and Scan Upload.
+- Implement `do_HEAD` for the Web demo's read-only routes by sharing the GET routing path and suppressing response bodies.
+- Add a final-presentation slide explaining how the Web demo shows the project motivation, evidence chain, dataset structure, benchmark/test status, curated samples, and upload scan.
+- Synchronize README, docs, summary report, completion audit, and planning logs with 47 tests and 22 slides.
 
 ## Errors Encountered
 
@@ -269,4 +279,4 @@ Status: complete
 | `git ls-files -i` was missing the required mode flag | checking whether slide build artifacts were tracked | Re-ran the check with `git check-ignore -v`; slide PDF/log/aux outputs are ignored and not tracked |
 | Sandbox denied binding a local HTTP port | `.venv/bin/python -m hardeninspector.demo_web --host 127.0.0.1 --port 8765` | Re-ran with approved local bind escalation for the Web demo smoke test |
 | Local `curl` used the proxy for `127.0.0.1` | first Web demo smoke requests | Re-ran with proxy variables unset and `--noproxy '*'` |
-| `HEAD` is unsupported by the demo handler | checking `/assets/apk-cutaway.png` with `curl -I` | Verified the browser-relevant `GET` path instead; it returned 200 `image/png` |
+| `HEAD` is unsupported by the demo handler | checking `/assets/apk-cutaway.png` with `curl -I` | Added `do_HEAD` for read-only Web demo routes and a regression test for image asset headers |

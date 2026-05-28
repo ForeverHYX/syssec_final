@@ -145,3 +145,9 @@ The demo exposes curated synthetic and external samples: clean baseline, combine
 The browser demo now supports scanning an arbitrary local `.apk` selected by the presenter. The upload path posts raw APK bytes to the local server, writes them to a temporary directory, runs the same `scan_apk` pipeline as the CLI, then returns the normal JSON report shape. This improves live demonstration value while preserving the no-network, no-extra-framework constraint.
 
 The upload route intentionally rejects non-`.apk` filenames and files above 64 MiB. This keeps the demo predictable for classroom use and avoids turning the local showcase into an unconstrained file-ingestion service.
+
+## Defense Package
+
+After the benchmark reached 1.000, the highest-value remaining work was not another detector rule but a stronger answer package for the final exhibit. The new live demo script gives a deterministic 5-8 minute flow, including clean baseline, combined showcase, specialty sample, upload scan, benchmark explanation, and terminal fallback.
+
+The new Q&A document is designed for likely grading questions: why HardenInspector is not just APKiD/Androguard, why HardenInspector Micro F1 = 1.000 is scoped rather than overclaiming, why `droidbench_reflection_5` was relabeled after support-library-only evidence inspection, and where the implementation boundaries remain.

@@ -8,14 +8,22 @@ def test_final_summary_report_and_beamer_exist():
     report = ROOT / "reports" / "final_summary.md"
     slides = ROOT / "slides" / "final_presentation.tex"
     external_docs = ROOT / "docs" / "external_corpus.md"
+    defense_docs = ROOT / "docs" / "defense_qa.md"
+    demo_script = ROOT / "docs" / "live_demo_script.md"
+    readme = ROOT / "README.md"
 
     assert report.exists()
     assert slides.exists()
     assert external_docs.exists()
+    assert defense_docs.exists()
+    assert demo_script.exists()
 
     report_text = report.read_text(encoding="utf-8")
     slides_text = slides.read_text(encoding="utf-8")
     external_text = external_docs.read_text(encoding="utf-8")
+    defense_text = defense_docs.read_text(encoding="utf-8")
+    demo_text = demo_script.read_text(encoding="utf-8")
+    readme_text = readme.read_text(encoding="utf-8")
 
     assert "HardenInspector" in report_text
     assert "开源实现对比" in report_text
@@ -27,6 +35,13 @@ def test_final_summary_report_and_beamer_exist():
     assert "\\begin{document}" in slides_text
     assert "HardenInspector" in slides_text
     assert "外部 APK 语料" in slides_text
+    assert "HardenInspector Micro F1 = 1.000" in defense_text
+    assert "droidbench_reflection_5" in defense_text
+    assert "support-library-only" in defense_text
+    assert "make demo-web" in demo_text
+    assert "Scan Upload" in demo_text
+    assert "docs/defense_qa.md" in readme_text
+    assert "docs/live_demo_script.md" in readme_text
 
 
 def test_beamer_uses_zju_template_and_ignores_build_outputs():

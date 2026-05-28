@@ -121,6 +121,8 @@ make demo-web
 - [开箱即用环境](docs/environment.md)
 - [课程展示 Demo](docs/demo.md)
 - [本地 Web Demo](docs/demo_web.md)
+- [现场演示脚本](docs/live_demo_script.md)
+- [答辩 Q&A](docs/defense_qa.md)
 - [实现范围与目标调整说明](docs/implementation_scope.md)
 - [期末交付说明](docs/final_deliverable.md)
 - [期末总结报告](reports/final_summary.md)

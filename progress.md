@@ -186,3 +186,11 @@
 - TDD GREEN: removed `obfuscation` from that sample's `expected_categories` and updated `label_basis` to explain the support-library-only evidence.
 - Regenerated benchmark and external-corpus reports. HardenInspector now has 29/29 coverage with Micro F1 1.000 and Macro F1 1.000; APKiD Micro F1 is 0.348, Androguard DEX 0.517, ZIP Strings 0.716.
 - Updated README, benchmark/external-corpus docs, final summary, completion audit, final-deliverable docs, slides, task plan, progress, and findings.
+
+## 2026-05-28 Defense Package
+
+- Started Phase 24 to improve final presentation defensibility after the benchmark reached 1.000.
+- TDD RED: extended `tests/test_final_artifacts.py` to require `docs/live_demo_script.md`, `docs/defense_qa.md`, README links, benchmark 1.000 explanation, support-library-only reflection label audit, and Web demo upload coverage. The targeted test failed because the documents did not exist yet.
+- Added `docs/live_demo_script.md` with a 5-8 minute exhibit flow: opening position, web launch, clean baseline, combined showcase, specialty sample, upload scan, benchmark, terminal fallback, and closing line.
+- Added `docs/defense_qa.md` covering detector scope, comparator fairness, HardenInspector Micro F1 = 1.000, `droidbench_reflection_5`, `Scan Upload`, synthetic/external dataset roles, and limitations.
+- Linked both documents from README and recorded the phase in task plan/findings/progress.

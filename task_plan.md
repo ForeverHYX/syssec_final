@@ -238,6 +238,15 @@ Status: complete
 - Regenerate benchmark and external-corpus reports; HardenInspector reaches 29/29 coverage with Micro/Macro F1 1.000.
 - Update README, benchmark/external-corpus docs, final summary, completion audit, slides, progress, and findings.
 
+### Phase 24: Defense package and live demo script
+
+Status: complete
+
+- Add a tested live demo script for the final exhibit flow.
+- Add a tested defense Q&A document covering benchmark 1.000, external label audit, support-library-only reflection, upload demo, comparator fairness, and limitations.
+- Link both documents from README.
+- Update progress and findings.
+
 ## Errors Encountered
 
 | Error | Attempt | Resolution |

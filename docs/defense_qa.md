@@ -378,9 +378,9 @@ make demo-web
 
 核心检测器优先使用 Python 标准库，降低课程展示环境和离线运行风险。`pytest`、APKiD、Androguard 只在 dev/benchmark extra 中使用。
 
-### Q68：GitHub Pages 展示页讲什么？
+### Q68：项目说明网页讲什么？
 
-`docs/index.html` 是给完全不了解项目的人看的入口。它按“项目定位、框架设计、报告模型、检测规则、数据集与指标、展示讲法、答辩速查、交付物索引”组织，适合答辩前快速复习，也适合作为仓库首页展示材料。
+`docs/index.html` 是给完全不了解项目的人看的入口。它按“背景概念、目标边界、总体架构、数据模型、模块设计、规则设计、数据集、benchmark、运行路径、完整 Q&A”组织，适合答辩前从零复习项目。
 
 ## 七、局限性与防守口径
 
@@ -439,3 +439,339 @@ make demo-web
 推荐收尾：
 
 > HardenInspector 的价值不在于宣称能识别所有加固器，而在于把 Android 加固分析拆成可复现的静态证据链：APK 里出现了什么证据、来自哪里、支持哪类加固判断、当前评估集上如何验证。这让课程展示可以从原始 APK 一直讲到规则、报告和 benchmark。
+
+## 八、架构设计深入追问
+
+### Q81：为什么把系统分为解析层、特征层、规则层和报告层？
+
+因为 APK、DEX、AXML、ELF 是不同格式，规则如果直接操作二进制细节会非常难维护。解析层负责把复杂文件格式变成结构化对象；特征层把不同来源的证据归一化；规则层只根据统一特征判断 finding；报告层负责输出 JSON、文本、网页和 benchmark 结果。这样每层职责清楚，便于解释和测试。
+
+### Q82：如果没有 `ApkFeatures`，代码会变成什么样？
+
+规则函数就需要自己打开 ZIP、自己解析 DEX、自己处理 ELF、自己判断字符串来自哪里。这样规则之间会重复解析逻辑，后续新增规则也容易引入不一致。`ApkFeatures` 把底层格式细节收束成一个统一接口，规则只消费 `entries`、`string_evidence`、`dex_files`、`native_symbols` 等字段。
+
+### Q83：为什么 `StringEvidence` 要记录 `kind`？
+
+同一个字符串来自不同位置，解释意义不同。例如 `ptrace` 出现在 DEX 字符串、Native printable string、ELF 符号表中，可信度和含义不完全一样。`kind` 可以区分 `manifest-string`、`dex-string`、`dex-const-string`、`native-string`，让报告能解释证据来源。
+
+### Q84：为什么 `Evidence` 和 `StringEvidence` 分开？
+
+`StringEvidence` 是特征层的原始字符串证据，规则层可以消费它。`Evidence` 是最终 finding 中展示给用户的证据，它可以来自字符串，也可以来自文件统计、DEX opcode 统计、方法表或 ELF 符号。因此二者分开能保持层次清楚。
+
+### Q85：规则为什么是函数列表顺序执行，而不是复杂规则引擎？
+
+课程项目需要透明、可解释、容易审计。当前规则数量有限，每条规则都是一个纯函数式判断，输入 `ApkFeatures`，输出 `Finding | None`。这种结构比引入 DSL 或复杂规则框架更容易讲清楚，也更容易写单元测试。
+
+### Q86：规则执行顺序会影响结果吗？
+
+目前规则之间没有共享可变状态，每条规则独立读取 `ApkFeatures` 并返回 finding。因此顺序主要影响报告中 finding 的排列，不影响是否命中。这个设计避免了规则间隐式依赖。
+
+### Q87：为什么不在解析阶段直接打标签？
+
+解析阶段只应该回答“APK 里有什么”，不应该回答“这是不是加固”。例如解析阶段可以提取 `DexClassLoader` 字符串，但是否把它解释为 packer 证据，应由规则层结合类别和置信度决定。这样能保持解析器通用、规则可替换。
+
+### Q88：为什么 `DetectorReport.summary` 是按 finding 数量统计，而不是 APK 风险等级？
+
+项目不做恶意判定，也不做风险评分。summary 只是把 finding 按四类计数，帮助展示时快速看类别分布。它不表示风险大小，也不表示加固强度的绝对量化。
+
+### Q89：如果同一类 finding 有多个证据，为什么不把所有证据都输出？
+
+部分规则会限制 evidence 数量，例如前 10 条，避免报告被重复字符串刷屏。完整证据在解析层仍然可以扩展保留，但展示报告需要可读性。当前目标是解释“为什么命中”，不是输出所有底层字符串。
+
+### Q90：为什么要 dedupe evidence？
+
+DEX 字符串表、const-string、方法引用和 Native strings 中可能重复出现同一模式。去重能减少报告噪声，让答辩时看到的是关键证据，而不是重复条目。
+
+## 九、APK 与 Manifest 解析追问
+
+### Q91：`apk.py` 为什么要计算每个文件的 SHA-256？
+
+SHA-256 可以用于样本复查和报告稳定性。对外部 APK 来说，hash 能说明扫描的是同一个文件；对合成数据集来说，hash 也有助于确认样本是否被重新生成或修改。
+
+### Q92：为什么要记录 compressed size？
+
+当前主要展示 size、compressed size、entropy 这些文件级特征。compressed size 可以帮助观察文件是否被压缩，但当前规则主要使用原始 size 和 Shannon entropy。它保留在 `FileEntry` 中，为后续文件结构分析留下空间。
+
+### Q93：Shannon entropy 如何用于加壳检测？
+
+加密或压缩 payload 通常接近随机分布，熵值较高。`packer.high_entropy_payload` 对 `assets/` 中至少 128 bytes 且 entropy 不低于 7.5 的文件输出 medium confidence finding。它不是强结论，因为模型、图片、压缩包也可能高熵。
+
+### Q94：为什么只对 `assets/` 做高熵 payload 规则？
+
+assets 是壳或保护逻辑常放置二进制 payload 的位置。如果对所有资源无差别扫描，高熵图片、音频、压缩资源会造成更多误报。限定 assets 是为了在课程原型中控制误报。
+
+### Q95：为什么 Manifest 只提取 string pool，不完整解析 XML？
+
+规则需要的是 Manifest 中的字符串，例如 StubApp、壳包名前缀、应用类名、权限常量。完整 XML 树解析工程量更大，但对当前规则收益有限。提取 string pool 可以稳定拿到这些证据，符合轻量静态检测目标。
+
+### Q96：如果 Manifest 不是标准 binary XML 怎么办？
+
+`features.py` 中 `_extract_manifest_strings` 会先尝试 AXML string pool 提取，如果没有结果，会回退到 printable strings 提取。这是 best-effort 策略，保证异常 Manifest 不会直接让扫描失败。
+
+### Q97：为什么 `resource_entries` 排除 `META-INF/`？
+
+`META-INF/` 主要是签名相关文件，里面的证书或签名数据可能有较高熵，但不应该被当成加壳 payload。排除它可以降低高熵规则误报。
+
+### Q98：APK ZIP entry 名字是否可信？
+
+文件名本身是 APK 内部结构的一部分，可以作为静态证据，但不能单独证明行为。例如 `libjiagu.so` 是强 packer 文件名证据，而普通资源名则不能直接说明加固。规则只在明确模式上使用文件名。
+
+## 十、DEX 解析技术追问
+
+### Q99：DEX parser 为什么先读 header 中的 size/off 字段？
+
+DEX 文件通过 header 指向 string_ids、type_ids、method_ids、class_defs 等区域。读取这些表的 size 和 offset 后，解析器才能按 DEX 格式定位字符串、类型、方法和 class data。
+
+### Q100：为什么要解析 `class_data`？
+
+仅解析方法表只能知道 APK 里有哪些方法名，但不知道方法体中实际调用了什么或引用了哪些 const-string。`class_data` 包含 direct/virtual methods 和 code offset，解析它才能进入 code item。
+
+### Q101：为什么要解析 code item？
+
+code item 里有 Dalvik 指令。HardenInspector 需要从中统计 opcode、提取 `const-string`、解析 `invoke-*` 目标。这些信息用于反射检测、控制流密度和环境检测 API 证据。
+
+### Q102：`const-string` 和 DEX 字符串表有什么区别？
+
+DEX 字符串表包含文件中所有字符串，但不一定都被某个方法实际引用。`const-string` 是方法体中实际加载字符串的指令，因此它比普通字符串表更接近代码行为证据。
+
+### Q103：`invoke-*` 证据为什么重要？
+
+反射和环境检测不一定只通过字符串出现。通过 `invoke-*` 可以看到某个方法体调用了 `Ljava/lang/Class;->forName` 或 `Ljava/lang/reflect/...` 方法，这比单纯字符串匹配更结构化。
+
+### Q104：当前 DEX parser 是否支持所有 Dalvik 指令宽度？
+
+不支持完整 Dalvik 指令集宽度。它只对当前规则关心的 opcode 做精确宽度处理，例如 `const-string`、`const-string/jumbo`、`invoke-*`、`goto`、switch、条件分支等，其余默认按 1 个 code unit 前进。这是轻量证据提取，不是完整反汇编。
+
+### Q105：默认宽度为 1 会不会影响解析准确性？
+
+可能影响某些不关心指令后的 cursor 对齐，因此这是当前轻量 parser 的边界。但项目构造样本和规则关注的核心指令有显式宽度处理；对于真实复杂 DEX，报告应作为静态证据提示，而不是完整反编译结论。
+
+### Q106：为什么解析错误不直接抛出？
+
+扫描真实 APK 时可能遇到损坏、混淆、非标准或构造异常的 DEX。如果一个 DEX 解析失败就终止整个 APK 扫描，会降低工具可用性。当前 parser 记录 `parse_errors` 并尽量返回已提取证据。
+
+### Q107：opcode profile 是如何计算的？
+
+解析 code item 时统计每条指令低 8 位 opcode 的出现次数。`OpcodeProfile.from_counts` 再计算总指令数、控制流指令数、控制流密度，以及 goto、if、switch、throw、invoke、const-string 等子计数。
+
+### Q108：控制流密度阈值为什么是 instruction >= 8、control_flow >= 5、density >= 0.42？
+
+这三个条件是为了避免小方法或普通少量分支误报。至少 8 条指令和至少 5 条控制流指令保证样本有一定规模；0.42 密度表示控制流指令占比异常高。它是预筛信号，不是完整 CFG 判断。
+
+### Q109：为什么短类名规则要求至少 3 个类？
+
+如果 APK 只有一两个类，短类名比例很容易偶然达到 100%。至少 3 个类可以降低小样本偶然性，再结合 60% 比例判断是否存在整体重命名趋势。
+
+### Q110：为什么短类名阈值是长度不超过 2？
+
+ProGuard/R8 或商业混淆常把类名压缩成 `a`、`b`、`aa` 这类短名字。长度不超过 2 是一个简单、可解释的启发式，适合课程原型展示。
+
+## 十一、Native 与 ELF 技术追问
+
+### Q111：为什么 Native 检测不只做 strings？
+
+普通字符串扫描可能抓到符号名，但 ELF 符号表能提供更结构化的位置，例如 `.dynsym` 或 `.symtab`。`ptrace` 出现在 ELF symbol 中比出现在普通字符串中更适合作为 Native API 证据。
+
+### Q112：ELF parser 支持 32 位和 64 位吗？
+
+支持。`native.py` 根据 ELF header 的 class 字段区分 32 位和 64 位，再分别按对应 section header 和 symbol entry 格式解析。
+
+### Q113：ELF parser 支持大小端吗？
+
+支持基本大小端判断。它读取 ELF header 的 endian 标记，选择 `<` 或 `>` 作为 struct unpack 的 endian 前缀。
+
+### Q114：为什么只读取 `.dynsym` 和 `.symtab`？
+
+这两个 section 是符号表，最直接包含导出或静态符号名。当前规则只需要符号级证据，不需要 relocation、program header、反汇编或控制流分析。
+
+### Q115：如果 Native 库被 strip，符号表没了怎么办？
+
+符号表减少会造成漏报。当前工具还能扫描 printable strings，但深度 Native 语义分析不在当前范围内。答辩时要明确：这是符号表级 Native 证据，不是完整 Native 逆向。
+
+### Q116：`JNI_OnLoad` 和 `Java_*` 的区别是什么？
+
+`JNI_OnLoad` 是 Native 库被加载时 JVM 调用的入口，常用于初始化和注册 native 方法。`Java_*` 是按 JNI 命名约定导出的 Java-to-native 方法符号。二者都说明 Java 与 Native 存在执行边界。
+
+### Q117：为什么 `native.jni_entrypoint` 是 low severity？
+
+存在 JNI 入口不代表加固或恶意，很多正常 App 都有 Native 代码。它的价值是提示分析者关注 Native 层，因此 severity 低，但作为 evidence 仍有解释意义。
+
+### Q118：为什么 `environment.native_debugger_symbol` 是 environment 类？
+
+`ptrace`、`prctl`、`syscall` 这些 Native 符号常用于进程控制或反调试，它们的检测目标是调试/分析环境，因此归入 environment，而不是 native 类。
+
+### Q119：为什么 `packer.native_dynamic_loader` 归入 packer？
+
+Native 层 `dlopen`、`android_dlopen_ext`、`dlsym` 等符号常出现在壳 stub 或运行时 payload loader 中，因此作为 packer 相关动态加载证据。但它是 medium confidence，因为正常 Native 插件系统也可能使用这些 API。
+
+## 十二、规则误报与漏报追问
+
+### Q120：最容易误报的规则有哪些？
+
+高熵 payload、动态加载、反射和控制流密度更容易误报。它们都属于 medium confidence，答辩时需要强调应结合其他证据和上下文解释。
+
+### Q121：最稳定的规则有哪些？
+
+已知壳库名、Manifest StubApp、Java Debug API 组合、ADB Settings API + key、installer-source API + value、ELF 符号表中的 `ptrace` 或 `JNI_OnLoad` 相对更稳定，因为它们有明确结构或组合条件。
+
+### Q122：为什么反射规则要过滤 Android support library？
+
+外部 APK 审计发现，support library 兼容层可能包含反射 API 调用，但这属于第三方库实现细节，不应算作应用自身混淆。过滤库上下文可以避免把正常依赖误报为 hardening。
+
+### Q123：为什么 `droidbench_reflection_5` 标签为空更合理？
+
+因为它的可见反射证据来自 support-library-only 上下文。如果把它标成 obfuscation，浅层字符串扫描会被奖励，而有误报控制的规则会被扣分。标签审计后更符合“应用自有加固证据”的项目目标。
+
+### Q124：为什么不使用机器学习分类？
+
+项目样本规模小，标签是课程级可复现 oracle，不适合训练泛化模型。解释型规则更适合当前目标：每条结论能讲清楚证据来源、命中条件和局限。
+
+### Q125：规则阈值是怎么来的？
+
+阈值来自课程原型场景下的可解释启发式和回归样本调优。例如高熵阈值 7.5、短类名比例 60%、控制流密度 0.42 都是为了在合成 oracle 和外部样本误报之间取得平衡。它们不是工业级统计结论。
+
+### Q126：如果真实 APK 加密了字符串怎么办？
+
+静态字符串和符号规则可能漏报。当前工具可以通过文件熵、壳库名、StubApp、Native loader 符号等其他证据补充，但不能保证识别所有加密样本。
+
+### Q127：如果壳把 payload 放在非 assets 位置怎么办？
+
+当前高熵 payload 规则可能漏报，因为它有意限制在 assets 以降低误报。可以扩展规则扫描更多目录，但需要配套误报控制和外部样本验证。
+
+### Q128：如果 App 正常使用动态加载怎么办？
+
+报告会输出 medium confidence finding，并保留 evidence。展示时应说这是“动态加载证据”，可能来自加壳，也可能来自插件化，不能单独判定为恶意或壳。
+
+## 十三、数据集与 benchmark 深入追问
+
+### Q129：为什么 benchmark 使用四类粗标签？
+
+比较对象能力不同。APKiD、Androguard DEX baseline、ZIP Strings baseline 不可能都输出 HardenInspector 的规则 ID。四类粗标签能把不同工具映射到共同任务上，比较 packer、obfuscation、environment、native 的类别覆盖。
+
+### Q130：Micro F1 和 Macro F1 的区别是什么？
+
+Micro F1 汇总所有类别的 TP/FP/FN 后统一计算，更受样本和类别出现次数影响。Macro F1 先算每个类别的 F1 再平均，更能反映类别间均衡性。
+
+### Q131：为什么 HardenInspector 在当前数据集上 F1 = 1.000？
+
+因为当前数据集和标签就是围绕项目规则目标构造和审计的，HardenInspector 的规则与 oracle 一致。这证明当前交付闭环可靠，但不能外推到所有真实 APK。
+
+### Q132：这是不是数据泄漏？
+
+如果把它解释为“大规模泛化能力”，那是不严谨的。但项目明确把合成数据集作为 oracle 回归测试集，目的就是验证规则是否按设计命中。外部 APK 语料用于补充真实复杂度和误报观察。
+
+### Q133：为什么 APKiD precision 高但 recall 低？
+
+APKiD 擅长识别明确 packer/protector/anti-vm 签名，因此命中的通常比较准；但本项目包含大量课程构造的 environment、native、reflection、opcode-density 信号，不是 APKiD 的主要目标，所以 recall 低。
+
+### Q134：为什么 Androguard DEX baseline native 类别为 0？
+
+该 baseline 在本项目中只使用 DEX 视角，不读取 Native `.so`、ELF 符号和资源文件。因此它无法命中 native 类别和 Native 符号相关规则。
+
+### Q135：为什么 ZIP Strings 在 synthetic 上表现不差？
+
+合成样本为了可复查，很多证据是显式字符串。ZIP Strings 能抓到这些字面量。但它缺少上下文，不能区分库代码和应用代码，也不能解析 opcode 统计或 ELF 符号结构。
+
+### Q136：外部 APK 标签是否权威？
+
+不是。外部 APK 的 `expected_categories` 是本项目根据可见证据做的粗粒度映射，不等同于官方 hardening ground truth。因此每个外部样本都记录 `label_basis`。
+
+### Q137：为什么 DroidLysis/MobSF 不进默认评分？
+
+它们依赖更重的外部工具链或服务环境。如果当前环境不可用却记 0 分，会把部署问题误写成工具能力问题。本项目只把可在当前仓库环境中稳定 34/34 跑完的工具放入默认评分。
+
+## 十四、工程实现与测试追问
+
+### Q138：测试为什么包括最终文档检查？
+
+课程交付不只是代码，还包括 README、报告、slides、demo 文档和答辩材料。测试最终文档可以防止样本数、测试数、关键说明过期，保证展示材料和代码状态一致。
+
+### Q139：为什么测试中要检查 `69`？
+
+这是当前自动化测试数量。文档、README、slides 中出现测试数量时需要同步更新，避免答辩材料写旧数字。
+
+### Q140：为什么 Makefile 很重要？
+
+Makefile 把常用操作标准化：setup、test、dataset、benchmark、external-corpus、demo-web、slides。答辩现场可以用固定命令复现结果，减少手动命令错误。
+
+### Q141：为什么 Dockerfile 也保留？
+
+Dockerfile 提供一个可选的隔离运行环境。虽然核心演示可以用本地 venv，但 Dockerfile 说明项目考虑了环境可复现性。
+
+### Q142：为什么核心依赖为空，benchmark 依赖单独放 extra？
+
+核心检测器要尽量离线可运行，所以默认 dependencies 为空。APKiD、Androguard、pytest 是开发和 benchmark 依赖，放在 optional extras 中，避免普通扫描安装过重依赖。
+
+### Q143：CLI 为什么异常返回 2？
+
+这是常见命令行约定：参数错误或运行失败返回非零。当前 CLI 捕获异常，打印 `hardeninspector: ...`，返回 2，让脚本能判断扫描失败。
+
+### Q144：Web demo 为什么不用 Flask 或 Node？
+
+为了减少依赖和课堂环境风险。`demo_web.py` 使用 Python 标准库 HTTP server，能离线运行，预置样本和上传扫描都调用同一套 `scan_apk`。
+
+### Q145：静态站点部署 workflow 做了什么？
+
+workflow 在推送 `docs/**` 或 workflow 文件变化时，把 `docs/` 作为静态站点 artifact 上传并部署为浏览器可访问的文档网页。它不构建 Python 项目，只发布文档内容。
+
+### Q146：如果 Pages 没启用会发生什么？
+
+`actions/configure-pages` 可能报 Pages site not found。当前仓库已启用 `build_type: workflow`，部署成功后可以直接访问 Pages URL。
+
+### Q147：为什么网页里也要放完整 Q&A？
+
+答辩准备时不应在多个链接之间跳转。把完整问题放在同一个页面里，可以在浏览器内搜索关键词，例如 DEX、ELF、误报、benchmark、Micro F1，快速定位回答。
+
+### Q148：如果老师现场指定一个 APK，应该怎么演示？
+
+优先用 Web demo 的上传扫描，说明上传只到本地服务并调用同一个 pipeline。如果浏览器不可用，用 CLI：`.venv/bin/python -m hardeninspector path/to/app.apk --json`。
+
+### Q149：如果扫描结果为空，说明什么？
+
+说明当前规则没有命中可观测加固证据，不说明 APK 一定没有加固，也不说明 APK 一定安全。可能是样本确实干净，也可能是使用了当前规则看不到的技术。
+
+### Q150：如果扫描结果很多，说明什么？
+
+说明 APK 中有多类静态证据需要关注，不等于恶意。应逐条看 evidence 的 kind、location、value，判断证据是否来自应用自有逻辑、第三方库、Native 符号或资源文件。
+
+## 十五、讲解策略追问
+
+### Q151：如果只能用 30 秒介绍项目，怎么说？
+
+HardenInspector 是一个 Android APK 静态加固技术检测器。它把 APK 拆成 Manifest、DEX、Native 和资源文件，提取结构化证据，通过解释型规则输出加壳、混淆、环境检测和 Native 入口 finding。每条 finding 都能回到具体 evidence。
+
+### Q152：如果只能用 2 分钟讲架构，怎么说？
+
+先说输入是 APK，`apk.py` 读取 ZIP 和文件统计；`axml.py`、`dex.py`、`native.py` 分别解析 Manifest、DEX、ELF；`features.py` 统一成 `ApkFeatures`；`rules.py` 输出 `Finding`；`report.py` 生成 JSON/text；dataset 和 benchmark 复现评估。
+
+### Q153：如果老师只关心“做了什么工程量”，怎么回答？
+
+工程量包括轻量 APK/AXML/DEX/ELF 解析器、规则引擎、CLI、Web demo、上传扫描、合成数据集生成器、外部 APK 语料、benchmark 框架、自动化测试、最终报告、slides、Pages 文档和答辩 Q&A。
+
+### Q154：如果老师只关心“技术深度”，怎么回答？
+
+技术深度体现在 DEX class data/code item 解析、`const-string`/`invoke-*` 提取、opcode profile、ELF symbol table 解析、规则组合条件、误报过滤、可复现 oracle 数据集和多工具 benchmark。
+
+### Q155：如果老师只关心“创新点”，怎么回答？
+
+创新点不是发明新的检测算法，而是把课程目标落成可复现 evidence-chain 框架：多源解析、解释型规则、合成 oracle + 外部 APK 双数据源、对比基线和可现场运行 demo。
+
+### Q156：如果老师追问“项目还能怎么扩展”，怎么回答？
+
+可以增加更多真实开源样本、接入更完整的 DEX 指令宽度表、加入轻量 CFG、扩展壳签名库、解析 Native import/relocation、增加动态验证选项。但这些都应在保持 evidence chain 和测试可复现的前提下做。
+
+### Q157：如果老师质疑“规则太人工”，怎么回答？
+
+课程目标是检测器原型和可解释分析，人工规则更适合展示证据链。规则人工不等于随意；每条规则都有可复查条件、样本、文档和测试。机器学习需要更大规模标签数据，不适合当前交付。
+
+### Q158：如果老师质疑“没有真实商业壳”，怎么回答？
+
+商业壳样本存在合法获取和分发问题。本项目用可复现 synthetic oracle 替代不可公开样本，并补充 DroidBench、F-Droid、PIVAA 外部 APK 做解析覆盖。真实商业壳覆盖是工程扩展方向，不是当前承诺。
+
+### Q159：如果老师要求现场证明可复现，先跑什么？
+
+先跑 `.venv/bin/python -m pytest -q` 证明 69 个测试通过；再跑 `make benchmark` 证明 34 个样本和四个工具的指标可生成；最后扫一个 APK 展示 JSON evidence。
+
+### Q160：如果最后只能留一句话，怎么说？
+
+HardenInspector 把 Android APK 加固分析从“主观感觉像加固”变成“可复现、可定位、可解释的静态 evidence chain”。

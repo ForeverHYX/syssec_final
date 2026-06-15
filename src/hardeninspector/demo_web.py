@@ -482,6 +482,9 @@ def render_index_html() -> str:
     table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
     th, td { border-top: 1px solid var(--line-soft); padding: 7px 6px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
     th { color: var(--muted); font-weight: 600; font-size: 12px; }
+    .metrics-table { font-size: 13px; }
+    .metrics-table tr.metric-mine { background: var(--accent-soft); }
+    .metrics-table tr.metric-mine td { border-color: rgba(15,118,110,.15); }
 
     /* Buttons */
     .primary-button {
@@ -835,23 +838,47 @@ def render_index_html() -> str:
         </div>
       `).join("");
     }
+    const toolLabels = {
+      hardeninspector: "HardenInspector",
+      apkid: "APKiD",
+      androguard_dex: "Androguard DEX",
+      zip_string_baseline: "ZIP Strings"
+    };
     function renderMetrics(metrics) {
-      const rows = (metrics.rows || []).filter(row => row.category === "micro" || row.category === "macro");
+      const toolsOrder = metrics.tools || [];
+      const rows = metrics.rows || [];
+      const byTool = {};
+      for (const row of rows) {
+        if (row.category !== "micro" && row.category !== "macro") continue;
+        (byTool[row.tool] = byTool[row.tool] || {})[row.category] = row;
+      }
+      const fmt = v => Number(v ?? 0).toFixed(3);
       document.getElementById("metricsContent").innerHTML = `
-        <table>
-          <thead><tr><th>工具</th><th>行</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
+        <table class="metrics-table">
+          <thead>
+            <tr><th>工具</th><th>统计口径</th><th>Precision</th><th>Recall</th><th>F1</th></tr>
+          </thead>
           <tbody>
-            ${rows.map(row => `
-              <tr>
-                <td>${escapeHtml(row.tool)}</td>
-                <td>${escapeHtml(categoryLabel(row.category))}</td>
-                <td>${Number(row.precision ?? 0).toFixed(3)}</td>
-                <td>${Number(row.recall ?? 0).toFixed(3)}</td>
-                <td>${Number(row.f1 ?? 0).toFixed(3)}</td>
-              </tr>
-            `).join("")}
+            ${toolsOrder.map(tool => {
+              const data = byTool[tool] || {};
+              const micro = data["micro"];
+              const macro = data["macro"];
+              const isOurs = tool === "hardeninspector";
+              const cls = isOurs ? ' class="metric-mine"' : '';
+              const name = toolLabels[tool] || tool;
+              if (micro && macro) {
+                return `
+                  <tr${cls}><td rowspan="2"><strong>${escapeHtml(name)}</strong></td><td>Micro</td><td>${fmt(micro.precision)}</td><td>${fmt(micro.recall)}</td><td>${fmt(micro.f1)}</td></tr>
+                  <tr${cls}><td>Macro</td><td>${fmt(macro.precision)}</td><td>${fmt(macro.recall)}</td><td>${fmt(macro.f1)}</td></tr>
+                `;
+              }
+              const single = micro || macro;
+              if (!single) return "";
+              return `<tr${cls}><td><strong>${escapeHtml(name)}</strong></td><td>${escapeHtml(categoryLabel(single.category))}</td><td>${fmt(single.precision)}</td><td>${fmt(single.recall)}</td><td>${fmt(single.f1)}</td></tr>`;
+            }).join("")}
           </tbody>
         </table>
+        <p class="faint" style="margin-top:10px">Micro 把所有样本合并算全局指标，Macro 是四类（加壳/混淆/环境/Native）分别算完再平均。同一个工具出现两行是这两种口径的差异，不是重复。</p>
       `;
     }
     async function init() {

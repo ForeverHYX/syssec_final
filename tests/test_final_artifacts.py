@@ -12,7 +12,6 @@ def test_final_summary_report_and_beamer_exist():
     defense_docs = ROOT / "docs" / "defense_qa.md"
     demo_script = ROOT / "docs" / "live_demo_script.md"
     readme = ROOT / "README.md"
-    pages_index = ROOT / "docs" / "index.html"
 
     assert report.exists()
     assert slides.exists()
@@ -26,7 +25,6 @@ def test_final_summary_report_and_beamer_exist():
     defense_text = defense_docs.read_text(encoding="utf-8")
     demo_text = demo_script.read_text(encoding="utf-8")
     readme_text = readme.read_text(encoding="utf-8")
-    pages_text = pages_index.read_text(encoding="utf-8")
 
     assert "HardenInspector" in report_text
     assert "开源实现对比" in report_text
@@ -57,18 +55,6 @@ def test_final_summary_report_and_beamer_exist():
     assert "扫描上传文件" in demo_text
     assert "docs/defense_qa.md" in readme_text
     assert "docs/live_demo_script.md" in readme_text
-    assert "展示 Demo 到底在做什么" in pages_text
-    assert "主 Web Demo" in pages_text
-    assert "预置样本" in pages_text
-    assert "上传 APK" in pages_text
-    assert "Benchmark 摘要" in pages_text
-    assert "Runtime Review Workbench" not in pages_text
-    assert "静态 finding 队列" not in pages_text
-    assert "Hook plan" not in pages_text
-    assert "Session metadata" not in pages_text
-    assert "Coverage / verdict" not in pages_text
-    assert "固定 trace 回放" not in pages_text
-    assert "runtime_trace_example.json" not in pages_text
 
 
 def test_beamer_uses_zju_template_and_ignores_build_outputs():

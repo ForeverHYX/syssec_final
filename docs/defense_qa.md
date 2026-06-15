@@ -378,9 +378,9 @@ make demo-web
 
 核心检测器优先使用 Python 标准库，降低课程展示环境和离线运行风险。`pytest`、APKiD、Androguard 只在 dev/benchmark extra 中使用。
 
-### Q68：项目说明网页讲什么？
+### Q68：项目说明文档在哪？
 
-`docs/index.html` 是给完全不了解项目的人看的入口。它按“背景概念、目标边界、总体架构、数据模型、模块设计、规则设计、数据集、benchmark、运行路径、完整 Q&A”组织，适合答辩前从零复习项目。
+项目说明拆分在 `docs/` 下的多个 Markdown 文档里，按背景概念、目标边界、总体架构、数据模型、模块设计、规则设计、数据集、benchmark、运行路径、完整 Q&A 组织，适合答辩前从零复习项目。现场演示用 `make demo-web` 启动本地网页，不需要联网或 GitHub Pages。
 
 ## 七、局限性与防守口径
 

@@ -285,124 +285,191 @@ def render_index_html() -> str:
   <style>
     :root {
       color-scheme: light;
-      --bg: #eef3f7;
+      --bg: #f4f6f8;
       --panel: #ffffff;
-      --ink: #1f2933;
-      --muted: #65717f;
-      --line: #cfd9e3;
-      --accent: #1b6b5f;
+      --ink: #1a222b;
+      --muted: #5e6b78;
+      --faint: #8a95a0;
+      --line: #d8dfe6;
+      --line-soft: #e7ecf1;
+      --accent: #0f766e;
+      --accent-soft: #e6f2f0;
+      --accent-ink: #0a4f49;
       --orange: #b7410e;
       --blue: #345995;
       --warn: #9b5c00;
       --code: #111827;
+      --shadow: 0 1px 2px rgba(16, 24, 32, .04), 0 6px 16px rgba(16, 24, 32, .05);
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      font: 15px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     }
     .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+
+    /* Header */
     header {
+      background: var(--panel);
       border-bottom: 1px solid var(--line);
-      background: #f9fbfd;
-      padding: 22px 0 18px;
     }
-    h1 { margin: 0; font-size: 28px; line-height: 1.15; letter-spacing: 0; }
-    h2 { margin: 0; font-size: 18px; }
-    h3 { margin: 0 0 8px; font-size: 15px; }
-    p { margin: 8px 0; }
-    button, input { font: inherit; }
-    a { color: var(--accent); font-weight: 800; text-decoration: none; }
-    main {
-      display: grid;
-      grid-template-columns: 330px minmax(0, 1fr);
-      gap: 18px;
-      padding: 18px 0 34px;
-    }
-    .topbar {
+    .topbar { padding: 22px 0 20px; }
+    .topbar-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 16px;
+      flex-wrap: wrap;
     }
-    .subtitle { color: var(--muted); max-width: 900px; font-size: 16px; }
-    .api-list {
-      color: var(--muted);
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 17px;
+      flex-shrink: 0;
+    }
+    h1 { margin: 0; font-size: 24px; line-height: 1.15; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 17px; }
+    h3 { margin: 0 0 6px; font-size: 15px; }
+    p { margin: 6px 0; }
+    button, input { font: inherit; }
+    a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .subtitle { color: var(--muted); max-width: 780px; font-size: 15px; margin-top: 4px; }
+    .api-meta {
+      color: var(--faint);
       font-size: 12px;
+      line-height: 1.7;
       text-align: right;
-      line-height: 1.75;
-      min-width: 245px;
     }
-    .api-list code { color: var(--accent); margin-left: 7px; white-space: nowrap; }
-    .notice {
-      margin-top: 14px;
-      border-left: 4px solid var(--accent);
-      border-radius: 7px;
-      background: #f4fbf9;
-      padding: 12px 14px;
+    .api-meta code {
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 4px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+
+    /* Primary action bar — keeps the main flow front and center */
+    .actionbar {
+      background: var(--accent-soft);
+      border-bottom: 1px solid var(--line);
+    }
+    .actionbar .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 18px;
+      padding: 14px 0;
+    }
+    .actionbar-title {
+      font-weight: 700;
+      color: var(--accent-ink);
+      font-size: 14px;
+    }
+    .actionbar a {
+      color: var(--accent-ink);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .actionbar-sep {
+      width: 1px; height: 14px;
+      background: var(--line);
+    }
+
+    /* Layout */
+    main {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px 0 40px;
+      align-items: start;
     }
     .panel {
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 10px;
       background: var(--panel);
       overflow: hidden;
-      box-shadow: 0 12px 24px rgba(31, 41, 51, 0.08);
+      box-shadow: var(--shadow);
     }
     .toolbar {
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: center;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      background: #fbfdff;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line-soft);
+      background: #fbfcfd;
     }
-    .content { padding: 14px; }
-    .sample-list { display: grid; gap: 8px; padding: 12px; }
+    .content { padding: 15px; }
+
+    /* Sample list */
+    .sample-list { display: grid; gap: 6px; padding: 10px; }
     .sample-button {
       width: 100%;
-      min-height: 82px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #fbfbf9;
+      background: #fff;
       color: var(--ink);
-      padding: 11px;
+      padding: 9px 11px;
       text-align: left;
       cursor: pointer;
+      transition: border-color .12s, box-shadow .12s;
     }
-    .sample-button:hover,
+    .sample-button:hover { border-color: var(--accent); }
+    .sample-button:hover .sample-desc { display: block; }
     .sample-button.active {
       border-color: var(--accent);
-      outline: 2px solid rgba(27, 107, 95, .12);
+      box-shadow: 0 0 0 3px var(--accent-soft);
     }
-    .sample-title { display: block; font-weight: 820; margin-bottom: 3px; }
+    .sample-button.active .sample-desc { display: block; }
+    .sample-title { display: block; font-weight: 700; margin-bottom: 2px; font-size: 14px; }
+    .sample-desc {
+      display: none;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
     .muted { color: var(--muted); font-size: 13px; }
-    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .faint { color: var(--faint); font-size: 12px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
     .badge {
       display: inline-flex;
       border: 1px solid var(--line);
       border-radius: 999px;
-      padding: 2px 7px;
-      background: #fafaf7;
+      padding: 1px 7px;
+      background: var(--panel);
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
+      font-weight: 600;
     }
-    .category-packer { color: var(--orange); border-color: rgba(183, 65, 14, .35); }
-    .category-obfuscation { color: var(--blue); border-color: rgba(52, 89, 149, .35); }
-    .category-environment { color: var(--warn); border-color: rgba(155, 92, 0, .35); }
-    .category-native { color: var(--accent); border-color: rgba(27, 107, 95, .35); }
+    .category-packer { color: var(--orange); border-color: rgba(183, 65, 14, .3); background: rgba(183, 65, 14, .04); }
+    .category-obfuscation { color: var(--blue); border-color: rgba(52, 89, 149, .3); background: rgba(52, 89, 149, .04); }
+    .category-environment { color: var(--warn); border-color: rgba(155, 92, 0, .3); background: rgba(155, 92, 0, .04); }
+    .category-native { color: var(--accent); border-color: rgba(15, 118, 110, .3); background: rgba(15, 118, 110, .04); }
+
+    /* Summary cards */
     .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
     .card {
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #fbfbf9;
+      background: #fff;
       padding: 12px;
-      min-height: 78px;
     }
-    .card .label { color: var(--muted); font-size: 12px; }
-    .card .value { font-size: 24px; font-weight: 850; }
+    .card .label { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+    .card .value { font-size: 26px; font-weight: 700; line-height: 1.1; margin-top: 4px; }
+    .card.has-value { border-color: var(--accent); background: var(--accent-soft); }
+    .card.has-value .value { color: var(--accent-ink); }
+
+    /* Findings */
     .finding {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -410,80 +477,120 @@ def render_index_html() -> str:
       background: #fff;
       margin-top: 10px;
     }
-    .finding-head { display: flex; justify-content: space-between; gap: 10px; }
+    .finding-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .finding-id { color: var(--faint); font-size: 12px; margin-top: 2px; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
-    th, td { border-top: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
-    .action-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    th, td { border-top: 1px solid var(--line-soft); padding: 7px 6px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+    th { color: var(--muted); font-weight: 600; font-size: 12px; }
+
+    /* Buttons */
     .primary-button {
-      min-height: 39px;
+      min-height: 38px;
       border: 1px solid var(--accent);
-      border-radius: 7px;
+      border-radius: 8px;
       background: var(--accent);
       color: #fff;
-      padding: 8px 13px;
+      padding: 8px 16px;
       cursor: pointer;
-      font-weight: 760;
+      font-weight: 700;
+      transition: background .12s;
     }
-    .primary-button:disabled { opacity: .58; cursor: not-allowed; }
-    .upload-panel {
-      margin-top: 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fbfbf9;
-      padding: 12px;
+    .primary-button:hover:not(:disabled) { background: var(--accent-ink); }
+    .primary-button:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Upload card */
+    .upload-card {
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: #fbfcfd;
+      padding: 16px;
     }
-    .story-grid {
+    .upload-card.has-file { border-style: solid; border-color: var(--accent); background: var(--accent-soft); }
+    .action-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+    /* APK sources */
+    .sources-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 12px;
     }
-    .story-item {
+    .sources-grid.sidebar { grid-template-columns: 1fr; }
+    .source-item {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fff;
-      padding: 11px;
-      min-height: 86px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
     }
+    .source-item a { font-size: 14px; }
+    .source-item .faint { line-height: 1.45; }
+
+    /* Story strip */
+    .story-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .story-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 11px 12px;
+    }
+    .story-item strong { font-size: 13px; }
+    .story-item p { margin: 4px 0 0; }
+
+    .empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      color: var(--muted);
+      padding: 18px;
+      text-align: center;
+    }
+    .section-gap { margin-top: 18px; }
     .cutaway {
       width: 100%;
-      max-height: 220px;
+      max-height: 200px;
       object-fit: contain;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fff;
-      margin-top: 10px;
+      margin-top: 14px;
     }
-    .empty {
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      background: #fbfbf9;
-      color: var(--muted);
-      padding: 16px;
+
+    footer {
+      padding: 20px 0 30px;
+      color: var(--faint);
+      font-size: 12px;
+      text-align: center;
     }
-    .section-gap { margin-top: 18px; }
+
     @media (max-width: 900px) {
-      .topbar, main { grid-template-columns: 1fr; }
-      .topbar { display: block; }
-      .api-list { text-align: left; margin-top: 12px; }
-      .cards, .story-grid { grid-template-columns: 1fr 1fr; }
+      main { grid-template-columns: 1fr; }
+      .topbar-row { flex-direction: column; }
+      .api-meta { text-align: left; }
+      .cards, .story-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (max-width: 560px) {
-      .cards, .story-grid { grid-template-columns: 1fr; }
+      .cards, .story-strip, .sources-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="wrap">
-      <div class="topbar">
-        <div>
-          <h1>HardenInspector 本地演示</h1>
-          <p class="subtitle">
-            这是现场展示用的主 Web Demo：选择预置 APK 或上传 APK，调用本地 scan_apk 管线生成证据链和指标摘要。
-          </p>
+    <div class="wrap topbar">
+      <div class="topbar-row">
+        <div class="brand">
+          <div class="brand-mark">HI</div>
+          <div>
+            <h1>HardenInspector 本地演示</h1>
+            <p class="subtitle">选一个样本 APK 或上传你自己的 APK，本地扫描后会列出加固、混淆、环境检测等证据。</p>
+          </div>
         </div>
-        <div class="api-list">
+        <div class="api-meta">
           Demo API
           <div><code>/api/samples</code><code>/api/scan</code></div>
           <div><code>/api/scan-upload</code><code>/api/metrics</code></div>
@@ -511,7 +618,36 @@ def render_index_html() -> str:
           <button class="primary-button" id="scanButton" type="button" disabled>扫描</button>
         </div>
         <div class="content">
-          <div class="story-grid">
+          <div id="scanContent" class="empty">选择左侧样本后点「扫描」；或上传你自己的 APK。</div>
+
+          <div class="upload-card section-gap" id="uploadCard">
+            <h3>上传 APK</h3>
+            <p class="muted" style="margin-top:0">没有合适的样本？上传你自己的 APK 文件，在本地走同一条扫描流程。</p>
+            <div class="action-row">
+              <input id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
+              <button class="primary-button" id="uploadButton" type="button" disabled>扫描上传文件</button>
+              <span class="muted" id="uploadMeta">未选择文件</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel section-gap">
+        <div class="toolbar">
+          <h2>找不到 APK？这些地方可以下</h2>
+        </div>
+        <div class="content">
+          <div class="sources-grid" id="sourcesGrid"></div>
+          <p class="faint" style="margin-top:10px">下载后建议用 <code>shasum -a 256 xxx.apk</code> 核对完整性，再上传到上方扫描区。</p>
+        </div>
+      </div>
+
+      <div class="panel section-gap">
+        <div class="toolbar">
+          <h2>项目背景</h2>
+        </div>
+        <div class="content">
+          <div class="story-strip">
             <div class="story-item">
               <strong>数据集说明</strong>
               <p class="muted">合成 Oracle 用来验证规则覆盖；外部 APK 语料用来展示真实解析路径。</p>
@@ -525,16 +661,7 @@ def render_index_html() -> str:
               <p class="muted">覆盖样本生成、规则、CLI、Web Demo 和最终交付材料一致性。</p>
             </div>
           </div>
-          <img class="cutaway" src="/assets/apk-cutaway.png" alt="APK static analysis cutaway">
-          <div id="scanContent" class="section-gap empty">等待选择样本。</div>
-          <div class="upload-panel">
-            <h3>上传 APK</h3>
-            <div class="action-row">
-              <input id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
-              <button class="primary-button" id="uploadButton" type="button" disabled>扫描上传文件</button>
-              <span class="muted" id="uploadMeta">未选择文件</span>
-            </div>
-          </div>
+          <img class="cutaway" src="/assets/apk-cutaway.png" alt="APK 静态分析剖视图">
         </div>
       </div>
 
@@ -547,6 +674,10 @@ def render_index_html() -> str:
       </div>
     </section>
   </main>
+
+  <footer>
+    <div class="wrap">HardenInspector · 静态加固证据链检测器 · 本地演示不会上传你的 APK 到任何外部服务器</div>
+  </footer>
 
   <script>
     const state = { samples: [], selected: null, scanning: false, uploadFile: null };
@@ -577,8 +708,8 @@ def render_index_html() -> str:
       container.innerHTML = state.samples.map(sample => `
         <button class="sample-button ${state.selected?.id === sample.id ? "active" : ""}" data-id="${escapeHtml(sample.id)}">
           <span class="sample-title">${escapeHtml(sample.title)}</span>
-          <span class="muted">${escapeHtml(sample.dataset_kind)} · ${escapeHtml(sample.showcase_role)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
-          <span class="muted" style="display:block;margin-top:5px;">${escapeHtml(sample.description)}</span>
+          <span class="muted">${escapeHtml(sample.dataset_kind)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
+          <span class="sample-desc">${escapeHtml(sample.description)}</span>
           <span class="badge-row">
             ${(sample.expected_categories && sample.expected_categories.length ? sample.expected_categories : ["clean"]).map(category => `
               <span class="badge category-${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</span>
@@ -597,25 +728,31 @@ def render_index_html() -> str:
       document.getElementById("selectedTitle").textContent = state.selected.title;
       document.getElementById("selectedMeta").textContent = `${state.selected.dataset_kind} · ${state.selected.showcase_role} · ${state.selected.relative_path}`;
       document.getElementById("scanContent").className = "section-gap empty";
-      document.getElementById("scanContent").innerHTML = `已选择 ${escapeHtml(state.selected.title)}，可以开始扫描。`;
+      document.getElementById("scanContent").innerHTML = `已选择 <strong>${escapeHtml(state.selected.title)}</strong>，点上面的「扫描」开始。`;
       renderSamples();
     }
     function renderReport(result) {
       const report = result.report || {};
       const summary = report.summary || {};
-      const cards = categories.map(category => `
-        <div class="card">
-          <div class="label">${escapeHtml(categoryLabel(category))}</div>
-          <div class="value">${summary[category] || 0}</div>
-        </div>
-      `).join("");
+      const cards = categories.map(category => {
+        const count = summary[category] || 0;
+        return `
+          <div class="card ${count > 0 ? "has-value" : ""}">
+            <div class="label">${escapeHtml(categoryLabel(category))}</div>
+            <div class="value">${count}</div>
+          </div>
+        `;
+      }).join("");
       const findings = (report.findings || []).length ? report.findings.map(finding => `
         <article class="finding">
           <div class="finding-head">
-            <strong>${escapeHtml(finding.title)}</strong>
+            <div>
+              <strong>${escapeHtml(finding.title)}</strong>
+              <div class="finding-id">${escapeHtml(finding.id)}</div>
+            </div>
             <span class="badge category-${escapeHtml(finding.category)}">${escapeHtml(categoryLabel(finding.category))}</span>
           </div>
-          <div class="muted">${escapeHtml(finding.id)} · 严重度 ${escapeHtml(severityLabels[finding.severity] || finding.severity)} · 置信度 ${escapeHtml(confidenceLabels[finding.confidence] || finding.confidence)}</div>
+          <div class="muted" style="margin-top:4px">严重度 ${escapeHtml(severityLabels[finding.severity] || finding.severity)} · 置信度 ${escapeHtml(confidenceLabels[finding.confidence] || finding.confidence)}</div>
           <table>
             <thead><tr><th>证据</th><th>取值</th><th>位置</th></tr></thead>
             <tbody>
@@ -625,12 +762,12 @@ def render_index_html() -> str:
             </tbody>
           </table>
         </article>
-      `).join("") : `<div class="empty">该样本未命中加固或反分析证据。</div>`;
+      `).join("") : `<div class="empty">这个样本没有命中加固或反分析证据。</div>`;
       document.getElementById("scanContent").className = "section-gap";
       document.getElementById("scanContent").innerHTML = `
         <div class="cards">${cards}</div>
-        <p>${escapeHtml(result.sample?.description || "")}</p>
-        <div class="muted">SHA-256: ${escapeHtml(report.apk?.sha256 || "")} · ZIP entries: ${escapeHtml(report.apk?.entry_count || "")}</div>
+        <p style="margin-top:0">${escapeHtml(result.sample?.description || "")}</p>
+        <div class="muted" style="font-size:12px">SHA-256: ${escapeHtml(report.apk?.sha256 || "")}<br>ZIP entries: ${escapeHtml(report.apk?.entry_count || "")}</div>
         ${findings}
       `;
     }
@@ -639,9 +776,9 @@ def render_index_html() -> str:
       state.scanning = true;
       const button = document.getElementById("scanButton");
       button.disabled = true;
-      button.textContent = "扫描中";
+      button.textContent = "扫描中…";
       document.getElementById("scanContent").className = "section-gap empty";
-      document.getElementById("scanContent").innerHTML = "正在扫描 APK 并提取证据。";
+      document.getElementById("scanContent").innerHTML = "正在解析 APK 并提取证据…";
       try {
         const response = await fetch(`/api/scan?id=${encodeURIComponent(state.selected.id)}`);
         const result = await response.json();
@@ -660,11 +797,11 @@ def render_index_html() -> str:
       state.scanning = true;
       const button = document.getElementById("uploadButton");
       button.disabled = true;
-      button.textContent = "扫描中";
+      button.textContent = "扫描中…";
       document.getElementById("selectedTitle").textContent = state.uploadFile.name;
       document.getElementById("selectedMeta").textContent = `本地上传 APK · ${(state.uploadFile.size / 1024).toFixed(1)} KB`;
       document.getElementById("scanContent").className = "section-gap empty";
-      document.getElementById("scanContent").innerHTML = "正在扫描上传的 APK。";
+      document.getElementById("scanContent").innerHTML = "正在扫描上传的 APK…";
       try {
         const response = await fetch(`/api/scan-upload?filename=${encodeURIComponent(state.uploadFile.name)}`, {
           method: "POST",
@@ -681,6 +818,22 @@ def render_index_html() -> str:
         button.disabled = false;
         button.textContent = "扫描上传文件";
       }
+    }
+    const apkSources = [
+      { name: "F-Droid（开源应用商店）", url: "https://f-droid.org/", note: "干净的开源 APK，适合做良性基线。" },
+      { name: "APKPure", url: "https://apkpure.com/", note: "按地区/版本抓取 Play Store 应用的 APK。" },
+      { name: "DroidBench", url: "https://github.com/secure-software-engineering/DroidBench", note: "学术界常用的 Android 漏洞基准测试集。" },
+      { name: "PIVAA", url: "https://github.com/nowdb/PIVAA", note: "公开的 Android 漏洞训练应用。" },
+      { name: "Android 官方 Sample", url: "https://android.googlesource.com/platform/development/+/master/samples/", note: "Google 提供的官方示例应用。" },
+      { name: "APKMirror", url: "https://apkmirror.com/", note: "收录历史版本的 APK 镜像站。" }
+    ];
+    function renderSources() {
+      document.getElementById("sourcesGrid").innerHTML = apkSources.map(src => `
+        <div class="source-item">
+          <a href="${escapeHtml(src.url)}" target="_blank" rel="noopener">${escapeHtml(src.name)}</a>
+          <span class="faint">${escapeHtml(src.note)}</span>
+        </div>
+      `).join("");
     }
     function renderMetrics(metrics) {
       const rows = (metrics.rows || []).filter(row => row.category === "micro" || row.category === "macro");
@@ -702,6 +855,7 @@ def render_index_html() -> str:
       `;
     }
     async function init() {
+      renderSources();
       const [samplesResponse, metricsResponse] = await Promise.all([
         fetch("/api/samples"),
         fetch("/api/metrics")
@@ -716,6 +870,7 @@ def render_index_html() -> str:
     document.getElementById("uploadFile").addEventListener("change", event => {
       state.uploadFile = event.target.files?.[0] || null;
       document.getElementById("uploadButton").disabled = !state.uploadFile;
+      document.getElementById("uploadCard").classList.toggle("has-file", !!state.uploadFile);
       document.getElementById("uploadMeta").textContent = state.uploadFile
         ? `${state.uploadFile.name} · ${(state.uploadFile.size / 1024).toFixed(1)} KB`
         : "未选择文件";

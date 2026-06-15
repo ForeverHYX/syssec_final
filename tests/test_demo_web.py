@@ -143,31 +143,6 @@ def test_render_index_html_contains_demo_api_surface():
     assert "Scan Upload" not in html
 
 
-def test_static_pages_demo_is_self_contained_and_separate_from_docs_home():
-    demo_html = ROOT / "docs" / "demo" / "index.html"
-    dynamic_html = ROOT / "docs" / "demo" / "dynamic.html"
-    trace_json = ROOT / "docs" / "demo" / "runtime_trace_example.json"
-    probe_js = ROOT / "docs" / "demo" / "runtime_probe.js"
-
-    assert demo_html.exists()
-    assert not dynamic_html.exists()
-    assert not trace_json.exists()
-    assert not probe_js.exists()
-    html = demo_html.read_text(encoding="utf-8")
-
-    assert "HardenInspector 静态 Web Demo" in html
-    assert 'href="dynamic.html"' not in html
-    assert "动态验证独立页" not in html
-    assert "Runtime Review Workbench" not in html
-    assert "Frida Hook 复核示例" not in html
-    assert "运行复核模拟" not in html
-    assert "runtimeTimeline" not in html
-    assert "combined_hardened_showcase" in html
-    assert "/api/scan" not in html
-    assert "/api/samples" not in html
-    assert "扫描上传文件" not in html
-
-
 def test_demo_handler_serves_assets_and_rejects_removed_dynamic_page():
     handler_class = create_handler(ROOT)
     page_request = _FakeSocket(b"GET /dynamic/ HTTP/1.1\r\nHost: local\r\n\r\n")

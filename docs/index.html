@@ -1299,6 +1299,34 @@ make demo-web</code></pre>
 <p>先跑 <code>.venv/bin/python -m pytest -q</code> 证明 69 个测试通过；再跑 <code>make benchmark</code> 证明 34 个样本和四个工具的指标可生成；最后扫一个 APK 展示 JSON evidence。</p>
 <h4>Q160：如果最后只能留一句话，怎么说？</h4>
 <p>HardenInspector 把 Android APK 加固分析从“主观感觉像加固”变成“可复现、可定位、可解释的静态 evidence chain”。</p>
+<h3>十六、动态验证口径专项</h3>
+<h4>Q161：当前实现有没有引入运行时动态验证？</h4>
+<p>没有。当前交付没有启动模拟器、没有运行 APK、没有 Frida Hook、没有收集运行时日志，也没有做动态脱壳。所有 finding 都来自静态解析：APK ZIP、Manifest string pool、DEX、Native ELF 符号、Native strings 和资源熵值。</p>
+<h4>Q162：那为什么文档里会出现“动态加载”“Frida/Xposed”“Hook”这些词？</h4>
+<p>这些是静态可观测证据，不是动态验证。例如 <code>DexClassLoader</code> 是 DEX 字符串或方法证据，<code>frida</code> / <code>xposed</code> / <code>/proc/self/maps</code> 是字符串证据，<code>ptrace</code> / <code>dlopen</code> 是 ELF 符号证据。工具只是静态识别“应用可能包含动态加载或插桩检测逻辑”，并没有实际运行这些逻辑。</p>
+<h4>Q163：这会不会和中期报告不一致？</h4>
+<p>不冲突，但答辩时必须讲清楚。中期报告的核心主线是静态解析、特征提取和规则决策；动态验证层在报告中是“可选扩展”“若时间允许”的内容，不是期末核心交付。期末实现选择完成可运行、可复现、可测试的静态 evidence-chain 检测器，并把动态验证明确列为范围外。</p>
+<h4>Q164：如果老师说“你中期报告写了动态验证，为什么没做”，怎么回答？</h4>
+<p>回答：</p>
+<div class="box note"><p>中期报告把动态验证设计为可选扩展层，用于在静态证据不足或冲突时做少量 Frida Hook 复核。期末实现阶段我优先保证核心检测器可运行、可复现、可测试，所以交付的是静态主路径：APK/Manifest/DEX/Native/资源解析、规则引擎、证据链报告、数据集和 benchmark。动态验证没有作为核心交付，也没有被写成当前能力。</p></div>
+<h4>Q165：为什么不做动态验证是合理取舍？</h4>
+<p>动态验证依赖模拟器或真机、Frida 环境、样本启动路径、权限状态、UI 触发和反 Frida 对抗。课程展示环境下这些因素不稳定，容易导致“工具本身可行，但现场环境跑不起来”。静态检测器虽然能力边界更清楚，但更容易复现、测试和解释。</p>
+<h4>Q166：没有动态验证会损失哪些能力？</h4>
+<p>主要损失是：不能确认某段环境检测逻辑运行时是否真的执行，不能看到加密 payload 运行时解密结果，不能捕获动态生成字符串或动态加载后的代码，也不能做真实脱壳。当前报告只能说“静态上出现证据”，不能说“运行时一定触发”。</p>
+<h4>Q167：没有动态验证时，怎么避免报告说得太满？</h4>
+<p>用三句话约束口径：</p>
+<ul>
+<li>“检测到静态证据”，不要说“证明应用一定执行了该行为”。</li>
+<li>“可作为人工分析入口”，不要说“自动完成加固还原”。</li>
+<li>“当前评估集上验证有效”，不要说“覆盖所有真实 APK 或商业壳”。</li>
+</ul>
+<h4>Q168：如果需要补一个最小动态验证模块，应该怎么设计？</h4>
+<p>最小版本可以只做可选 demo，不进入核心评分：在模拟器中运行少量自写 APK，用 Frida Hook <code>System.getProperty</code>、<code>Debug.isDebuggerConnected</code>、<code>ClassLoader.loadClass</code>、<code>Method.invoke</code>、<code>dlopen</code> 等点，收集日志并和静态 finding 对照。它应该作为“复核证据”，而不是替代静态规则。</p>
+<h4>Q169：为什么当前 benchmark 不因为缺少动态验证而失效？</h4>
+<p>因为当前 benchmark 的任务定义就是静态证据类别识别。标签来自合成 oracle 和外部 APK 的粗粒度静态证据映射，比较对象也按静态可观测类别输出。它评估的是当前定义下的静态检测器，而不是动态脱壳系统。</p>
+<h4>Q170：答辩时最安全的最终口径是什么？</h4>
+<p>最安全口径是：</p>
+<div class="box note"><p>当前 HardenInspector 是静态优先的 evidence-chain 检测器，没有实现运行时动态验证。中期报告中的动态验证层是可选扩展，期末交付聚焦静态主路径，并在文档中明确记录了这个范围调整。报告中所有动态相关 finding 都表示静态证据，例如动态加载 API、Frida/Xposed 探测字符串或 Native loader 符号，而不是运行时 Hook 结论。</p></div>
         </div>
       </section>
     </div>

@@ -1,5 +1,6 @@
 from pathlib import Path
 from io import BytesIO
+import json
 
 import pytest
 
@@ -112,6 +113,12 @@ def test_render_index_html_contains_demo_api_surface():
     html = render_index_html()
 
     assert "HardenInspector 本地演示" in html
+    assert "动态验证小 Demo" in html
+    assert "Frida Hook 复核示例" in html
+    assert "不接入核心 scan_apk pipeline" in html
+    assert "静态 finding → Hook 点 → Runtime observation" in html
+    assert "运行复核模拟" in html
+    assert "runtimeTimeline" in html
     assert "展品导览" in html
     assert "证据链" in html
     assert "数据集说明" in html
@@ -131,6 +138,52 @@ def test_render_index_html_contains_demo_api_surface():
     assert "Exhibit Map" not in html
     assert "Upload APK" not in html
     assert "Scan Upload" not in html
+
+
+def test_static_pages_demo_is_self_contained_and_separate_from_docs_home():
+    demo_html = ROOT / "docs" / "demo" / "index.html"
+    trace_json = ROOT / "docs" / "demo" / "runtime_trace_example.json"
+    probe_js = ROOT / "docs" / "demo" / "runtime_probe.js"
+
+    assert demo_html.exists()
+    assert trace_json.exists()
+    assert probe_js.exists()
+    html = demo_html.read_text(encoding="utf-8")
+    trace = json.loads(trace_json.read_text(encoding="utf-8"))
+    probe = probe_js.read_text(encoding="utf-8")
+
+    assert "HardenInspector 静态 Web Demo" in html
+    assert "动态验证小 Demo" in html
+    assert "Frida Hook 复核示例" in html
+    assert "不接入核心 scan_apk pipeline" in html
+    assert "静态 finding → Hook 点 → Runtime observation" in html
+    assert "运行复核模拟" in html
+    assert "runtimeTimeline" in html
+    assert "combined_hardened_showcase" in html
+    assert "environment.debugger_probe" in html
+    assert "System.getProperty" in html
+    assert "Debug.isDebuggerConnected" in html
+    assert "ClassLoader.loadClass" in html
+    assert "dlopen" in html
+    assert "runtime_trace_example.json" in html
+    assert "runtime_probe.js" in html
+    assert "/api/scan" not in html
+    assert "/api/samples" not in html
+    assert "扫描上传文件" not in html
+    assert trace["scenario"] == "combined_hardened_showcase_dynamic_review"
+    assert {event["hook"] for event in trace["events"]} >= {
+        "System.getProperty",
+        "Debug.isDebuggerConnected",
+        "ClassLoader.loadClass",
+        "dlopen",
+    }
+    assert any(event["static_finding"] == "environment.debugger_probe" for event in trace["events"])
+    assert "Java.perform" in probe
+    assert "System.getProperty" in probe
+    assert "Debug.isDebuggerConnected" in probe
+    assert "ClassLoader.loadClass" in probe
+    assert "Interceptor.attach" in probe
+    assert "android_dlopen_ext" in probe
 
 
 def test_demo_asset_head_request_returns_png_headers_without_body():

@@ -589,6 +589,88 @@ def render_index_html() -> str:
       margin-top: 18px;
       overflow: hidden;
     }
+    .runtime-demo {
+      margin-top: 18px;
+      overflow: hidden;
+    }
+    .runtime-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+    .runtime-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfbf9;
+      padding: 12px;
+      min-height: 160px;
+    }
+    .runtime-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+    .runtime-card pre {
+      margin: 8px 0 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      border-radius: 7px;
+      background: #1f2933;
+      color: #f7fbff;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .runtime-step {
+      border-left: 4px solid var(--accent);
+      background: #f6fbfa;
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-top: 8px;
+    }
+    .runtime-map {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .runtime-map-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr);
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+    }
+    .runtime-map-cell {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 7px;
+      min-height: 42px;
+      overflow-wrap: anywhere;
+    }
+    .runtime-arrow {
+      text-align: center;
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .runtime-timeline {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .runtime-event {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent-3);
+      border-radius: 7px;
+      background: #fff;
+      padding: 8px 10px;
+    }
+    .runtime-event.pending {
+      opacity: .42;
+    }
+    .runtime-event strong {
+      display: block;
+      margin-bottom: 3px;
+    }
     .metrics .content {
       overflow-x: auto;
     }
@@ -625,6 +707,7 @@ def render_index_html() -> str:
       .story-grid { grid-template-columns: 1fr; }
       main { grid-template-columns: 1fr; }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .runtime-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -707,10 +790,124 @@ def render_index_html() -> str:
           <div class="empty">正在加载指标。</div>
         </div>
       </div>
+      <div class="panel runtime-demo">
+        <div class="toolbar">
+          <h2>动态验证小 Demo</h2>
+          <span class="muted">Frida Hook 复核示例，不接入核心 scan_apk pipeline</span>
+        </div>
+        <div class="content">
+          <div class="runtime-grid">
+            <div class="runtime-card">
+              <h3>静态 finding 如何被复核</h3>
+              <p class="muted">
+                这里演示中期报告里的可选动态验证层：当静态报告命中
+                <strong>environment.debugger_probe</strong>、<strong>packer.dynamic_code_loading</strong>
+                或 Native loader 符号时，可以用 Hook 日志做人工复核。
+              </p>
+              <div class="runtime-step">
+                这个小 Demo 只展示复核思路和示例 observation，不运行 Frida、不启动模拟器，也不改变 scan_apk 静态主流程。
+              </div>
+            </div>
+            <div class="runtime-card">
+              <h3>静态 finding → Hook 点 → Runtime observation</h3>
+              <div class="runtime-map">
+                <div class="runtime-map-row">
+                  <div class="runtime-map-cell">environment.system_properties<br><span class="muted">ro.kernel.qemu</span></div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">System.getProperty</div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">key=ro.kernel.qemu value=1</div>
+                </div>
+                <div class="runtime-map-row">
+                  <div class="runtime-map-cell">environment.debugger_probe<br><span class="muted">android.os.Debug</span></div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">Debug.isDebuggerConnected</div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">value=false</div>
+                </div>
+                <div class="runtime-map-row">
+                  <div class="runtime-map-cell">packer.dynamic_code_loading<br><span class="muted">DexClassLoader</span></div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">ClassLoader.loadClass</div>
+                  <div class="runtime-arrow">→</div>
+                  <div class="runtime-map-cell">name=com.example.Payload</div>
+                </div>
+              </div>
+            </div>
+            <div class="runtime-card">
+              <h3>Frida Hook 复核示例</h3>
+              <pre>Java.perform(function () {
+  const System = Java.use("java.lang.System");
+  System.getProperty.overload("java.lang.String").implementation = function (key) {
+    const value = this.getProperty(key);
+    send({ hook: "System.getProperty", key, value });
+    return value;
+  };
+
+  const Debug = Java.use("android.os.Debug");
+  Debug.isDebuggerConnected.implementation = function () {
+    const value = this.isDebuggerConnected();
+    send({ hook: "Debug.isDebuggerConnected", value });
+    return value;
+  };
+});</pre>
+            </div>
+            <div class="runtime-card">
+              <h3>可观测 Hook 点</h3>
+              <span class="badge-row">
+                <span class="badge category-environment">System.getProperty</span>
+                <span class="badge category-environment">Debug.isDebuggerConnected</span>
+                <span class="badge category-packer">ClassLoader.loadClass</span>
+                <span class="badge category-packer">Method.invoke</span>
+                <span class="badge category-native">dlopen</span>
+                <span class="badge category-native">android_dlopen_ext</span>
+              </span>
+              <p class="muted">
+                这些 Hook 点对应当前静态规则中的 system property、Java Debug API、动态加载、反射和 Native loader 证据。
+              </p>
+            </div>
+            <div class="runtime-card">
+              <h3>示例 runtime observation</h3>
+              <button class="secondary-button" id="runtimeReplayButton" type="button">运行复核模拟</button>
+              <div class="runtime-timeline" id="runtimeTimeline"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
   <script>
     const state = { samples: [], selected: null, scanning: false, uploadFile: null };
+    const runtimeReviewEvents = [
+      {
+        t: "00:00.114",
+        staticFinding: "environment.system_properties",
+        hook: "System.getProperty",
+        observation: "key=ro.kernel.qemu value=1",
+        meaning: "静态 system property 字符串在运行时被读取，可作为模拟器探测复核证据。"
+      },
+      {
+        t: "00:00.238",
+        staticFinding: "environment.debugger_probe",
+        hook: "Debug.isDebuggerConnected",
+        observation: "value=false",
+        meaning: "应用调用了 Java Debug API；本次运行未连接调试器。"
+      },
+      {
+        t: "00:00.517",
+        staticFinding: "packer.dynamic_code_loading",
+        hook: "ClassLoader.loadClass",
+        observation: "name=com.example.Payload",
+        meaning: "动态加载相关静态 finding 可通过类加载日志复核。"
+      },
+      {
+        t: "00:00.774",
+        staticFinding: "packer.native_dynamic_loader",
+        hook: "dlopen",
+        observation: "path=/data/data/app/libpayload.so",
+        meaning: "Native loader 符号对应运行时库加载 observation。"
+      }
+    ];
     const categories = ["packer", "obfuscation", "environment", "native"];
     const categoryLabels = {
       packer: "加壳",
@@ -881,6 +1078,28 @@ def render_index_html() -> str:
       `;
     }
 
+    function renderRuntimeTimeline(visibleCount = runtimeReviewEvents.length) {
+      const container = document.getElementById("runtimeTimeline");
+      container.innerHTML = runtimeReviewEvents.map((event, index) => `
+        <div class="runtime-event ${index >= visibleCount ? "pending" : ""}">
+          <strong>${escapeHtml(event.t)} · ${escapeHtml(event.hook)}</strong>
+          <div class="muted">静态 finding: ${escapeHtml(event.staticFinding)}</div>
+          <div>${escapeHtml(event.observation)}</div>
+          <div class="muted">${escapeHtml(event.meaning)}</div>
+        </div>
+      `).join("");
+    }
+
+    function replayRuntimeReview() {
+      let visible = 0;
+      renderRuntimeTimeline(visible);
+      const timer = setInterval(() => {
+        visible += 1;
+        renderRuntimeTimeline(visible);
+        if (visible >= runtimeReviewEvents.length) clearInterval(timer);
+      }, 450);
+    }
+
     async function init() {
       const [samplesResponse, metricsResponse] = await Promise.all([
         fetch("/api/samples"),
@@ -894,6 +1113,7 @@ def render_index_html() -> str:
     }
 
     document.getElementById("scanButton").addEventListener("click", scanSelected);
+    document.getElementById("runtimeReplayButton").addEventListener("click", replayRuntimeReview);
     document.getElementById("uploadFile").addEventListener("change", event => {
       state.uploadFile = event.target.files?.[0] || null;
       document.getElementById("uploadButton").disabled = !state.uploadFile;
@@ -905,6 +1125,7 @@ def render_index_html() -> str:
     init().catch(error => {
       document.getElementById("sampleList").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
     });
+    renderRuntimeTimeline(0);
   </script>
 </body>
 </html>

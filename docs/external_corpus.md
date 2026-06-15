@@ -1,6 +1,6 @@
 # 外部 APK 语料说明
 
-本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 33 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
+本项目除了可复现合成数据集，还纳入了公开现成 APK。外部语料现在有两种用途：进入 `make benchmark` 的 34 样本合并评分，同时通过 `make external-corpus` 单独输出覆盖率和 finding 分布。
 
 ## 来源
 

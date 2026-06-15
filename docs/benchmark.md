@@ -128,7 +128,7 @@ HardenInspector 的优势来自中期报告路线中的多源结构化证据：M
 
 ## 外部 APK 统计
 
-为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 33 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
+为扩大测试范围，仓库额外纳入 12 个公开现成 APK：DroidBench 10 个、F-Droid 1 个、PIVAA 1 个。它们现在进入 `make benchmark` 的 34 样本合并评分；`make external-corpus` 仍保留单独的扫描覆盖和 finding 分布表。
 
 | Tool | Samples | Any category | Packer | Obfuscation | Environment | Native |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |

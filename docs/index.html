@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HardenInspector | Android APK 加固技术证据链检测器</title>
+  <meta name="description" content="HardenInspector 是面向系统安全课程项目的 Android APK 静态加固技术检测器，输出可解释 evidence chain。">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17211d;
+      --muted: #5f6b67;
+      --paper: #f7f8f6;
+      --surface: #ffffff;
+      --line: #d8ded9;
+      --teal: #0f766e;
+      --teal-dark: #0a4f49;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --violet: #6d28d9;
+      --code: #111827;
+      --shadow: 0 10px 24px rgba(23, 33, 29, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.68;
+    }
+
+    a {
+      color: var(--teal-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      min-height: 58px;
+      padding: 0 32px;
+      border-bottom: 1px solid rgba(216, 222, 217, 0.9);
+      background: rgba(247, 248, 246, 0.94);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+      font-size: 14px;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 74vh;
+      display: grid;
+      align-items: end;
+      padding: 88px 32px 42px;
+      color: #ffffff;
+      background-image: url("assets/apk_static_analysis_cutaway.png");
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 20, 18, 0.68);
+    }
+
+    .hero-inner {
+      position: relative;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      color: #bff4ec;
+    }
+
+    h1 {
+      max-width: 960px;
+      margin: 0;
+      font-size: clamp(42px, 8vw, 86px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 830px;
+      margin: 24px 0 0;
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: #edf7f4;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 6px;
+      color: #ffffff;
+      font-weight: 700;
+      background: rgba(15, 118, 110, 0.82);
+    }
+
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+      max-width: 900px;
+      margin-top: 42px;
+    }
+
+    .stat {
+      min-height: 88px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: #d7e6e2;
+      font-size: 13px;
+    }
+
+    .section {
+      padding: 72px 32px;
+      border-top: 1px solid var(--line);
+    }
+
+    .section.alt {
+      background: #eef3ef;
+    }
+
+    .wrap {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .section-title {
+      max-width: 820px;
+      margin-bottom: 30px;
+    }
+
+    .section-title h2 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 1px 0 rgba(23, 33, 29, 0.04);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.28;
+      letter-spacing: 0;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      background: #dff3ef;
+    }
+
+    .tag.amber {
+      color: #7c3e04;
+      background: #fde7c8;
+    }
+
+    .tag.violet {
+      color: #4c1d95;
+      background: #eadcff;
+    }
+
+    .tag.red {
+      color: #7f1d1d;
+      background: #fee2e2;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 132px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .flow-step:not(:last-child)::after {
+      content: ">";
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      color: var(--teal);
+      font-weight: 800;
+      text-align: center;
+      background: var(--paper);
+    }
+
+    .flow-step b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--teal-dark);
+    }
+
+    .flow-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #24322d;
+      background: #e7eee9;
+      font-size: 14px;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: var(--code);
+      background: #edf1ee;
+      font-size: 0.92em;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 18px;
+      border-radius: 8px;
+      color: #e8f5f2;
+      background: #111827;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .callout {
+      padding: 18px 20px;
+      border-left: 4px solid var(--teal);
+      border-radius: 0 8px 8px 0;
+      background: #e6f5f1;
+    }
+
+    .callout strong {
+      color: var(--teal-dark);
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .list li {
+      padding-left: 18px;
+      border-left: 3px solid var(--teal);
+      color: var(--muted);
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    details + details {
+      margin-top: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      padding: 15px 18px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    details p {
+      margin: 0;
+      padding: 0 18px 18px;
+      color: var(--muted);
+    }
+
+    .footer {
+      padding: 36px 32px;
+      color: #d7e6e2;
+      background: #17211d;
+    }
+
+    .footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .footer a {
+      color: #9ee9dd;
+    }
+
+    @media (max-width: 980px) {
+      .grid.two,
+      .grid.three,
+      .grid.four,
+      .hero-stats,
+      .flow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow-step:not(:last-child)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 18px;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        gap: 10px 14px;
+      }
+
+      .hero,
+      .section {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .hero {
+        min-height: 78vh;
+        padding-top: 64px;
+      }
+
+      .grid.two,
+      .grid.three,
+      .grid.four,
+      .hero-stats,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="页面导航">
+    <div class="brand">HardenInspector</div>
+    <div class="nav-links">
+      <a href="#what">项目定位</a>
+      <a href="#architecture">框架设计</a>
+      <a href="#rules">检测规则</a>
+      <a href="#evaluation">数据与指标</a>
+      <a href="#demo">展示讲法</a>
+      <a href="#qa">答辩速查</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">系统安全课程期末项目 · Android 应用抗加固分析</p>
+      <h1>HardenInspector</h1>
+      <p class="hero-copy">
+        一个面向 APK 的静态加固技术证据链检测器。它不判断应用是否恶意，而是回答：
+        这个 APK 静态上出现了哪些加壳、代码混淆、环境检测和 Native 入口证据。
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="#demo">查看展示讲法</a>
+        <a class="button secondary" href="#qa">答辩 Q&amp;A</a>
+        <a class="button secondary" href="https://github.com/ForeverHYX/syssec_final">仓库 README</a>
+      </div>
+      <div class="hero-stats" aria-label="项目关键指标">
+        <div class="stat"><strong>4 类</strong><span>packer / obfuscation / environment / native</span></div>
+        <div class="stat"><strong>34</strong><span>22 个合成 oracle APK + 12 个外部 APK</span></div>
+        <div class="stat"><strong>69</strong><span>自动化测试覆盖解析器、规则、CLI、Demo</span></div>
+        <div class="stat"><strong>1.000</strong><span>当前合并评分集 HardenInspector Micro F1</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="what" class="section">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>这个项目到底做什么</h2>
+          <p>把 APK 中散落的静态证据提取出来，组织成可解释的加固技术画像，供人工分析和课程展示使用。</p>
+        </div>
+        <div class="grid three">
+          <article class="card">
+            <h3>输入是什么</h3>
+            <p>输入是一个 Android APK 文件。HardenInspector 将 APK 当作 ZIP 容器读取，识别 Manifest、DEX、Native `.so`、assets 和资源文件。</p>
+            <div class="tag-row">
+              <span class="tag">APK ZIP</span>
+              <span class="tag">AndroidManifest.xml</span>
+              <span class="tag">classes*.dex</span>
+              <span class="tag">lib/**/*.so</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>输出是什么</h3>
+            <p>输出是 JSON 或文本报告。每条 finding 都有规则 ID、类别、置信度、解释和 evidence，能回到具体文件位置和值。</p>
+            <div class="tag-row">
+              <span class="tag amber">schema_version</span>
+              <span class="tag amber">summary</span>
+              <span class="tag amber">findings</span>
+              <span class="tag amber">evidence</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>它不做什么</h3>
+            <p>它不是恶意软件判定器，不承诺商业壳全覆盖，也不做动态 Frida 验证。它给出的是静态可观测证据和人工复核入口。</p>
+            <div class="tag-row">
+              <span class="tag red">非恶意判定</span>
+              <span class="tag red">非完整反编译器</span>
+              <span class="tag red">非商业签名库</span>
+            </div>
+          </article>
+        </div>
+        <div class="callout" style="margin-top: 22px;">
+          <strong>展示时的一句话：</strong>
+          HardenInspector 的核心价值是“静态 evidence chain”：每个检测结论都能追溯到 APK 内的 Manifest 字符串、DEX 字符串/方法/opcode、Native ELF 符号或资源熵值，而不是只给一个黑盒风险分。
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture" class="section alt">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>总体框架设计</h2>
+          <p>框架遵循中期报告的解析层、特征层、决策层和报告层。期末交付保留静态核心链路，把动态验证层明确放在当前范围之外。</p>
+        </div>
+
+        <div class="flow" aria-label="HardenInspector 数据流">
+          <div class="flow-step">
+            <b>1. APK 输入</b>
+            <span>接收本地 APK 路径、Web demo 预置样本或浏览器上传 APK bytes。</span>
+          </div>
+          <div class="flow-step">
+            <b>2. 容器解析</b>
+            <span>读取 ZIP entry、文件大小、压缩大小、SHA-256、Shannon 熵。</span>
+          </div>
+          <div class="flow-step">
+            <b>3. 多源特征</b>
+            <span>提取 Manifest string pool、DEX 字符串/方法/opcode、Native strings/ELF symbols。</span>
+          </div>
+          <div class="flow-step">
+            <b>4. 特征模型</b>
+            <span>归一化为 `ApkFeatures`，让规则层不用关心底层文件格式细节。</span>
+          </div>
+          <div class="flow-step">
+            <b>5. 规则引擎</b>
+            <span>执行解释型静态规则，生成带类别、置信度和证据的 finding。</span>
+          </div>
+          <div class="flow-step">
+            <b>6. 展示与评估</b>
+            <span>输出 CLI JSON/text、Web demo、数据集报告和 benchmark 指标。</span>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 24px;">
+          <div class="card">
+            <h3>为什么不用完整逆向框架做运行时依赖</h3>
+            <p>课程展示强调可复现和离线可运行。项目只需要检测相关的少量证据，不需要完整反编译、控制流恢复或 UI 反编译。因此默认运行时使用 Python 标准库和轻量解析器，Androguard 作为 benchmark 基线，不作为核心依赖。</p>
+          </div>
+          <div class="card">
+            <h3>为什么强调 evidence chain</h3>
+            <p>加固、插件化、调试检测和正常业务逻辑之间存在重叠。只输出标签很容易误导。HardenInspector 把 `location` 和 `value` 放进报告，让展示者能解释“为什么命中”和“哪些证据需要人工复核”。</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 34px;">核心模块分工</h3>
+        <table aria-label="核心模块分工">
+          <thead>
+            <tr>
+              <th>模块</th>
+              <th>职责</th>
+              <th>展示时怎么讲</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>src/hardeninspector/apk.py</code></td>
+              <td>打开 APK ZIP，识别 Manifest、DEX、Native 库、资源和文件熵。</td>
+              <td>这是入口层，先把 APK 拆成可分析对象。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/axml.py</code></td>
+              <td>提取 Android binary XML string pool 中的 Manifest 字符串。</td>
+              <td>用来看到壳入口类、权限、包名和 Manifest 层常量。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/dex.py</code></td>
+              <td>解析 DEX strings、types、methods、class data、code item、`const-string`、`invoke-*` 和 opcode profile。</td>
+              <td>这是 Java/Kotlin 层证据来源，覆盖反射、动态加载、短类名和控制流密度。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/native.py</code></td>
+              <td>扫描 Native strings，解析 ELF `.dynsym` / `.symtab` 符号。</td>
+              <td>说明工具不只看 DEX，也能看到 `JNI_OnLoad`、`ptrace`、`dlopen` 等 Native 证据。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/features.py</code></td>
+              <td>将多源解析结果归一化为 `ApkFeatures` 和 `StringEvidence`。</td>
+              <td>这是解析层与规则层的边界，降低规则实现耦合。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/rules.py</code></td>
+              <td>执行 packer、obfuscation、environment、native 四类规则，生成 `Finding`。</td>
+              <td>规则是解释型的，每条都有证据，不是机器学习黑盒。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/report.py</code></td>
+              <td>串联 `extract_features` 和 `evaluate_rules`，输出 `DetectorReport`。</td>
+              <td>CLI、Web demo、数据集报告共用同一个扫描管线。</td>
+            </tr>
+            <tr>
+              <td><code>src/hardeninspector/demo_web.py</code></td>
+              <td>用 Python 标准库启动本地 HTTP demo，支持预置样本、上传扫描和 benchmark 展示。</td>
+              <td>现场演示入口，证明工具不是只生成离线报告。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>报告模型与证据链</h2>
+          <p>扫描结果围绕 `DetectorReport` 组织：APK 元数据、四类 summary、finding 列表和 evidence 列表。</p>
+        </div>
+        <div class="grid two">
+          <div>
+            <pre><code>{
+  "schema_version": 1,
+  "apk": {
+    "path": "combined_hardened_showcase.apk",
+    "sha256": "...",
+    "entry_count": 7
+  },
+  "summary": {
+    "packer": 4,
+    "obfuscation": 2,
+    "environment": 3,
+    "native": 1
+  },
+  "findings": [
+    {
+      "id": "environment.system_properties",
+      "category": "environment",
+      "confidence": "high",
+      "evidence": [
+        {
+          "kind": "dex-string",
+          "value": "ro.kernel.qemu",
+          "location": "classes.dex:string"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+          </div>
+          <div class="card">
+            <h3>怎么解释一条 finding</h3>
+            <ul class="list">
+              <li><code>id</code> 是稳定规则名，便于文档、测试和 benchmark 对齐。</li>
+              <li><code>category</code> 映射到课程目标中的加壳、混淆、环境检测和 Native 证据。</li>
+              <li><code>confidence</code> 表示规则可信度，高熵 payload、动态加载、反射等可能需要结合上下文解释。</li>
+              <li><code>evidence.location</code> 告诉你证据来自 Manifest、DEX、Native 符号表还是资源文件。</li>
+              <li><code>evidence.value</code> 是可复查的原始值，例如壳库名、API 名、系统属性、文件路径或 ELF 符号。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rules" class="section alt">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>检测规则覆盖</h2>
+          <p>规则不是孤立字符串匹配，而是尽量结合位置、结构和上下文，降低“正常框架代码被误判为加固”的风险。</p>
+        </div>
+        <div class="grid four">
+          <article class="card">
+            <h3>加壳 Packer</h3>
+            <p>识别已知壳库名、Manifest StubApp、高熵 payload、动态加载 API 和 Native loader 符号。</p>
+            <div class="tag-row">
+              <span class="tag">libjiagu.so</span>
+              <span class="tag">StubApp</span>
+              <span class="tag">DexClassLoader</span>
+              <span class="tag">dlopen</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>混淆 Obfuscation</h3>
+            <p>识别短类名比例、反射 API / `Class.forName` / `Method.invoke` 和控制流 opcode 密度。</p>
+            <div class="tag-row">
+              <span class="tag amber">La/a;</span>
+              <span class="tag amber">forName</span>
+              <span class="tag amber">invoke-*</span>
+              <span class="tag amber">goto / switch</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>环境检测 Environment</h3>
+            <p>覆盖模拟器、调试器、ADB 设置、安装来源、签名完整性、root、Frida/Xposed 和 Native anti-debug。</p>
+            <div class="tag-row">
+              <span class="tag red">ro.kernel.qemu</span>
+              <span class="tag red">ADB_ENABLED</span>
+              <span class="tag red">ptrace</span>
+              <span class="tag red">/proc/self/maps</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Native 入口</h3>
+            <p>识别 `JNI_OnLoad` 和 `Java_*` JNI 导出符号，把 Native 桥接作为独立证据类别展示。</p>
+            <div class="tag-row">
+              <span class="tag violet">JNI_OnLoad</span>
+              <span class="tag violet">Java_*</span>
+              <span class="tag violet">.dynsym</span>
+              <span class="tag violet">.symtab</span>
+            </div>
+          </article>
+        </div>
+
+        <h3 style="margin-top: 34px;">误报控制口径</h3>
+        <table aria-label="误报控制设计">
+          <thead>
+            <tr>
+              <th>风险点</th>
+              <th>为什么容易误报</th>
+              <th>当前处理</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>反射</td>
+              <td>Android support、AndroidX、Kotlin 和 Material 兼容层会有正常反射样板。</td>
+              <td>过滤常见库前缀，要求强字面量或应用自有上下文证据。</td>
+            </tr>
+            <tr>
+              <td>动态加载</td>
+              <td>插件化框架也会使用 `DexClassLoader` 或 `PathClassLoader`。</td>
+              <td>作为 medium confidence finding，建议结合壳库、高熵 payload、StubApp 一起解释。</td>
+            </tr>
+            <tr>
+              <td>高熵文件</td>
+              <td>压缩资源、模型文件、媒体文件也可能高熵。</td>
+              <td>只对 `assets/` 中达到大小和熵值阈值的文件输出 medium confidence 证据。</td>
+            </tr>
+            <tr>
+              <td>控制流密度</td>
+              <td>普通复杂业务逻辑也会有分支。</td>
+              <td>要求指令数、控制流 opcode 数和密度同时超过阈值，只作为轻量预筛。</td>
+            </tr>
+            <tr>
+              <td>root 探测</td>
+              <td>裸 `su` 子串可能出现在普通单词中。</td>
+              <td>只匹配强 root artifact、root 管理包名、`test-keys` 或 `which su` 等上下文。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="evaluation" class="section">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>数据集与指标怎么讲</h2>
+          <p>评估由可控 oracle 样本和外部现成 APK 共同组成，既能计算 ground truth，也能观察真实 APK 复杂度。</p>
+        </div>
+        <div class="grid two">
+          <article class="card">
+            <h3>22 个合成 oracle APK</h3>
+            <p>每个样本都控制植入某类证据，例如 R8 短标识符、Obfuscapk 风格反射、Bangcle/Jiagu 风格壳、Native ptrace loader、ADB 设置、安装来源、签名完整性和综合样本。</p>
+            <div class="tag-row">
+              <span class="tag">可复现</span>
+              <span class="tag">有 labels.json</span>
+              <span class="tag">有 JSON reports</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>12 个外部现成 APK</h3>
+            <p>包含 DroidBench、F-Droid 和 PIVAA。外部样本用于扩大解析覆盖、观察误报，并通过 `label_basis` 记录粗粒度类别映射依据。</p>
+            <div class="tag-row">
+              <span class="tag amber">DroidBench</span>
+              <span class="tag amber">F-Droid</span>
+              <span class="tag amber">PIVAA</span>
+            </div>
+          </article>
+        </div>
+
+        <h3 style="margin-top: 34px;">当前合并评分结果</h3>
+        <table aria-label="Benchmark 指标">
+          <thead>
+            <tr>
+              <th>工具</th>
+              <th>Coverage</th>
+              <th>Micro Precision</th>
+              <th>Micro Recall</th>
+              <th>Micro F1</th>
+              <th>展示解释</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HardenInspector</td>
+              <td>34/34</td>
+              <td>1.000</td>
+              <td>1.000</td>
+              <td>1.000</td>
+              <td>多源结构化证据和项目定义 oracle 一致。</td>
+            </tr>
+            <tr>
+              <td>APKiD</td>
+              <td>34/34</td>
+              <td>1.000</td>
+              <td>0.186</td>
+              <td>0.314</td>
+              <td>擅长 packer/protector 指纹，但不覆盖本项目全部类别。</td>
+            </tr>
+            <tr>
+              <td>Androguard DEX baseline</td>
+              <td>34/34</td>
+              <td>0.808</td>
+              <td>0.488</td>
+              <td>0.609</td>
+              <td>证明 DEX 可被真实 parser 解析，但不看 Manifest、Native、资源熵。</td>
+            </tr>
+            <tr>
+              <td>ZIP Strings baseline</td>
+              <td>34/34</td>
+              <td>0.833</td>
+              <td>0.698</td>
+              <td>0.759</td>
+              <td>浅层字符串扫描能抓显式字符串，但缺少结构化上下文。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout" style="margin-top: 22px;">
+          <strong>讲分数时要诚实：</strong>
+          HardenInspector Micro F1 = 1.000 是在当前 34 个合并评分样本和四类粗标签定义下的结果，不等于覆盖所有真实 APK 或所有商业壳版本。它证明的是本项目可复现评估集上的规则一致性和证据链可复查性。
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="section alt">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>展示时怎么讲清楚</h2>
+          <p>建议按“定位、架构、样本扫描、指标、边界”五段讲。现场优先用 Web demo，浏览器不可用时用 CLI 兜底。</p>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <h3>推荐 5 到 8 分钟流程</h3>
+            <ul class="list">
+              <li>开场：说明它检测加固证据，不判恶意。</li>
+              <li>架构：APK 拆解到 Manifest、DEX、Native、资源，再进入规则引擎。</li>
+              <li>Clean baseline：展示四类 summary 为 0，证明不是见 APK 就报。</li>
+              <li>Combined showcase：逐类点 evidence，讲 location 和 value。</li>
+              <li>专项样本：演示 ADB 设置、安装来源、Java Debug API、root、Native ptrace 或 IMEI。</li>
+              <li>Benchmark：解释 34 个样本、69 个测试和四个比较对象。</li>
+              <li>收束：强调可复现、可解释和边界。</li>
+            </ul>
+          </div>
+          <div>
+            <pre><code># 启动本地展示页
+make demo-web
+
+# 浏览器打开
+http://127.0.0.1:8000/
+
+# CLI 兜底
+.venv/bin/python -m hardeninspector \
+  datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk
+
+.venv/bin/python -m hardeninspector \
+  datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk --json
+
+# 复核评分
+make benchmark
+make external-corpus</code></pre>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 34px;">你可以照着说的版本</h3>
+        <div class="card">
+          <p>
+            “HardenInspector 是我实现的 Android APK 静态加固技术检测器。它把 APK 拆成 Manifest、DEX、Native 库和资源文件，
+            从这些位置提取字符串、方法调用、opcode 分布、ELF 符号和文件熵值。然后规则引擎把这些特征映射为四类 finding：
+            加壳、代码混淆、环境检测和 Native 入口。每个 finding 都带 evidence，所以我能指出它为什么命中、证据在哪个文件、
+            值是什么。这个项目的重点不是说 APK 是不是恶意，而是给出可复现、可解释的加固技术画像。”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="qa" class="section">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>答辩速查</h2>
+          <p>这里放最可能被问到的高频问题。完整清单见 <a href="https://github.com/ForeverHYX/syssec_final/blob/main/docs/defense_qa.md">docs/defense_qa.md</a>。</p>
+        </div>
+
+        <details open>
+          <summary>Q1：HardenInspector 和恶意软件检测有什么区别？</summary>
+          <p>它不判断恶意或良性，只检测 APK 中可观测的加固、混淆、环境检测和 Native 入口证据。加固可能出现在安全防护、商业保护、插件化或恶意规避场景中，所以报告只给证据链，不直接下恶意结论。</p>
+        </details>
+        <details>
+          <summary>Q2：为什么不用 APKiD 或 Androguard 直接完成？</summary>
+          <p>课程目标是实现检测器。APKiD、Androguard 和 ZIP Strings 在本项目中是比较对象。HardenInspector 的贡献是把 Manifest、DEX、Native、资源熵值统一到一个 evidence-chain 模型里，并覆盖课程目标下的四类规则。</p>
+        </details>
+        <details>
+          <summary>Q3：Micro F1 = 1.000 会不会过拟合？</summary>
+          <p>这个分数只代表当前 34 个合并评分样本和四类粗标签定义下的结果，不代表全网 APK。防守点是：22 个合成 oracle APK 可精确计算 ground truth，12 个外部 APK 扩大解析覆盖，所有标签依据和报告都提交在仓库里可复查。</p>
+        </details>
+        <details>
+          <summary>Q4：为什么合成 APK 有意义？</summary>
+          <p>加固 ground truth 很难从真实 APK 中公开、合法、稳定地获取。合成 APK 的价值是可控植入证据，让每条规则有可计算 oracle。外部 APK 则补充真实复杂度和误报观察，两者解决的问题不同。</p>
+        </details>
+        <details>
+          <summary>Q5：Native 检测做到了什么程度？</summary>
+          <p>当前实现扫描 Native strings，并解析 ELF `.dynsym` / `.symtab`，能识别 `JNI_OnLoad`、`Java_*` JNI 导出、`ptrace`、`prctl`、`syscall`、`dlopen`、`android_dlopen_ext` 等符号。它不做 Native 反汇编和语义恢复。</p>
+        </details>
+        <details>
+          <summary>Q6：如何证明 Web demo 不是写死结果？</summary>
+          <p>Web demo 的预置样本和上传扫描都调用同一个 `scan_apk` pipeline。上传 APK 会写到本地临时目录，扫描后删除，并返回正常 JSON report。可以现场上传仓库中的任意 APK 复核。</p>
+        </details>
+        <details>
+          <summary>Q7：最大的局限是什么？</summary>
+          <p>不做完整 CFG、深度 Native 反汇编或动态 Frida 验证，不承诺商业壳签名完备覆盖。项目定位是课程级可复现静态检测框架，而不是工业级移动威胁情报平台。</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-title">
+          <h2>交付物索引</h2>
+          <p>展示前可以按这个索引快速定位材料。</p>
+        </div>
+        <table aria-label="交付物索引">
+          <thead>
+            <tr>
+              <th>内容</th>
+              <th>路径</th>
+              <th>用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>检测器源码</td>
+              <td><code>src/hardeninspector/</code></td>
+              <td>核心实现。</td>
+            </tr>
+            <tr>
+              <td>本地 Web demo</td>
+              <td><code>src/hardeninspector/demo_web.py</code>、<code>docs/demo_web.md</code></td>
+              <td>现场演示入口。</td>
+            </tr>
+            <tr>
+              <td>数据集</td>
+              <td><code>datasets/hardeninspector_eval_v1/</code></td>
+              <td>22 个合成 oracle APK、labels、reports。</td>
+            </tr>
+            <tr>
+              <td>外部 APK 语料</td>
+              <td><code>datasets/external_apk_corpus_v1/</code></td>
+              <td>DroidBench、F-Droid、PIVAA。</td>
+            </tr>
+            <tr>
+              <td>Benchmark</td>
+              <td><code>reports/benchmark/</code>、<code>docs/benchmark.md</code></td>
+              <td>四个工具的 Precision、Recall、F1 对比。</td>
+            </tr>
+            <tr>
+              <td>现场脚本</td>
+              <td><code>docs/live_demo_script.md</code></td>
+              <td>5 到 8 分钟讲解流程。</td>
+            </tr>
+            <tr>
+              <td>答辩 Q&amp;A</td>
+              <td><code>docs/defense_qa.md</code></td>
+              <td>答辩追问准备。</td>
+            </tr>
+            <tr>
+              <td>期末总结报告</td>
+              <td><code>reports/final_summary.md</code></td>
+              <td>完整书面说明。</td>
+            </tr>
+            <tr>
+              <td>Beamer 汇报稿</td>
+              <td><code>slides/final_presentation.tex</code></td>
+              <td>课堂汇报材料。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div>HardenInspector · Android APK 静态加固技术证据链检测器</div>
+      <div>
+        <a href="#what">回到顶部</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

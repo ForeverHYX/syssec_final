@@ -113,6 +113,8 @@ make demo-web
 
 ## 中文文档
 
+- [GitHub Pages 展示页](docs/index.html)
+- 浏览器访问：推送到 GitHub 后由 `.github/workflows/pages.yml` 发布 `docs/`，仓库 Pages 地址通常为 `https://foreverhyx.github.io/syssec_final/`。
 - [使用手册](docs/usage.md)
 - [架构说明](docs/architecture.md)
 - [检测规则说明](docs/rules.md)

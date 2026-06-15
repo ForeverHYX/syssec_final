@@ -88,7 +88,7 @@ python -m hardeninspector path/to/app.apk --json
 | F-Droid | 1 | 真实开源 APK |
 | PIVAA | 1 | 现成漏洞测试 APK |
 
-外部语料已补充粗粒度 `expected_categories` 和 `label_basis`，随合成数据集一起进入 33 样本合并评分；同时保留单独的覆盖率、finding 分布和普通真实 APK 误报观察。
+外部语料已补充粗粒度 `expected_categories` 和 `label_basis`，随合成数据集一起进入 34 样本合并评分；同时保留单独的覆盖率、finding 分布和普通真实 APK 误报观察。
 
 ## 3. 开源实现对比
 

@@ -108,4 +108,4 @@ datasets/hardeninspector_eval_v1/
 - 1 个 F-Droid 真实开源 APK；
 - 1 个 PIVAA 漏洞测试 APK。
 
-外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 33 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。
+外部 APK 已补充粗粒度 `expected_categories` 和 `label_basis`，随 `make benchmark` 进入 34 样本合并评分；`make external-corpus` 仍单独输出覆盖率和 finding 分布统计。详见 `docs/external_corpus.md`。

@@ -262,6 +262,7 @@
       <a href="#dataset">数据集</a>
       <a href="#benchmark">评估</a>
       <a href="#run">运行路径</a>
+      <a href="#demo-explain">Demo说明</a>
       <a href="#defense">答辩口径</a>
       <a href="#qa-full">完整Q&A</a>
     </div>
@@ -860,8 +861,77 @@ make external-corpus</code></pre>
 # 浏览器打开 http://127.0.0.1:8000/</code></pre>
       </section>
 
+      <section id="demo-explain">
+        <h2>11. 展示 Demo 到底在做什么</h2>
+        <p class="lead">
+          现场只保留一个主 Web Demo。它展示 HardenInspector 已经实现的静态扫描主流程：
+          选择预置样本或上传 APK，调用本地 <code>scan_apk</code> pipeline，并把 evidence chain、summary 和 benchmark 摘要可视化。
+        </p>
+
+        <h3>11.1 主 Web Demo：已经实现的静态扫描展示</h3>
+        <div class="grid">
+          <div class="box">
+            <h4>输入是什么</h4>
+            <p>左侧预置样本来自仓库内的合成 Oracle APK 和外部 APK 语料；上传 APK 来自浏览器选择的本地文件 bytes。</p>
+          </div>
+          <div class="box">
+            <h4>真正执行了什么</h4>
+            <p>点击扫描后，本地 Python HTTP server 调用同一个 <code>scan_apk</code> pipeline：APK ZIP、Manifest、DEX、Native、资源特征提取，然后运行静态规则。</p>
+          </div>
+          <div class="box">
+            <h4>页面展示什么</h4>
+            <p>预置样本列表、summary 计数、finding 列表、evidence 表、样本角色、上传 APK 扫描结果，以及 Benchmark 摘要里的 micro/macro 指标。</p>
+          </div>
+          <div class="box">
+            <h4>不能怎么讲</h4>
+            <p>主 Web Demo 不运行 APK，不连接模拟器，不执行 Frida。它展示的是静态 evidence chain，不是动态验证。</p>
+          </div>
+        </div>
+
+        <h3>11.2 演示时按这个顺序讲</h3>
+        <table>
+          <thead>
+            <tr><th>页面区块</th><th>它在说明什么</th><th>讲解口径</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>预置样本</td>
+              <td>展示合成 Oracle 和外部 APK 语料，说明样本不是随便挑的，而是覆盖加壳、混淆、环境探测和 Native 证据。</td>
+              <td>先选 <code>combined_hardened_showcase</code>，因为它最适合完整展示四类证据链。</td>
+            </tr>
+            <tr>
+              <td>扫描按钮</td>
+              <td>调用真实 <code>scan_apk</code>，不是读取手写截图。扫描结果来自当前仓库里的解析器、特征抽取和规则引擎。</td>
+              <td>强调这是核心交付能力：可复现、可测试、可解释。</td>
+            </tr>
+            <tr>
+              <td>证据链</td>
+              <td>每条 finding 都保留 evidence kind、value 和 location，让评委能看到“为什么报这个 finding”。</td>
+              <td>不要只讲数量，要点开证据表解释一两条典型 evidence。</td>
+            </tr>
+            <tr>
+              <td>上传 APK</td>
+              <td>可以上传本地 APK bytes，server 写入临时目录后走同一条扫描流程。</td>
+              <td>如果现场网络或外部样本不稳定，可以只用仓库里的预置样本。</td>
+            </tr>
+            <tr>
+              <td>Benchmark 摘要</td>
+              <td>展示 HardenInspector、APKiD、Androguard DEX 和 ZIP Strings 的 micro/macro Precision、Recall、F1。</td>
+              <td>说明这是小规模课程 benchmark，用于对比规则覆盖和证据质量，不是工业级恶意样本评测。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="box note">
+          <p>
+            讲解口径：这个 demo 是静态 evidence-chain 检测器的可视化入口。展示时只讲已经实现的主流程：
+            APK 解析、特征抽取、规则 finding、证据位置、上传扫描和 benchmark 摘要。不要把它说成动态分析平台。
+          </p>
+        </div>
+      </section>
+
       <section id="defense">
-        <h2>11. 答辩时的主线</h2>
+        <h2>12. 答辩时的主线</h2>
         <ol>
           <li><strong>先定位：</strong>这是静态加固证据检测器，不是恶意判定器。</li>
           <li><strong>再讲架构：</strong>APK/Manifest/DEX/Native/资源解析，归一化到 `ApkFeatures`，规则输出 `Finding`。</li>
@@ -878,7 +948,7 @@ make external-corpus</code></pre>
       </section>
 
       <section id="qa-full">
-        <h2>12. 完整答辩 Q&A</h2>
+        <h2>13. 完整答辩 Q&A</h2>
         <p class="lead">以下问题全部内置在本网页中，不需要跳转。问题覆盖项目定位、总体架构、APK/DEX/ELF 解析、规则阈值、误报漏报、数据集、benchmark、工程实现和答辩讲法。</p>
         <div class="qa-doc">
 <h2>答辩 Q&amp;A 全面清单</h2>
@@ -906,7 +976,7 @@ make external-corpus</code></pre>
 <li>构造了可复现数据集、外部 APK 语料、benchmark、Web demo、自动化测试和中文展示材料。</li>
 </ul>
 <h4>Q8：为什么这能作为课程期末展品？</h4>
-<p>因为它形成了完整闭环：检测器源码、CLI、Web demo、上传扫描、22 个合成 oracle APK、12 个外部现成 APK、四个比较对象、Precision/Recall/F1 指标、69 个自动化测试、最终报告和 Beamer 汇报稿。每条 finding 都能回溯到 APK 内的 evidence。</p>
+<p>因为它形成了完整闭环：检测器源码、CLI、Web demo、上传扫描、22 个合成 oracle APK、12 个外部现成 APK、四个比较对象、Precision/Recall/F1 指标、71 个自动化测试、最终报告和 Beamer 汇报稿。每条 finding 都能回溯到 APK 内的 evidence。</p>
 <h3>二、总体架构</h3>
 <h4>Q9：系统总体流程是什么？</h4>
 <p>总体流程是：</p>
@@ -1081,11 +1151,11 @@ make external-corpus</code></pre>
 .venv/bin/python -m hardeninspector datasets/hardeninspector_eval_v1/apks/combined_hardened_showcase.apk --json
 make benchmark</code></pre>
 <h4>Q63：Web demo 首屏应该讲什么？</h4>
-<p>先讲项目动机、证据链、数据集结构、34 个评分 APK、69 个测试和 HardenInspector Micro F1。然后展示样本列表、上传 APK、扫描结果 summary、finding evidence 和 benchmark 表。</p>
+<p>先讲项目动机、证据链、数据集结构、34 个评分 APK、71 个测试和 HardenInspector Micro F1。然后展示样本列表、上传 APK、扫描结果 summary、finding evidence 和 benchmark 表。</p>
 <h4>Q64：如何证明不是写死样本结果？</h4>
 <p>现场使用 <code>扫描上传文件</code> 上传一个 APK。该功能调用同一个 <code>scan_apk</code> pipeline，而不是读取预生成报告。可以上传 <code>combined_hardened_showcase.apk</code> 或老师指定的 APK 做 smoke test。</p>
 <h4>Q65：测试覆盖了什么？</h4>
-<p>69 个自动化测试覆盖项目环境、APK/AXML 解析、DEX 解析、Native ELF 符号解析、规则命中、CLI、dataset 构造、benchmark、Web demo 接口和最终交付材料一致性。</p>
+<p>71 个自动化测试覆盖项目环境、APK/AXML 解析、DEX 解析、Native ELF 符号解析、规则命中、CLI、dataset 构造、benchmark、Web demo 接口和最终交付材料一致性。</p>
 <h4>Q66：开箱即用环境怎么说明？</h4>
 <p>仓库提供 <code>Makefile</code>、<code>scripts/setup_env.sh</code>、<code>requirements*.txt</code> 和 <code>Dockerfile</code>。最常用命令是：</p>
 <pre><code>make setup
@@ -1254,7 +1324,7 @@ make demo-web</code></pre>
 <h3>十四、工程实现与测试追问</h3>
 <h4>Q138：测试为什么包括最终文档检查？</h4>
 <p>课程交付不只是代码，还包括 README、报告、slides、demo 文档和答辩材料。测试最终文档可以防止样本数、测试数、关键说明过期，保证展示材料和代码状态一致。</p>
-<h4>Q139：为什么测试中要检查 <code>69</code>？</h4>
+<h4>Q139：为什么测试中要检查 <code>71</code>？</h4>
 <p>这是当前自动化测试数量。文档、README、slides 中出现测试数量时需要同步更新，避免答辩材料写旧数字。</p>
 <h4>Q140：为什么 Makefile 很重要？</h4>
 <p>Makefile 把常用操作标准化：setup、test、dataset、benchmark、external-corpus、demo-web、slides。答辩现场可以用固定命令复现结果，减少手动命令错误。</p>
@@ -1296,7 +1366,7 @@ make demo-web</code></pre>
 <h4>Q158：如果老师质疑“没有真实商业壳”，怎么回答？</h4>
 <p>商业壳样本存在合法获取和分发问题。本项目用可复现 synthetic oracle 替代不可公开样本，并补充 DroidBench、F-Droid、PIVAA 外部 APK 做解析覆盖。真实商业壳覆盖是工程扩展方向，不是当前承诺。</p>
 <h4>Q159：如果老师要求现场证明可复现，先跑什么？</h4>
-<p>先跑 <code>.venv/bin/python -m pytest -q</code> 证明 69 个测试通过；再跑 <code>make benchmark</code> 证明 34 个样本和四个工具的指标可生成；最后扫一个 APK 展示 JSON evidence。</p>
+<p>先跑 <code>.venv/bin/python -m pytest -q</code> 证明 71 个测试通过；再跑 <code>make benchmark</code> 证明 34 个样本和四个工具的指标可生成；最后扫一个 APK 展示 JSON evidence。</p>
 <h4>Q160：如果最后只能留一句话，怎么说？</h4>
 <p>HardenInspector 把 Android APK 加固分析从“主观感觉像加固”变成“可复现、可定位、可解释的静态 evidence chain”。</p>
 <h3>十六、动态验证口径专项</h3>

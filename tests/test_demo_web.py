@@ -1,9 +1,9 @@
 from pathlib import Path
 from io import BytesIO
-import json
 
 import pytest
 
+import hardeninspector.demo_web as demo_web
 from hardeninspector.demo_web import (
     build_demo_catalog,
     create_handler,
@@ -113,12 +113,6 @@ def test_render_index_html_contains_demo_api_surface():
     html = render_index_html()
 
     assert "HardenInspector 本地演示" in html
-    assert "动态验证小 Demo" in html
-    assert "Frida Hook 复核示例" in html
-    assert "不接入核心 scan_apk pipeline" in html
-    assert "静态 finding → Hook 点 → Runtime observation" in html
-    assert "运行复核模拟" in html
-    assert "runtimeTimeline" in html
     assert "展品导览" in html
     assert "证据链" in html
     assert "数据集说明" in html
@@ -126,7 +120,7 @@ def test_render_index_html_contains_demo_api_surface():
     assert "外部 APK 语料" in html
     assert "HardenInspector Micro F1" in html
     assert "34 个评分 APK" in html
-    assert "69 个回归测试" in html
+    assert "71 个回归测试" in html
     assert "/assets/apk-cutaway.png" in html
     assert "/api/samples" in html
     assert "/api/scan" in html
@@ -135,6 +129,15 @@ def test_render_index_html_contains_demo_api_surface():
     assert "上传 APK" in html
     assert "扫描上传文件" in html
     assert "证据" in html
+    assert "动态验证独立页" not in html
+    assert 'href="/dynamic/"' not in html
+    assert "/dynamic/" not in html
+    assert "Runtime Review Workbench" not in html
+    assert "Frida Hook 复核示例" not in html
+    assert "不接入核心 scan_apk pipeline" not in html
+    assert "静态 finding → Hook 点 → Runtime observation" not in html
+    assert "运行复核模拟" not in html
+    assert "runtimeTimeline" not in html
     assert "Exhibit Map" not in html
     assert "Upload APK" not in html
     assert "Scan Upload" not in html
@@ -142,58 +145,64 @@ def test_render_index_html_contains_demo_api_surface():
 
 def test_static_pages_demo_is_self_contained_and_separate_from_docs_home():
     demo_html = ROOT / "docs" / "demo" / "index.html"
+    dynamic_html = ROOT / "docs" / "demo" / "dynamic.html"
     trace_json = ROOT / "docs" / "demo" / "runtime_trace_example.json"
     probe_js = ROOT / "docs" / "demo" / "runtime_probe.js"
 
     assert demo_html.exists()
-    assert trace_json.exists()
-    assert probe_js.exists()
+    assert not dynamic_html.exists()
+    assert not trace_json.exists()
+    assert not probe_js.exists()
     html = demo_html.read_text(encoding="utf-8")
-    trace = json.loads(trace_json.read_text(encoding="utf-8"))
-    probe = probe_js.read_text(encoding="utf-8")
 
     assert "HardenInspector 静态 Web Demo" in html
-    assert "动态验证小 Demo" in html
-    assert "Frida Hook 复核示例" in html
-    assert "不接入核心 scan_apk pipeline" in html
-    assert "静态 finding → Hook 点 → Runtime observation" in html
-    assert "运行复核模拟" in html
-    assert "runtimeTimeline" in html
+    assert 'href="dynamic.html"' not in html
+    assert "动态验证独立页" not in html
+    assert "Runtime Review Workbench" not in html
+    assert "Frida Hook 复核示例" not in html
+    assert "运行复核模拟" not in html
+    assert "runtimeTimeline" not in html
     assert "combined_hardened_showcase" in html
-    assert "environment.debugger_probe" in html
-    assert "System.getProperty" in html
-    assert "Debug.isDebuggerConnected" in html
-    assert "ClassLoader.loadClass" in html
-    assert "dlopen" in html
-    assert "runtime_trace_example.json" in html
-    assert "runtime_probe.js" in html
     assert "/api/scan" not in html
     assert "/api/samples" not in html
     assert "扫描上传文件" not in html
-    assert trace["scenario"] == "combined_hardened_showcase_dynamic_review"
-    assert {event["hook"] for event in trace["events"]} >= {
-        "System.getProperty",
-        "Debug.isDebuggerConnected",
-        "ClassLoader.loadClass",
-        "dlopen",
-    }
-    assert any(event["static_finding"] == "environment.debugger_probe" for event in trace["events"])
-    assert "Java.perform" in probe
-    assert "System.getProperty" in probe
-    assert "Debug.isDebuggerConnected" in probe
-    assert "ClassLoader.loadClass" in probe
-    assert "Interceptor.attach" in probe
-    assert "android_dlopen_ext" in probe
 
 
-def test_demo_asset_head_request_returns_png_headers_without_body():
+def test_demo_handler_serves_assets_and_rejects_removed_dynamic_page():
     handler_class = create_handler(ROOT)
-    request = _FakeSocket(b"HEAD /assets/apk-cutaway.png HTTP/1.1\r\nHost: local\r\n\r\n")
+    page_request = _FakeSocket(b"GET /dynamic/ HTTP/1.1\r\nHost: local\r\n\r\n")
+    trace_request = _FakeSocket(b"GET /dynamic/runtime_trace_example.json HTTP/1.1\r\nHost: local\r\n\r\n")
+    image_head_request = _FakeSocket(b"HEAD /assets/apk-cutaway.png HTTP/1.1\r\nHost: local\r\n\r\n")
 
-    handler_class(request, ("127.0.0.1", 12345), object())
-    response = request.wfile.getvalue()
+    handler_class(page_request, ("127.0.0.1", 12345), object())
+    handler_class(trace_request, ("127.0.0.1", 12345), object())
+    handler_class(image_head_request, ("127.0.0.1", 12345), object())
+    page_response = page_request.wfile.getvalue()
+    trace_response = trace_request.wfile.getvalue()
+    image_response = image_head_request.wfile.getvalue()
 
-    assert b"HTTP/1.0 200 OK" in response
-    assert b"Content-Type: image/png" in response
-    assert b"Content-Length: " in response
-    assert response.endswith(b"\r\n\r\n")
+    assert b"HTTP/1.0 404 Not Found" in page_response
+    assert b"not found" in page_response
+    assert b"HTTP/1.0 404 Not Found" in trace_response
+    assert b"Content-Type: application/json; charset=utf-8" in trace_response
+    assert b"not found" in trace_response
+    assert b"HTTP/1.0 200 OK" in image_response
+    assert b"Content-Type: image/png" in image_response
+    assert b"Content-Length: " in image_response
+    assert image_response.endswith(b"\r\n\r\n")
+
+
+def test_main_reports_port_conflict_without_traceback(monkeypatch, capsys):
+    def fake_serve(host, port, repo_root):
+        raise OSError(48, "Address already in use")
+
+    monkeypatch.setattr(demo_web, "serve", fake_serve)
+
+    result = demo_web.main(["--host", "127.0.0.1", "--port", "8000"])
+    captured = capsys.readouterr()
+
+    assert result == 1
+    assert captured.out == ""
+    assert "127.0.0.1:8000" in captured.err
+    assert "端口已被占用" in captured.err
+    assert "make demo-web PORT=8001" in captured.err

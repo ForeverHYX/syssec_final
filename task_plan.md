@@ -238,6 +238,15 @@ Status: complete
 - Regenerate benchmark and external-corpus reports; HardenInspector reaches 29/29 coverage with Micro/Macro F1 1.000.
 - Update README, benchmark/external-corpus docs, final summary, completion audit, slides, progress, and findings.
 
+### Phase 24: Dynamic validation demo realism and GitHub Pages design
+
+Status: removed after review
+
+- The standalone dynamic validation demo was prototyped and then removed after review.
+- Current demo scope is intentionally simpler: keep only the original Web demo for static scanning, upload scanning, evidence-chain display, and benchmark summary.
+- Removed the `/dynamic/` route, static dynamic page, runtime trace, probe script, and Workbench explanation from final-facing demo pages.
+- Keep the boundary honest: no claim of full dynamic analysis, no simulated bypass, and no integration of runtime evidence into core `scan_apk`.
+
 ### Phase 24: Defense package and live demo script
 
 Status: complete

@@ -122,70 +122,12 @@
     .finding-head { display: flex; justify-content: space-between; gap: 10px; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
     th, td { border-top: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
-    .runtime-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-    .runtime-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: #fbfbf9;
-      min-height: 160px;
-    }
-    .runtime-card.wide { grid-column: 1 / -1; }
-    .runtime-map { display: grid; gap: 8px; margin-top: 10px; }
-    .runtime-map-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1.2fr);
-      align-items: stretch;
-      gap: 7px;
-    }
-    .runtime-map-cell {
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #fff;
-      padding: 9px;
-      overflow-wrap: anywhere;
-    }
-    .runtime-arrow {
-      display: grid;
-      place-items: center;
+    .demo-link {
+      display: inline-flex;
+      margin-top: 8px;
       color: var(--accent);
-      font-weight: 850;
-    }
-    .artifact-list { display: grid; gap: 8px; margin-top: 10px; }
-    .artifact-list a {
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #fff;
-      color: var(--accent);
-      padding: 9px;
+      font-weight: 800;
       text-decoration: none;
-      font-weight: 750;
-      overflow-wrap: anywhere;
-    }
-    .runtime-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-    .secondary-button {
-      border: 1px solid var(--accent);
-      border-radius: 7px;
-      background: var(--accent);
-      color: #fff;
-      min-height: 42px;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-weight: 750;
-    }
-    .runtime-timeline { display: grid; gap: 8px; margin-top: 10px; }
-    .runtime-event {
-      border: 1px solid rgba(27, 107, 95, .35);
-      border-left: 4px solid var(--accent);
-      border-radius: 7px;
-      background: #fff;
-      padding: 9px;
-    }
-    .runtime-event.pending {
-      border-color: var(--line);
-      border-left-color: var(--line);
-      color: var(--muted);
-      background: #f7f9fb;
     }
     pre {
       margin: 8px 0 0;
@@ -203,9 +145,6 @@
     @media (max-width: 860px) {
       main { grid-template-columns: 1fr; }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .runtime-grid { grid-template-columns: 1fr; }
-      .runtime-map-row { grid-template-columns: 1fr; }
-      .runtime-arrow { min-height: 20px; }
     }
   </style>
 </head>
@@ -216,11 +155,6 @@
       <p class="subtitle">
         这是部署在独立路径的浏览器演示版。它使用预置扫描报告和指标数据展示 HardenInspector 的证据链，不依赖后端服务。
       </p>
-      <div class="notice">
-        <strong>动态验证小 Demo：</strong>
-        页面下方提供 Frida Hook 复核示例，用来说明中期报告中的可选动态验证层如何补充静态 finding。
-        该演示不运行 Frida、不启动模拟器，且不接入核心 scan_apk pipeline。
-      </div>
     </div>
   </header>
 
@@ -257,121 +191,6 @@
         </div>
       </div>
 
-      <div class="panel section-gap">
-        <div class="toolbar">
-          <h2>动态验证小 Demo</h2>
-          <span class="muted">Frida Hook 复核示例</span>
-        </div>
-        <div class="content">
-          <div class="runtime-grid">
-            <div class="runtime-card wide">
-              <h3>静态 finding → Hook 点 → Runtime observation</h3>
-              <p>
-                这个小 Demo 把 HardenInspector 的静态 finding 转成一组可复核的运行时观察点。
-                它不接入核心 scan_apk pipeline，也不在浏览器里真正运行 Frida；页面回放的是一份固定 trace，
-                用来说明未来可以怎样把动态复核层接到现有证据链之后。
-              </p>
-              <div class="runtime-map">
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell"><strong>environment.system_properties</strong><br><span class="muted">静态字符串包含 ro.kernel.qemu</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">System.getProperty</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">key=ro.kernel.qemu value=1</div>
-                </div>
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell"><strong>environment.debugger_probe</strong><br><span class="muted">静态方法表命中 android.os.Debug</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">Debug.isDebuggerConnected</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">value=false，说明本次运行查询了 debugger 状态</div>
-                </div>
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell"><strong>packer.dynamic_code_loading</strong><br><span class="muted">DEX 中出现 DexClassLoader/PathClassLoader</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">ClassLoader.loadClass</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">class_name=com.example.Payload</div>
-                </div>
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell"><strong>packer.native_dynamic_loader</strong><br><span class="muted">ELF 符号命中 android_dlopen_ext</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">dlopen / android_dlopen_ext</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">path=/data/data/app/libpayload.so</div>
-                </div>
-              </div>
-              <div class="badge-row">
-                <span class="badge category-environment">System.getProperty</span>
-                <span class="badge category-environment">Debug.isDebuggerConnected</span>
-                <span class="badge category-packer">ClassLoader.loadClass</span>
-                <span class="badge category-native">dlopen</span>
-              </div>
-            </div>
-            <div class="runtime-card">
-              <h3>Frida Hook 复核示例</h3>
-              <pre>Java.perform(function () {
-  const System = Java.use("java.lang.System");
-  System.getProperty.overload("java.lang.String").implementation = function (key) {
-    const value = this.getProperty(key);
-    send({ hook: "System.getProperty", key, value });
-    return value;
-  };
-
-  const Debug = Java.use("android.os.Debug");
-  Debug.isDebuggerConnected.implementation = function () {
-    const value = this.isDebuggerConnected();
-    send({ hook: "Debug.isDebuggerConnected", value });
-    return value;
-  };
-
-  const ClassLoader = Java.use("java.lang.ClassLoader");
-  ClassLoader.loadClass.overload("java.lang.String").implementation = function (name) {
-    const loaded = this.loadClass(name);
-    send({ hook: "ClassLoader.loadClass", class_name: String(name) });
-    return loaded;
-  };
-});
-
-Interceptor.attach(Module.findExportByName(null, "android_dlopen_ext"), {
-  onEnter(args) {
-    send({ hook: "dlopen", path: args[0].readCString() });
-  }
-});</pre>
-            </div>
-            <div class="runtime-card">
-              <h3>可复核资产</h3>
-              <p class="muted">
-                页面使用固定 trace 做回放，旁边的 probe 脚本只记录观察值，不绕过检查、不修改返回值、不导出 payload。
-              </p>
-              <div class="artifact-list">
-                <a href="runtime_probe.js">runtime_probe.js：可审阅的 Frida probe 原型</a>
-                <a href="runtime_trace_example.json">runtime_trace_example.json：浏览器回放用 trace</a>
-              </div>
-              <div class="runtime-actions">
-                <button class="secondary-button" id="runtimeReplayButton" type="button">运行复核模拟</button>
-              </div>
-              <div class="runtime-timeline" id="runtimeTimeline"></div>
-            </div>
-            <div class="runtime-card">
-              <h3>示例 observation log</h3>
-              <pre id="runtimeLog">[runtime-observation]
-hook=System.getProperty key=ro.kernel.qemu value=1
-hook=Debug.isDebuggerConnected value=false
-hook=ClassLoader.loadClass name=com.example.Payload
-hook=dlopen path=/data/data/app/libpayload.so</pre>
-            </div>
-            <div class="runtime-card">
-              <h3>解释口径</h3>
-              <p>
-                动态日志只能作为静态证据链的补充：它能说明某些 API 在一次运行中被触发，
-                但不能证明所有路径，也不替代静态检测器的可复现报告。
-              </p>
-              <button class="sample-button" type="button" onclick="advanceRuntimeLog()">切换一条 observation log</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
   </main>
 
@@ -484,44 +303,7 @@ hook=dlopen path=/data/data/app/libpayload.so</pre>
       ["Androguard DEX", "0.808", "0.488", "0.609"],
       ["ZIP Strings", "0.833", "0.698", "0.759"]
     ];
-    const runtimeLogs = [
-      "[runtime-observation]\\nhook=System.getProperty key=ro.kernel.qemu value=1\\nhook=Debug.isDebuggerConnected value=false\\nhook=ClassLoader.loadClass name=com.example.Payload\\nhook=dlopen path=/data/data/app/libpayload.so",
-      "[runtime-observation]\\nhook=Method.invoke owner=java.lang.reflect.Method target=com.example.Hidden.run\\nhook=ClassLoader.loadClass name=com.example.DynamicEntry\\nstatic-finding=obfuscation.reflection",
-      "[runtime-observation]\\nhook=System.getProperty key=ro.build.fingerprint value=generic/sdk/generic\\nstatic-finding=environment.system_properties"
-    ];
-    const runtimeTraceFallback = [
-      {
-        t: "00:00.114",
-        static_finding: "environment.system_properties",
-        hook: "System.getProperty",
-        observation: { key: "ro.kernel.qemu", value: "1" },
-        interpretation: "The system-property static evidence was observed at runtime in this replay."
-      },
-      {
-        t: "00:00.238",
-        static_finding: "environment.debugger_probe",
-        hook: "Debug.isDebuggerConnected",
-        observation: { value: false },
-        interpretation: "The app queried the Java debugger API; the replayed run was not debugger-attached."
-      },
-      {
-        t: "00:00.517",
-        static_finding: "packer.dynamic_code_loading",
-        hook: "ClassLoader.loadClass",
-        observation: { class_name: "com.example.Payload" },
-        interpretation: "A runtime class-loading event corresponds to the dynamic-loading static finding."
-      },
-      {
-        t: "00:00.774",
-        static_finding: "packer.native_dynamic_loader",
-        hook: "dlopen",
-        observation: { path: "/data/data/app/libpayload.so" },
-        interpretation: "A native library load corresponds to the native loader static finding."
-      }
-    ];
     let selected = samples[1];
-    let runtimeIndex = 0;
-    let runtimeTraceEvents = runtimeTraceFallback;
 
     function esc(value) {
       return String(value ?? "").replace(/[&<>"']/g, ch => ({
@@ -571,51 +353,9 @@ hook=dlopen path=/data/data/app/libpayload.so</pre>
         <tr><td>${esc(row[0])}</td><td>${esc(row[1])}</td><td>${esc(row[2])}</td><td>${esc(row[3])}</td></tr>
       `).join("");
     }
-    function advanceRuntimeLog() {
-      runtimeIndex = (runtimeIndex + 1) % runtimeLogs.length;
-      document.getElementById("runtimeLog").textContent = runtimeLogs[runtimeIndex];
-    }
-    function observationText(observation) {
-      return Object.entries(observation || {}).map(([key, value]) => `${key}=${value}`).join(" ");
-    }
-    function renderRuntimeTimeline(visibleCount = 0) {
-      const container = document.getElementById("runtimeTimeline");
-      if (!container) return;
-      container.innerHTML = runtimeTraceEvents.map((event, index) => `
-        <div class="runtime-event ${index < visibleCount ? "" : "pending"}">
-          <strong>${esc(event.t)} · ${esc(event.hook)}</strong>
-          <div class="muted">static_finding=${esc(event.static_finding)}</div>
-          <div>${esc(observationText(event.observation))}</div>
-          <div class="muted">${esc(event.interpretation)}</div>
-        </div>
-      `).join("");
-    }
-    function replayRuntimeReview() {
-      let visible = 0;
-      renderRuntimeTimeline(visible);
-      const timer = setInterval(() => {
-        visible += 1;
-        renderRuntimeTimeline(visible);
-        if (visible >= runtimeTraceEvents.length) clearInterval(timer);
-      }, 420);
-    }
-    async function loadRuntimeTrace() {
-      try {
-        const response = await fetch("runtime_trace_example.json", { cache: "no-store" });
-        if (response.ok) {
-          const trace = await response.json();
-          if (Array.isArray(trace.events) && trace.events.length) runtimeTraceEvents = trace.events;
-        }
-      } catch (_) {
-        runtimeTraceEvents = runtimeTraceFallback;
-      }
-      renderRuntimeTimeline(0);
-    }
     renderSamples();
     renderReport();
     renderMetrics();
-    document.getElementById("runtimeReplayButton").addEventListener("click", replayRuntimeReview);
-    loadRuntimeTrace();
   </script>
 </body>
 </html>

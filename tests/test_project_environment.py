@@ -28,6 +28,9 @@ def test_out_of_box_environment_files_exist_and_expose_expected_targets():
     assert "--tools hardeninspector apkid androguard_dex zip_string_baseline" in makefile
     assert "--score-external-corpus datasets/external_apk_corpus_v1" in makefile
     assert "--external-corpus datasets/external_apk_corpus_v1" in makefile
+    assert "HOST ?= 127.0.0.1" in makefile
+    assert "PORT ?= 8000" in makefile
+    assert "--host $(HOST) --port $(PORT)" in makefile
     assert "droidlysis" not in makefile
 
 

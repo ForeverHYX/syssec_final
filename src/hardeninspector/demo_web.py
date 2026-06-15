@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import errno
 import json
+import sys
 import tempfile
 from dataclasses import dataclass
 from http import HTTPStatus
@@ -289,625 +291,265 @@ def render_index_html() -> str:
       --muted: #65717f;
       --line: #cfd9e3;
       --accent: #1b6b5f;
-      --accent-2: #b7410e;
-      --accent-3: #345995;
+      --orange: #b7410e;
+      --blue: #345995;
       --warn: #9b5c00;
-      --shadow: 0 14px 30px rgba(31, 41, 51, 0.10);
+      --code: #111827;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
     header {
       border-bottom: 1px solid var(--line);
       background: #f9fbfd;
+      padding: 22px 0 18px;
     }
-    .wrap {
-      width: min(1180px, calc(100vw - 32px));
-      margin: 0 auto;
-    }
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 18px 0;
-    }
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 750;
-      letter-spacing: 0;
-    }
-    .subtitle {
-      margin: 3px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .api {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-    }
-    .api code {
-      color: var(--accent);
-      margin-left: 7px;
-      white-space: nowrap;
-    }
-    .exhibit-map {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr);
-      gap: 18px;
-      padding: 0 0 18px;
-      align-items: stretch;
-    }
-    .exhibit-copy {
-      display: grid;
-      gap: 10px;
-      align-content: start;
-    }
-    .eyebrow {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .exhibit-copy h2 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: 0;
-    }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 9px;
-    }
-    .stat-tile {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 10px;
-      min-height: 76px;
-    }
-    .stat-tile strong {
-      display: block;
-      font-size: 18px;
-    }
-    .story-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 9px;
-    }
-    .story-item {
-      border-left: 4px solid var(--accent-3);
-      background: #f8fbff;
-      padding: 9px 10px;
-      border-radius: 6px;
-      min-height: 82px;
-    }
-    .story-item strong {
-      display: block;
-      margin-bottom: 3px;
-    }
-    .cutaway {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      overflow: hidden;
-      min-height: 100%;
-    }
-    .cutaway img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      min-height: 250px;
-      object-fit: cover;
-    }
+    h1 { margin: 0; font-size: 28px; line-height: 1.15; letter-spacing: 0; }
+    h2 { margin: 0; font-size: 18px; }
+    h3 { margin: 0 0 8px; font-size: 15px; }
+    p { margin: 8px 0; }
+    button, input { font: inherit; }
+    a { color: var(--accent); font-weight: 800; text-decoration: none; }
     main {
       display: grid;
       grid-template-columns: 330px minmax(0, 1fr);
       gap: 18px;
-      padding: 18px 0 28px;
+      padding: 18px 0 34px;
     }
-    section, aside {
-      min-width: 0;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
     }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-    .sample-list {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-    }
-    .upload-box {
-      border-top: 1px solid var(--line);
-      padding: 12px;
-      display: grid;
-      gap: 8px;
-    }
-    .file-label {
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .file-input {
-      width: 100%;
-      min-width: 0;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      padding: 8px;
-      background: #fbfbf9;
-      color: var(--ink);
-    }
-    .sample-button {
-      border: 1px solid var(--line);
-      background: #fbfbf9;
-      color: var(--ink);
-      border-radius: 8px;
-      padding: 11px;
-      text-align: left;
-      cursor: pointer;
-      min-height: 78px;
-    }
-    .sample-button:hover, .sample-button.active {
-      border-color: var(--accent);
-      outline: 2px solid rgba(27, 107, 95, 0.12);
-    }
-    .sample-title {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 3px;
-    }
-    .sample-meta, .muted {
+    .subtitle { color: var(--muted); max-width: 900px; font-size: 16px; }
+    .api-list {
       color: var(--muted);
       font-size: 12px;
+      text-align: right;
+      line-height: 1.75;
+      min-width: 245px;
+    }
+    .api-list code { color: var(--accent); margin-left: 7px; white-space: nowrap; }
+    .notice {
+      margin-top: 14px;
+      border-left: 4px solid var(--accent);
+      border-radius: 7px;
+      background: #f4fbf9;
+      padding: 12px 14px;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: 0 12px 24px rgba(31, 41, 51, 0.08);
     }
     .toolbar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       gap: 12px;
-      padding: 14px 16px;
+      align-items: center;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--line);
+      background: #fbfdff;
     }
-    .toolbar h2, .metrics h2 {
-      margin: 0;
-      font-size: 17px;
-      letter-spacing: 0;
-    }
-    .scan-button {
-      border: 0;
-      border-radius: 7px;
-      background: var(--accent);
-      color: white;
-      padding: 9px 13px;
-      font-weight: 700;
-      cursor: pointer;
-      min-width: 92px;
-    }
-    .scan-button:disabled {
-      opacity: .55;
-      cursor: wait;
-    }
-    .secondary-button {
-      border: 1px solid var(--accent);
-      border-radius: 7px;
-      background: #f7fbf8;
-      color: var(--accent);
-      padding: 8px 11px;
-      font-weight: 700;
+    .content { padding: 14px; }
+    .sample-list { display: grid; gap: 8px; padding: 12px; }
+    .sample-button {
+      width: 100%;
+      min-height: 82px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfbf9;
+      color: var(--ink);
+      padding: 11px;
+      text-align: left;
       cursor: pointer;
     }
-    .secondary-button:disabled {
-      border-color: var(--line);
+    .sample-button:hover,
+    .sample-button.active {
+      border-color: var(--accent);
+      outline: 2px solid rgba(27, 107, 95, .12);
+    }
+    .sample-title { display: block; font-weight: 820; margin-bottom: 3px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .badge {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: #fafaf7;
       color: var(--muted);
-      cursor: default;
+      font-size: 12px;
     }
-    .content {
-      padding: 16px;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
-    }
+    .category-packer { color: var(--orange); border-color: rgba(183, 65, 14, .35); }
+    .category-obfuscation { color: var(--blue); border-color: rgba(52, 89, 149, .35); }
+    .category-environment { color: var(--warn); border-color: rgba(155, 92, 0, .35); }
+    .category-native { color: var(--accent); border-color: rgba(27, 107, 95, .35); }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
     .card {
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 12px;
-      min-height: 80px;
       background: #fbfbf9;
+      padding: 12px;
+      min-height: 78px;
     }
-    .card .label {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-    .card .value {
-      font-size: 25px;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-    .findings {
-      display: grid;
-      gap: 10px;
-    }
+    .card .label { color: var(--muted); font-size: 12px; }
+    .card .value { font-size: 24px; font-weight: 850; }
     .finding {
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 12px;
-      background: white;
+      background: #fff;
+      margin-top: 10px;
     }
-    .finding-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
+    .finding-head { display: flex; justify-content: space-between; gap: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+    th, td { border-top: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+    .action-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .primary-button {
+      min-height: 39px;
+      border: 1px solid var(--accent);
+      border-radius: 7px;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 13px;
+      cursor: pointer;
+      font-weight: 760;
     }
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      padding: 2px 7px;
-      color: var(--muted);
-      background: #fafaf7;
-      font-size: 12px;
-    }
-    .category-packer { color: var(--accent-2); border-color: rgba(183, 65, 14, .35); }
-    .category-obfuscation { color: var(--accent-3); border-color: rgba(52, 89, 149, .35); }
-    .category-environment { color: var(--warn); border-color: rgba(155, 92, 0, .35); }
-    .category-native { color: var(--accent); border-color: rgba(27, 107, 95, .35); }
-    .evidence {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 12px;
-    }
-    .evidence th, .evidence td {
-      border-top: 1px solid var(--line);
-      padding: 7px 6px;
-      text-align: left;
-      vertical-align: top;
-      overflow-wrap: anywhere;
-    }
-    .metrics {
-      margin-top: 18px;
-      overflow: hidden;
-    }
-    .runtime-demo {
-      margin-top: 18px;
-      overflow: hidden;
-    }
-    .runtime-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 12px;
-    }
-    .runtime-card {
+    .primary-button:disabled { opacity: .58; cursor: not-allowed; }
+    .upload-panel {
+      margin-top: 12px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fbfbf9;
       padding: 12px;
-      min-height: 160px;
     }
-    .runtime-card h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-    }
-    .runtime-card pre {
-      margin: 8px 0 0;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      border-radius: 7px;
-      background: #1f2933;
-      color: #f7fbff;
-      padding: 10px;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    .runtime-step {
-      border-left: 4px solid var(--accent);
-      background: #f6fbfa;
-      border-radius: 6px;
-      padding: 8px 10px;
-      margin-top: 8px;
-    }
-    .runtime-map {
+    .story-grid {
       display: grid;
-      gap: 8px;
-      margin-top: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
-    .runtime-map-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr) 34px minmax(0, 1fr);
-      gap: 6px;
-      align-items: center;
-      font-size: 12px;
-    }
-    .runtime-map-cell {
+    .story-item {
       border: 1px solid var(--line);
-      border-radius: 7px;
+      border-radius: 8px;
       background: #fff;
-      padding: 7px;
-      min-height: 42px;
-      overflow-wrap: anywhere;
+      padding: 11px;
+      min-height: 86px;
     }
-    .runtime-arrow {
-      text-align: center;
-      color: var(--accent);
-      font-weight: 800;
-    }
-    .runtime-timeline {
-      display: grid;
-      gap: 8px;
-      margin-top: 8px;
-    }
-    .runtime-event {
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent-3);
-      border-radius: 7px;
-      background: #fff;
-      padding: 8px 10px;
-    }
-    .runtime-event.pending {
-      opacity: .42;
-    }
-    .runtime-event strong {
-      display: block;
-      margin-bottom: 3px;
-    }
-    .metrics .content {
-      overflow-x: auto;
-    }
-    .metric-table {
+    .cutaway {
       width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-    }
-    .metric-table th, .metric-table td {
-      border-bottom: 1px solid var(--line);
-      padding: 8px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-    .metric-table th:first-child,
-    .metric-table th:nth-child(2),
-    .metric-table td:first-child,
-    .metric-table td:nth-child(2) {
-      text-align: left;
+      max-height: 220px;
+      object-fit: contain;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      margin-top: 10px;
     }
     .empty {
       border: 1px dashed var(--line);
       border-radius: 8px;
-      padding: 22px;
-      color: var(--muted);
-      text-align: center;
       background: #fbfbf9;
+      color: var(--muted);
+      padding: 16px;
     }
-    @media (max-width: 840px) {
-      .topbar { align-items: flex-start; flex-direction: column; }
-      .api { text-align: left; }
-      .exhibit-map { grid-template-columns: 1fr; }
-      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .story-grid { grid-template-columns: 1fr; }
-      main { grid-template-columns: 1fr; }
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .runtime-grid { grid-template-columns: 1fr; }
+    .section-gap { margin-top: 18px; }
+    @media (max-width: 900px) {
+      .topbar, main { grid-template-columns: 1fr; }
+      .topbar { display: block; }
+      .api-list { text-align: left; margin-top: 12px; }
+      .cards, .story-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .cards, .story-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="wrap topbar">
-      <div>
-        <h1>HardenInspector 本地演示</h1>
-        <p class="subtitle">用于课堂展示的 Android 加固证据静态分析页面。</p>
-      </div>
-      <div class="api">
-        接口 <code>/api/samples</code><code>/api/scan?id=...</code><code>/api/scan-upload</code><code>/api/metrics</code>
-      </div>
-    </div>
-    <div class="wrap exhibit-map">
-      <div class="exhibit-copy">
+    <div class="wrap">
+      <div class="topbar">
         <div>
-          <div class="eyebrow">展品导览</div>
-          <h2>为什么做这个检测器、读取哪些证据、测试集如何支撑结论。</h2>
+          <h1>HardenInspector 本地演示</h1>
+          <p class="subtitle">
+            这是现场展示用的主 Web Demo：选择预置 APK 或上传 APK，调用本地 scan_apk 管线生成证据链和指标摘要。
+          </p>
         </div>
-        <div class="stat-grid">
-          <div class="stat-tile"><strong>34</strong><span class="muted">34 个评分 APK</span></div>
-          <div class="stat-tile"><strong>22 + 12</strong><span class="muted">合成 Oracle + 外部 APK 语料</span></div>
-          <div class="stat-tile"><strong>1.000</strong><span class="muted">HardenInspector Micro F1</span></div>
-          <div class="stat-tile"><strong>69</strong><span class="muted">69 个回归测试</span></div>
+        <div class="api-list">
+          Demo API
+          <div><code>/api/samples</code><code>/api/scan</code></div>
+          <div><code>/api/scan-upload</code><code>/api/metrics</code></div>
         </div>
-        <div class="story-grid">
-          <div class="story-item">
-            <strong>证据链</strong>
-            <span class="muted">Manifest、DEX、Native 符号、资源和熵值汇总为可解释 finding。</span>
-          </div>
-          <div class="story-item">
-            <strong>数据集说明</strong>
-            <span class="muted">合成样本提供精确标签；公开 APK 暴露解析和误报风险。</span>
-          </div>
-          <div class="story-item">
-            <strong>现场演示流程</strong>
-            <span class="muted">干净基线、综合加固、专项信号、上传扫描，再看 benchmark 对比。</span>
-          </div>
-        </div>
-      </div>
-      <div class="cutaway">
-        <img src="/assets/apk-cutaway.png" alt="展示证据来源的 APK 静态分析拆解图">
       </div>
     </div>
   </header>
+
   <main class="wrap">
     <aside class="panel">
       <div class="toolbar">
-        <h2>样本</h2>
+        <h2>展品导览</h2>
         <span class="muted" id="sampleCount">加载中</span>
       </div>
       <div class="sample-list" id="sampleList"></div>
-      <div class="upload-box">
-        <label class="file-label" for="uploadFile">上传 APK</label>
-        <input class="file-input" id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
-        <button class="secondary-button" id="uploadButton" disabled>扫描上传文件</button>
-        <div class="muted" id="uploadMeta">未选择文件</div>
-      </div>
     </aside>
+
     <section>
       <div class="panel">
         <div class="toolbar">
           <div>
-            <h2 id="selectedTitle">选择一个样本</h2>
-            <div class="muted" id="selectedMeta">APK 扫描结果会显示在这里。</div>
+            <h2 id="selectedTitle">证据链</h2>
+            <div class="muted" id="selectedMeta">选择样本后点击扫描</div>
           </div>
-          <button class="scan-button" id="scanButton" disabled>扫描</button>
-        </div>
-        <div class="content" id="scanContent">
-          <div class="empty">从左侧选择样本，然后点击扫描。</div>
-        </div>
-      </div>
-      <div class="panel metrics">
-        <div class="toolbar">
-          <h2>Benchmark 对比</h2>
-          <span class="muted">来自 reports/benchmark 的 micro/macro 和类别指标</span>
-        </div>
-        <div class="content" id="metricsContent">
-          <div class="empty">正在加载指标。</div>
-        </div>
-      </div>
-      <div class="panel runtime-demo">
-        <div class="toolbar">
-          <h2>动态验证小 Demo</h2>
-          <span class="muted">Frida Hook 复核示例，不接入核心 scan_apk pipeline</span>
+          <button class="primary-button" id="scanButton" type="button" disabled>扫描</button>
         </div>
         <div class="content">
-          <div class="runtime-grid">
-            <div class="runtime-card">
-              <h3>静态 finding 如何被复核</h3>
-              <p class="muted">
-                这里演示中期报告里的可选动态验证层：当静态报告命中
-                <strong>environment.debugger_probe</strong>、<strong>packer.dynamic_code_loading</strong>
-                或 Native loader 符号时，可以用 Hook 日志做人工复核。
-              </p>
-              <div class="runtime-step">
-                这个小 Demo 只展示复核思路和示例 observation，不运行 Frida、不启动模拟器，也不改变 scan_apk 静态主流程。
-              </div>
+          <div class="story-grid">
+            <div class="story-item">
+              <strong>数据集说明</strong>
+              <p class="muted">合成 Oracle 用来验证规则覆盖；外部 APK 语料用来展示真实解析路径。</p>
             </div>
-            <div class="runtime-card">
-              <h3>静态 finding → Hook 点 → Runtime observation</h3>
-              <div class="runtime-map">
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell">environment.system_properties<br><span class="muted">ro.kernel.qemu</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">System.getProperty</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">key=ro.kernel.qemu value=1</div>
-                </div>
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell">environment.debugger_probe<br><span class="muted">android.os.Debug</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">Debug.isDebuggerConnected</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">value=false</div>
-                </div>
-                <div class="runtime-map-row">
-                  <div class="runtime-map-cell">packer.dynamic_code_loading<br><span class="muted">DexClassLoader</span></div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">ClassLoader.loadClass</div>
-                  <div class="runtime-arrow">→</div>
-                  <div class="runtime-map-cell">name=com.example.Payload</div>
-                </div>
-              </div>
+            <div class="story-item">
+              <strong>HardenInspector Micro F1</strong>
+              <p class="muted">34 个评分 APK 上的 micro/macro 指标来自 reports/benchmark。</p>
             </div>
-            <div class="runtime-card">
-              <h3>Frida Hook 复核示例</h3>
-              <pre>Java.perform(function () {
-  const System = Java.use("java.lang.System");
-  System.getProperty.overload("java.lang.String").implementation = function (key) {
-    const value = this.getProperty(key);
-    send({ hook: "System.getProperty", key, value });
-    return value;
-  };
-
-  const Debug = Java.use("android.os.Debug");
-  Debug.isDebuggerConnected.implementation = function () {
-    const value = this.isDebuggerConnected();
-    send({ hook: "Debug.isDebuggerConnected", value });
-    return value;
-  };
-});</pre>
+            <div class="story-item">
+              <strong>71 个回归测试</strong>
+              <p class="muted">覆盖样本生成、规则、CLI、Web Demo 和最终交付材料一致性。</p>
             </div>
-            <div class="runtime-card">
-              <h3>可观测 Hook 点</h3>
-              <span class="badge-row">
-                <span class="badge category-environment">System.getProperty</span>
-                <span class="badge category-environment">Debug.isDebuggerConnected</span>
-                <span class="badge category-packer">ClassLoader.loadClass</span>
-                <span class="badge category-packer">Method.invoke</span>
-                <span class="badge category-native">dlopen</span>
-                <span class="badge category-native">android_dlopen_ext</span>
-              </span>
-              <p class="muted">
-                这些 Hook 点对应当前静态规则中的 system property、Java Debug API、动态加载、反射和 Native loader 证据。
-              </p>
-            </div>
-            <div class="runtime-card">
-              <h3>示例 runtime observation</h3>
-              <button class="secondary-button" id="runtimeReplayButton" type="button">运行复核模拟</button>
-              <div class="runtime-timeline" id="runtimeTimeline"></div>
+          </div>
+          <img class="cutaway" src="/assets/apk-cutaway.png" alt="APK static analysis cutaway">
+          <div id="scanContent" class="section-gap empty">等待选择样本。</div>
+          <div class="upload-panel">
+            <h3>上传 APK</h3>
+            <div class="action-row">
+              <input id="uploadFile" type="file" accept=".apk,application/vnd.android.package-archive">
+              <button class="primary-button" id="uploadButton" type="button" disabled>扫描上传文件</button>
+              <span class="muted" id="uploadMeta">未选择文件</span>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="panel section-gap">
+        <div class="toolbar">
+          <h2>Benchmark 摘要</h2>
+          <span class="muted">34 个评分 APK</span>
+        </div>
+        <div class="content" id="metricsContent"></div>
       </div>
     </section>
   </main>
+
   <script>
     const state = { samples: [], selected: null, scanning: false, uploadFile: null };
-    const runtimeReviewEvents = [
-      {
-        t: "00:00.114",
-        staticFinding: "environment.system_properties",
-        hook: "System.getProperty",
-        observation: "key=ro.kernel.qemu value=1",
-        meaning: "静态 system property 字符串在运行时被读取，可作为模拟器探测复核证据。"
-      },
-      {
-        t: "00:00.238",
-        staticFinding: "environment.debugger_probe",
-        hook: "Debug.isDebuggerConnected",
-        observation: "value=false",
-        meaning: "应用调用了 Java Debug API；本次运行未连接调试器。"
-      },
-      {
-        t: "00:00.517",
-        staticFinding: "packer.dynamic_code_loading",
-        hook: "ClassLoader.loadClass",
-        observation: "name=com.example.Payload",
-        meaning: "动态加载相关静态 finding 可通过类加载日志复核。"
-      },
-      {
-        t: "00:00.774",
-        staticFinding: "packer.native_dynamic_loader",
-        hook: "dlopen",
-        observation: "path=/data/data/app/libpayload.so",
-        meaning: "Native loader 符号对应运行时库加载 observation。"
-      }
-    ];
     const categories = ["packer", "obfuscation", "environment", "native"];
     const categoryLabels = {
       packer: "加壳",
@@ -926,23 +568,21 @@ def render_index_html() -> str:
         "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
       }[ch]));
     }
-
     function categoryLabel(value) {
       return categoryLabels[value] || value;
     }
-
     function renderSamples() {
       const container = document.getElementById("sampleList");
       document.getElementById("sampleCount").textContent = `${state.samples.length} 个 APK`;
       container.innerHTML = state.samples.map(sample => `
         <button class="sample-button ${state.selected?.id === sample.id ? "active" : ""}" data-id="${escapeHtml(sample.id)}">
           <span class="sample-title">${escapeHtml(sample.title)}</span>
-          <span class="sample-meta">${escapeHtml(sample.dataset_kind)} · ${escapeHtml(sample.showcase_role)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
-          <span class="sample-meta" style="display:block;margin-top:5px;">${escapeHtml(sample.description)}</span>
+          <span class="muted">${escapeHtml(sample.dataset_kind)} · ${escapeHtml(sample.showcase_role)} · ${(sample.size_bytes / 1024).toFixed(1)} KB</span>
+          <span class="muted" style="display:block;margin-top:5px;">${escapeHtml(sample.description)}</span>
           <span class="badge-row">
             ${(sample.expected_categories && sample.expected_categories.length ? sample.expected_categories : ["clean"]).map(category => `
-                <span class="badge category-${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</span>
-              `).join("")}
+              <span class="badge category-${escapeHtml(category)}">${escapeHtml(categoryLabel(category))}</span>
+            `).join("")}
           </span>
         </button>
       `).join("");
@@ -950,20 +590,18 @@ def render_index_html() -> str:
         button.addEventListener("click", () => selectSample(button.dataset.id));
       });
     }
-
     function selectSample(id) {
-      state.selected = state.samples.find(sample => sample.id === id);
+      state.selected = state.samples.find(sample => sample.id === id) || null;
       document.getElementById("scanButton").disabled = !state.selected;
+      if (!state.selected) return;
       document.getElementById("selectedTitle").textContent = state.selected.title;
       document.getElementById("selectedMeta").textContent = `${state.selected.dataset_kind} · ${state.selected.showcase_role} · ${state.selected.relative_path}`;
-      document.getElementById("scanContent").innerHTML = `
-        <div class="empty">已选择 ${escapeHtml(state.selected.title)}，可以开始扫描。</div>
-      `;
+      document.getElementById("scanContent").className = "section-gap empty";
+      document.getElementById("scanContent").innerHTML = `已选择 ${escapeHtml(state.selected.title)}，可以开始扫描。`;
       renderSamples();
     }
-
     function renderReport(result) {
-      const report = result.report;
+      const report = result.report || {};
       const summary = report.summary || {};
       const cards = categories.map(category => `
         <div class="card">
@@ -971,67 +609,52 @@ def render_index_html() -> str:
           <div class="value">${summary[category] || 0}</div>
         </div>
       `).join("");
-
-      const findings = report.findings || [];
-      const findingHtml = findings.length ? findings.map(finding => `
+      const findings = (report.findings || []).length ? report.findings.map(finding => `
         <article class="finding">
           <div class="finding-head">
             <strong>${escapeHtml(finding.title)}</strong>
             <span class="badge category-${escapeHtml(finding.category)}">${escapeHtml(categoryLabel(finding.category))}</span>
           </div>
           <div class="muted">${escapeHtml(finding.id)} · 严重度 ${escapeHtml(severityLabels[finding.severity] || finding.severity)} · 置信度 ${escapeHtml(confidenceLabels[finding.confidence] || finding.confidence)}</div>
-          <div class="badge-row">
-            ${(finding.evidence || []).slice(0, 8).map(item => `
-              <span class="badge">${escapeHtml(item.kind)}</span>
-            `).join("")}
-          </div>
-          <table class="evidence">
+          <table>
             <thead><tr><th>证据</th><th>取值</th><th>位置</th></tr></thead>
             <tbody>
               ${(finding.evidence || []).slice(0, 8).map(item => `
-                <tr>
-                  <td>${escapeHtml(item.kind)}</td>
-                  <td>${escapeHtml(item.value)}</td>
-                  <td>${escapeHtml(item.location)}</td>
-                </tr>
+                <tr><td>${escapeHtml(item.kind)}</td><td>${escapeHtml(item.value)}</td><td>${escapeHtml(item.location)}</td></tr>
               `).join("")}
             </tbody>
           </table>
         </article>
       `).join("") : `<div class="empty">该样本未命中加固或反分析证据。</div>`;
-
+      document.getElementById("scanContent").className = "section-gap";
       document.getElementById("scanContent").innerHTML = `
         <div class="cards">${cards}</div>
-        <div class="story-item" style="margin-bottom:12px;">
-          <strong>${escapeHtml(result.sample.dataset_kind)} · ${escapeHtml(result.sample.showcase_role)}</strong>
-          <span class="muted">${escapeHtml(result.sample.description)}</span>
-        </div>
-        <div class="muted">SHA-256: ${escapeHtml(report.apk.sha256)} · ZIP entries: ${report.apk.entry_count}</div>
-        <div class="findings" style="margin-top:14px;">${findingHtml}</div>
+        <p>${escapeHtml(result.sample?.description || "")}</p>
+        <div class="muted">SHA-256: ${escapeHtml(report.apk?.sha256 || "")} · ZIP entries: ${escapeHtml(report.apk?.entry_count || "")}</div>
+        ${findings}
       `;
     }
-
     async function scanSelected() {
       if (!state.selected || state.scanning) return;
       state.scanning = true;
       const button = document.getElementById("scanButton");
       button.disabled = true;
       button.textContent = "扫描中";
-      document.getElementById("scanContent").innerHTML = `<div class="empty">正在扫描 APK 并提取证据。</div>`;
+      document.getElementById("scanContent").className = "section-gap empty";
+      document.getElementById("scanContent").innerHTML = "正在扫描 APK 并提取证据。";
       try {
         const response = await fetch(`/api/scan?id=${encodeURIComponent(state.selected.id)}`);
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || "扫描失败");
         renderReport(result);
       } catch (error) {
-        document.getElementById("scanContent").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+        document.getElementById("scanContent").innerHTML = escapeHtml(error.message);
       } finally {
         state.scanning = false;
         button.disabled = false;
         button.textContent = "扫描";
       }
     }
-
     async function scanUpload() {
       if (!state.uploadFile || state.scanning) return;
       state.scanning = true;
@@ -1040,7 +663,8 @@ def render_index_html() -> str:
       button.textContent = "扫描中";
       document.getElementById("selectedTitle").textContent = state.uploadFile.name;
       document.getElementById("selectedMeta").textContent = `本地上传 APK · ${(state.uploadFile.size / 1024).toFixed(1)} KB`;
-      document.getElementById("scanContent").innerHTML = `<div class="empty">正在扫描上传的 APK。</div>`;
+      document.getElementById("scanContent").className = "section-gap empty";
+      document.getElementById("scanContent").innerHTML = "正在扫描上传的 APK。";
       try {
         const response = await fetch(`/api/scan-upload?filename=${encodeURIComponent(state.uploadFile.name)}`, {
           method: "POST",
@@ -1051,69 +675,44 @@ def render_index_html() -> str:
         if (!response.ok) throw new Error(result.error || "上传扫描失败");
         renderReport(result);
       } catch (error) {
-        document.getElementById("scanContent").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+        document.getElementById("scanContent").innerHTML = escapeHtml(error.message);
       } finally {
         state.scanning = false;
         button.disabled = false;
         button.textContent = "扫描上传文件";
       }
     }
-
     function renderMetrics(metrics) {
       const rows = (metrics.rows || []).filter(row => row.category === "micro" || row.category === "macro");
-      const body = rows.map(row => `
-        <tr>
-          <td>${escapeHtml(row.tool)}</td>
-          <td>${escapeHtml(categoryLabel(row.category))}</td>
-          <td>${Number(row.precision ?? 0).toFixed(3)}</td>
-          <td>${Number(row.recall ?? 0).toFixed(3)}</td>
-          <td>${Number(row.f1 ?? 0).toFixed(3)}</td>
-        </tr>
-      `).join("");
       document.getElementById("metricsContent").innerHTML = `
-        <table class="metric-table">
+        <table>
           <thead><tr><th>工具</th><th>行</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
-          <tbody>${body}</tbody>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                <td>${escapeHtml(row.tool)}</td>
+                <td>${escapeHtml(categoryLabel(row.category))}</td>
+                <td>${Number(row.precision ?? 0).toFixed(3)}</td>
+                <td>${Number(row.recall ?? 0).toFixed(3)}</td>
+                <td>${Number(row.f1 ?? 0).toFixed(3)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
         </table>
       `;
     }
-
-    function renderRuntimeTimeline(visibleCount = runtimeReviewEvents.length) {
-      const container = document.getElementById("runtimeTimeline");
-      container.innerHTML = runtimeReviewEvents.map((event, index) => `
-        <div class="runtime-event ${index >= visibleCount ? "pending" : ""}">
-          <strong>${escapeHtml(event.t)} · ${escapeHtml(event.hook)}</strong>
-          <div class="muted">静态 finding: ${escapeHtml(event.staticFinding)}</div>
-          <div>${escapeHtml(event.observation)}</div>
-          <div class="muted">${escapeHtml(event.meaning)}</div>
-        </div>
-      `).join("");
-    }
-
-    function replayRuntimeReview() {
-      let visible = 0;
-      renderRuntimeTimeline(visible);
-      const timer = setInterval(() => {
-        visible += 1;
-        renderRuntimeTimeline(visible);
-        if (visible >= runtimeReviewEvents.length) clearInterval(timer);
-      }, 450);
-    }
-
     async function init() {
       const [samplesResponse, metricsResponse] = await Promise.all([
         fetch("/api/samples"),
         fetch("/api/metrics")
       ]);
-      const samplesPayload = await samplesResponse.json();
-      state.samples = samplesPayload.samples || [];
+      const samplePayload = await samplesResponse.json();
+      state.samples = samplePayload.samples || [];
       renderSamples();
       if (state.samples.length) selectSample(state.samples[0].id);
       renderMetrics(await metricsResponse.json());
     }
-
     document.getElementById("scanButton").addEventListener("click", scanSelected);
-    document.getElementById("runtimeReplayButton").addEventListener("click", replayRuntimeReview);
     document.getElementById("uploadFile").addEventListener("change", event => {
       state.uploadFile = event.target.files?.[0] || null;
       document.getElementById("uploadButton").disabled = !state.uploadFile;
@@ -1125,12 +724,10 @@ def render_index_html() -> str:
     init().catch(error => {
       document.getElementById("sampleList").innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
     });
-    renderRuntimeTimeline(0);
   </script>
 </body>
 </html>
 """
-
 
 def create_handler(repo_root: str | Path = DEFAULT_REPO_ROOT) -> type[BaseHTTPRequestHandler]:
     root = Path(repo_root)
@@ -1263,7 +860,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repo-root", type=Path, default=DEFAULT_REPO_ROOT, help="Repository root for samples/reports")
     args = parser.parse_args(argv)
 
-    server = serve(args.host, args.port, args.repo_root)
+    try:
+        server = serve(args.host, args.port, args.repo_root)
+    except OSError as exc:
+        if exc.errno != errno.EADDRINUSE:
+            raise
+        print(f"错误：{args.host}:{args.port} 端口已被占用。", file=sys.stderr)
+        print("请关闭占用该端口的进程，或改用其他端口：make demo-web PORT=8001", file=sys.stderr)
+        return 1
+
     print(f"HardenInspector 本地演示: http://{args.host}:{args.port}/")
     try:
         server.serve_forever()

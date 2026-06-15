@@ -259,6 +259,18 @@
 
 ## 2026-05-28 ADB Developer Settings Environment Detection
 
+## 2026-06-15 Dynamic Validation Workbench
+
+- User selected visual direction A: `Runtime Review Workbench`.
+- Recorded the realism gap: the dynamic page needs a hook plan, session metadata, collection command, runtime observation schema, coverage, verdict, and honest scope boundaries.
+- Added RED tests requiring the local `/dynamic/` page, static `docs/demo/dynamic.html`, `runtime_trace_example.json`, and GitHub Pages `docs/index.html` to explain the workbench structure. The focused test run failed as expected on missing `Runtime Review Workbench` and `展示 Demo 到底在做什么` content.
+- Implemented the Workbench version of `docs/demo/dynamic.html`, enriched `runtime_trace_example.json` with `session`, `hook_plan`, `review`, and event metadata, updated `runtime_probe.js` to show read-only event emission, and made the local route reuse the static page with local link replacements.
+- Added a `docs/index.html` section named `展示 Demo 到底在做什么` so the GitHub Pages entry explains the main scan demo and dynamic workbench blocks in a self-review-friendly way.
+- Focused verification passed: `.venv/bin/python -m pytest tests/test_demo_web.py tests/test_final_artifacts.py` reported 18 passed.
+- Repaired the local Web renderer after the old embedded dynamic HTML cleanup removed `render_index_html()`. The main local page now stays focused on `/api/samples`, `/api/scan`, `/api/scan-upload`, and `/api/metrics`, while `/dynamic/` loads the standalone Workbench page.
+- Final verification passed: `.venv/bin/python -m pytest -q` reported 71 passed, `git diff --check` was clean, curl smoke checks passed on `http://127.0.0.1:8012/`, and browser interaction confirmed both the main scan flow and the dynamic replay button render real trace events.
+- User decided the dynamic demo should be removed. Updated tests to require no dynamic page/resources, removed the `/dynamic/` route, deleted the static dynamic page plus runtime trace/probe files, and rewrote demo-facing docs so only the original Web demo remains.
+
 - Started Phase 31 to add a common Android environment-analysis signal: apps reading ADB/developer-options settings through `android.provider.Settings`.
 - TDD RED: added detector coverage requiring Android Settings API evidence plus ADB/developer-settings keys, and negative coverage proving bare `adb` strings do not trigger the rule.
 - TDD GREEN: implemented `environment.adb_settings_probe`, added `adb_developer_settings_probe.apk`, added Web demo catalog metadata, and extended shallow benchmark keywords for ADB/developer-settings evidence.

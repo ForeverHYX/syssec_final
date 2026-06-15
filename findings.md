@@ -227,3 +227,23 @@ The Web demo, README, environment/demo docs, completion audit, final deliverable
 The live Web demo is now ready for a Chinese classroom walkthrough. The page chrome, first-screen exhibit labels, sample names, sample roles, upload controls, scan states, result table headings, category display labels, and uploaded APK metadata are Chinese while the underlying API routes and detector finding IDs remain stable for scripts and tests.
 
 The localization guard matters because the demo is the highest-visibility artifact in the presentation. The tests now require Chinese UI labels and explicitly reject the old English exhibit/upload labels in the rendered page, reducing the chance that future edits accidentally revert the demo to mixed-language controls.
+
+## Dynamic Validation Demo Realism Review
+
+The standalone dynamic page currently explains the idea, but it still looks like a toy because it only shows a static finding-to-hook mapping, a short Frida snippet, and a fixed replay button. It lacks the artifacts that make a runtime-review prototype credible to evaluators:
+
+- a hook plan generated from concrete static findings;
+- device/session metadata such as package name, process, spawn/attach mode, Android API, Frida version, and timestamp;
+- a collection command that a reviewer could run outside the browser;
+- a trace schema with event IDs, thread/process context, arguments, return values, source finding IDs, and reviewer verdicts;
+- a distinction between observed, not observed, and out-of-scope hooks;
+- explicit failure modes: no emulator attached, app path not triggered, anti-Frida interference, or trace incomplete;
+- a final review panel saying what the runtime evidence confirms and what it cannot prove.
+
+The right direction is to present this as a "runtime review workbench" prototype: deterministic replay for the classroom, but shaped like real dynamic validation output. It must avoid claiming that HardenInspector now runs dynamic analysis by default.
+
+## Dynamic Validation Demo Removal
+
+After reviewing the Workbench prototype, the simpler presentation choice is to remove the standalone dynamic demo and keep only the original Web demo. This avoids splitting audience attention between the implemented static scanner and an illustrative runtime-review replay.
+
+The current demo surface should focus on the implemented path: curated samples, optional uploaded APK scanning, evidence-chain findings, and benchmark metrics. Dynamic validation remains a scope/defense topic, not a demo page or API route.

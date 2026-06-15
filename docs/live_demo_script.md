@@ -28,7 +28,7 @@ http://127.0.0.1:8000/
 
 先展示中文页面结构：
 
-- 顶部 `展品导览`：说明项目动机、证据链、数据集结构、34 个评分 APK、69 个测试和 HardenInspector Micro F1；
+- 顶部 `展品导览`：说明项目动机、证据链、数据集结构、34 个评分 APK、71 个测试和 HardenInspector Micro F1；
 - 左侧 `样本` 列表；
 - `上传 APK` 和 `扫描上传文件`；
 - 右侧 summary、finding、证据表；
@@ -116,4 +116,4 @@ make external-corpus
 
 最后一句：
 
-> 这个项目的核心价值是可复现的静态 evidence chain：每条结论都能回到 APK 里的 Manifest、DEX、Native 或资源证据，并且通过 22 个合成 oracle APK、12 个外部现成 APK 和 69 个自动化测试持续验证。
+> 这个项目的核心价值是可复现的静态 evidence chain：每条结论都能回到 APK 里的 Manifest、DEX、Native 或资源证据，并且通过 22 个合成 oracle APK、12 个外部现成 APK 和 71 个自动化测试持续验证。

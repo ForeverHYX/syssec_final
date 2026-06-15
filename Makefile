@@ -4,6 +4,8 @@ PYTHON ?= python3
 VENV ?= .venv
 PIP := $(VENV)/bin/python -m pip
 PY := $(VENV)/bin/python
+HOST ?= 127.0.0.1
+PORT ?= 8000
 
 setup:
 	$(PYTHON) -m venv $(VENV)
@@ -27,7 +29,7 @@ demo:
 	$(PY) -m hardeninspector samples/demo_hardened.apk
 
 demo-web:
-	$(PY) -m hardeninspector.demo_web --host 127.0.0.1 --port 8000
+	$(PY) -m hardeninspector.demo_web --host $(HOST) --port $(PORT)
 
 slides:
 	cd slides && xelatex -interaction=nonstopmode -halt-on-error final_presentation.tex

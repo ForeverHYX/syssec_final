@@ -43,13 +43,13 @@ make slides
 
 | 项目 | 结果 |
 | --- | --- |
-| 自动化测试 | `69 passed` |
+| 自动化测试 | `71 passed` |
 | 合并评分数据集 | 22 个 synthetic APK + 12 个外部 APK，四个默认评分工具均为 34/34 coverage |
 | Combined benchmark Micro F1 | HardenInspector 1.000；APKiD 0.314；Androguard DEX 0.609；ZIP Strings 0.759 |
 | 外部现成 APK 语料 | 已纳入评分；单独统计中四个工具仍为 12/12 coverage |
 | 外部语料 HardenInspector 分布 | Any 10/12；packer=4；obfuscation=2；environment=5；native=3；F-Droid 样本无 finding |
 | Slides | ZJU Beamer 可通过 `make slides` 编译为 22 页，PDF/aux/log 等构建产物已忽略 |
-| Web Demo | 中文首屏展示展品导览、证据链、数据集说明、34 个评分 APK、69 个测试和上传扫描 |
+| Web Demo | 中文首屏展示展品导览、证据链、数据集说明、34 个评分 APK、71 个测试和上传扫描 |
 
 ## 使用
 
@@ -59,7 +59,7 @@ make slides
 make demo-web
 ```
 
-浏览器访问 `http://127.0.0.1:8000/`。页面首屏先用中文展示项目动机、证据链、合成 Oracle + 外部 APK 语料的数据集结构、34 个评分 APK、69 个回归测试和 HardenInspector Micro F1。随后可以选择干净基线、综合加固样本、ADB 与开发者设置、安装来源、Java Debug API、签名完整性、Root 痕迹、Native/IMEI 专项样本和外部 APK，也可以上传本地 APK 临时扫描，现场查看 summary、finding evidence 和 benchmark 对比指标。
+浏览器访问 `http://127.0.0.1:8000/`。页面首屏先用中文展示项目动机、证据链、合成 Oracle + 外部 APK 语料的数据集结构、34 个评分 APK、71 个回归测试和 HardenInspector Micro F1。随后可以选择干净基线、综合加固样本、ADB 与开发者设置、安装来源、Java Debug API、签名完整性、Root 痕迹、Native/IMEI 专项样本和外部 APK，也可以上传本地 APK 临时扫描，现场查看 summary、finding evidence 和 benchmark 对比指标。
 
 生成可复现演示 APK：
 

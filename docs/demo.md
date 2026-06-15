@@ -18,7 +18,7 @@ python3 -m venv .venv
 预期结果：
 
 ```text
-69 passed
+71 passed
 ```
 
 ## 2. 生成演示 APK
